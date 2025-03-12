@@ -13,7 +13,7 @@ Responsible for designing the **technical architecture**, ensuring scalability, 
 Oversee the **planning, execution, and coordination** of the project, ensuring milestones and deadlines are met.
 
 -  Justin Thiha, 5th Year Software Eng/Finance
--  
+-  Maxwell Lay, 6th Year Software Eng/Finance
 -  
 
 ## 🚂 Release Train Engineers  
