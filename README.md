@@ -1,4 +1,4 @@
-# 2025W2-HansRoslinger
+# 2025W2-HansRoslinger 🚀  
 
 Welcome to the **HansRoslinger** repository! This project is dedicated to designing and implementing scalable AI systems, ensuring seamless integration and deployment. Our team consists of **Systems Architects**, **Project Managers**, and **Release Train Engineers**, working together to build an efficient and robust AI solution.
 
