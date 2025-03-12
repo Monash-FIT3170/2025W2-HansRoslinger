@@ -5,7 +5,7 @@ Welcome to the **HansRoslinger** repository! This project is dedicated to design
 ## 🏛️ Systems Architects  
 Responsible for designing the **technical architecture**, ensuring scalability, reliability, and optimal performance.
 
--  
+-  Vedansh Malhan, 4th Year Software Eng/Econometrics
 -  
 -  
 
