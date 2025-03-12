@@ -4,3 +4,4 @@ Joshua Cui: xcui0015@student.monash.edu
 Zachary Yeap: zyea0002@student.monash.edu  
 Rohan Jaggi: rjag0003@student.monash.edu  
 Dana McDonald: dmcd0006@student.monash.edu  
+Maxwell Lay: mlay0005@student.monash.edu
