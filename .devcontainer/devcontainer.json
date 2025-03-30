@@ -23,7 +23,9 @@
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   "forwardPorts": [3000],
   // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": [],
+  "postCreateCommand": "cd ./hansroslinger/ && npm install",
+    // More info: https://aka.ms/dev-containers-non-root.
+  "remoteUser": "node",
   // Configure tool-specific properties.
   "customizations": {
     "vscode": {
@@ -49,11 +51,13 @@
           "esbenp",
           "jungaretti",
           "kohler",
-          "kreemer"
+          "kreemer",
+          "bierner",
+          "direnv",
+          "hansroslinger"
         ]
       }
     }
   }
-  // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-  // "remoteUser": "root"
+
 }
