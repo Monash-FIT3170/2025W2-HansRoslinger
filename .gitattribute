@@ -1,0 +1,12 @@
+# Set the default behavior for all files
+* text=auto eol=crlf
+
+# Normalized and converts to
+# native line endings on checkout
+*.c text
+*.h text
+
+# Binary files
+*.png binary
+*.jpg binary
+*.ico binary
