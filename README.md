@@ -18,6 +18,8 @@ Oversee the **planning, execution, and coordination** of the project, ensuring m
 - Dana McDonald: dmcd0006@student.monash.edu
 - Maxwell Lay: mlay0005@student.monash.edu
 - Albert Liesman: alie0018@student.monash.edu
+- Harrison Fulton: hful0003@student.monash.edu
+- Toby Marsden: tmar0048@student.monash.edu
 
 ## 🚂 Release Train Engineers
 
@@ -27,8 +29,3 @@ Facilitate **Agile development**, ensuring smooth collaboration across teams and
 - Zachary Yeap: zyea0002@student.monash.edu
 - Rohan Jaggi: rjag0003@student.monash.edu
 - Joanne Li Wen Yew: jyew0004@student.monash.edu
-
-## To self-assign
-
-- Harrison Fulton: hful0003@student.monash.edu
-- Toby Marsden: tmar0048@student.monash.edu
