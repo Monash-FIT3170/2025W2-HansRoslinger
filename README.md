@@ -29,3 +29,4 @@ Facilitate **Agile development**, ensuring smooth collaboration across teams and
 - Zachary Yeap: zyea0002@student.monash.edu
 - Rohan Jaggi: rjag0003@student.monash.edu
 - Joanne Li Wen Yew: jyew0004@student.monash.edu
+- William Eap: weap0001@student.monash.edu
