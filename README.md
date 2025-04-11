@@ -30,3 +30,4 @@ Facilitate **Agile development**, ensuring smooth collaboration across teams and
 - Rohan Jaggi: rjag0003@student.monash.edu
 - Joanne Li Wen Yew: jyew0004@student.monash.edu
 - William Eap: weap0001@student.monash.edu
+- Nguyen Viet Phuc (Tom): vngu0096@student.monash.edu
