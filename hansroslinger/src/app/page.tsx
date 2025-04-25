@@ -1,5 +1,6 @@
 'use client';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Home() {
 
@@ -69,9 +70,11 @@ export default function Home() {
 
       {/* Section 2: Preview Button */}
       <section className="flex items-center justify-center mb-8 mt-8">
-        <button className="bg-teal-500 text-white text-lg px-6 py-3 rounded-md font-semibold shadow-md">
-          Preview
-        </button>
+        <Link href="/preview">
+          <button className="bg-teal-500 text-white text-lg px-6 py-3 rounded-md font-semibold shadow-md">
+            Preview
+          </button>
+        </Link>
       </section>
 
       {/* Section 3: Gestures */}
