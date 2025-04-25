@@ -1,10 +1,10 @@
 "use client";
 import Image from "next/image";
-import Link from "next/link";
 import UploadsDisplay from "./UploadsDisplay";
 import { Uploads } from "types/application";
 import { hardcodedUploads } from "hardcodedData";
 import { useState } from "react";
+import Preview from "@/components/Preview";
 
 const Dashboard = () => {
   // Right now this is hard coded, once we have data base setup, we can fetch instead
@@ -52,11 +52,7 @@ const Dashboard = () => {
 
       {/* Section 2: Preview Button */}
       <section className="flex items-center justify-center mb-8 mt-8">
-        <Link href="/preview">
-          <button className="bg-teal-500 text-white text-lg px-6 py-3 rounded-md font-semibold shadow-md">
-            Preview
-          </button>
-        </Link>
+        <Preview></Preview>
       </section>
 
       {/* Section 3: Gestures */}
