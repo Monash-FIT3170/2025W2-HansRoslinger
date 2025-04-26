@@ -1,51 +1,50 @@
-'use client';
-import Image from 'next/image';
-import Link from 'next/link';
-import UploadsDisplay from './UploadsDisplay';
-import { Uploads } from 'types/application';
-import { hardcodedUploads } from 'hardcodedData';
-import { useState } from 'react';
+"use client";
+import Image from "next/image";
+import Link from "next/link";
+import UploadsDisplay from "./UploadsDisplay";
+import { Uploads } from "types/application";
+import { hardcodedUploads } from "hardcodedData";
+import { useState } from "react";
 
 const Dashboard = () => {
   // Right now this is hard coded, once we have data base setup, we can fetch instead
-  const uploads: Uploads = hardcodedUploads
+  const uploads: Uploads = hardcodedUploads;
 
   // variable containing the selected upload id.
   // Two ways we can go from here to get it to the preview page:
   // Store in local storage (can do one at a time)
   // Or pass it as part of the url to the preview page /preview/:assetId or /preview?assetID= (can open multiple at a time)
-  const [selectedUploadId, setSelectedUploadId] = useState<string>('')
-
+  const [selectedUploadId, setSelectedUploadId] = useState<string>("");
   const gestures = [
     {
-      img: '/gestures/left-pinch.png',
-      title: 'PINCH',
-      description: 'Use a pinch gesture to grab and move objects',
+      img: "/gestures/left-pinch.png",
+      title: "PINCH",
+      description: "Use a pinch gesture to grab and move objects",
     },
     {
-      img: ['/gestures/left-pinch.png', '/gestures/right-pinch.png'],
-      title: 'DOUBLE PINCH',
-      description: 'Use two hands with pinch gestures to zoom',
+      img: ["/gestures/left-pinch.png", "/gestures/right-pinch.png"],
+      title: "DOUBLE PINCH",
+      description: "Use two hands with pinch gestures to zoom",
     },
     {
-      img: '/gestures/fist.png',
-      title: 'FIST',
-      description: 'Make a fist and move to drag the canvas around',
+      img: "/gestures/fist.png",
+      title: "FIST",
+      description: "Make a fist and move to drag the canvas around",
     },
     {
-      img: '/gestures/palm.png',
-      title: 'PALM',
-      description: 'Hold an open palm and hover to activate interaction mode',
+      img: "/gestures/palm.png",
+      title: "PALM",
+      description: "Hold an open palm and hover to activate interaction mode",
     },
   ];
 
   const handleSelectUpload = (newSelectedUploadId: string) => {
-    setSelectedUploadId(newSelectedUploadId)
-  }
+    setSelectedUploadId(newSelectedUploadId);
+  };
 
   return (
     <main className="flex-1 overflow-y-auto scroll-auto scroll-smooth lg:overflow-hidden">
-      <UploadsDisplay 
+      <UploadsDisplay
         uploads={uploads ? uploads : {}}
         selectedUploadId={selectedUploadId}
         onSelect={handleSelectUpload}
@@ -89,10 +88,8 @@ const Dashboard = () => {
           ))}
         </div>
       </section>
-
-
     </main>
   );
-}
+};
 
-export default Dashboard
+export default Dashboard;
