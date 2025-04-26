@@ -2,17 +2,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import UploadsDisplay from './UploadsDisplay';
-import { Uploads } from 'app/types/application';
+import { Uploads } from 'types/application';
+import { hardcodedUploads } from 'hardcodedData';
+import { useState } from 'react';
 
 const Dashboard = () => {
 
-  const uploads: Uploads[] = [
-    { name: 'pie_chart.json', type: 'json', src:'/uploads/chart-icon.png',  imageSrc: '/uploads/chart-icon.png' },
-    { name: 'ian.png', type: 'png', src: '/uploads/ian.png',  imageSrc: '/uploads/ian.png' },
-    { name: 'graph.csv', type: 'json', src:'/uploads/chart-icon.png',  imageSrc: '/uploads/chart-icon.png' },
-    { name: 'pie_chart.csv', type: 'png', src:'/uploads/chart-icon.png',  imageSrc: '/uploads/chart-icon.png' },
-    
-  ];
+  const uploads: Uploads = hardcodedUploads
+  const [selectedUploadId, setSelectedUploadId] = useState<string>('')
 
   const gestures = [
     {
@@ -37,11 +34,18 @@ const Dashboard = () => {
     },
   ];
 
+  const handleSelectUpload = (newSelectedUploadId: string) => {
+    setSelectedUploadId(newSelectedUploadId)
+  }
+
   return (
     <main className="flex-1 overflow-y-auto scroll-auto scroll-smooth lg:overflow-hidden">
-      <UploadsDisplay uploads={uploads}>
+      <UploadsDisplay 
+        uploads={uploads ? uploads : {}}
+        selectedUploadId={selectedUploadId}
+        onSelect={handleSelectUpload}
+      />
 
-      </UploadsDisplay>
       {/* Section 2: Preview Button */}
       <section className="flex items-center justify-center mb-8 mt-8">
         <Link href="/preview">
