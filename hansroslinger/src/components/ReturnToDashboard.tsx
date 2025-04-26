@@ -11,18 +11,16 @@ export default function ReturnToDashboard() {
   return (
     <Link
       href="/"
-      className="text-sm px-4 py-2 rounded transition-colors duration-200"
+      aria-label="Return to dashboard home"
+      className="text-xl px-4 py-2 rounded transition-colors duration-200"
       style={{
-        backgroundColor: 'black',
-        color: 'white',
+        color: 'black',
       }}
       onMouseEnter={(e) => {
-        (e.target as HTMLElement).style.backgroundColor = 'var(--accent)';
-        (e.target as HTMLElement).style.color = 'white';
+        (e.target as HTMLElement).style.color = 'var(--accent)';
       }}
       onMouseLeave={(e) => {
-        (e.target as HTMLElement).style.backgroundColor = 'black';
-        (e.target as HTMLElement).style.color = 'white';
+        (e.target as HTMLElement).style.color = 'black';
       }}
     >
       Return to Dashboard
