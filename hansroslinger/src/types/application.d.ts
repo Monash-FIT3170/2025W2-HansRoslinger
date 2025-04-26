@@ -10,5 +10,5 @@ export type UploadProp = {
 }
 
 export type Uploads = {
-  [asset_id: string]: UploadProp
+  [assetId: string]: UploadProp
 }

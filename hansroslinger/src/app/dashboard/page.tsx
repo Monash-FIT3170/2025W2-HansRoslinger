@@ -7,8 +7,13 @@ import { hardcodedUploads } from 'hardcodedData';
 import { useState } from 'react';
 
 const Dashboard = () => {
-
+  // Right now this is hard coded, once we have data base setup, we can fetch instead
   const uploads: Uploads = hardcodedUploads
+
+  // variable containing the selected upload id.
+  // Two ways we can go from here to get it to the preview page:
+  // Store in local storage (can do one at a time)
+  // Or pass it as part of the url to the preview page /preview/:assetId or /preview?assetID= (can open multiple at a time)
   const [selectedUploadId, setSelectedUploadId] = useState<string>('')
 
   const gestures = [
