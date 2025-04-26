@@ -10,7 +10,7 @@ export default function ReturnToDashboard() {
 
   return (
     <Link
-      href="/"
+      href="/dashboard"
       className="text-sm px-4 py-2 rounded transition-colors duration-200"
       style={{
         backgroundColor: 'black',
