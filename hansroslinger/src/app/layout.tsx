@@ -16,7 +16,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="h-full">
         <div className="flex flex-col h-full bg-[#fffcee]">
           <header className="h-20 px-6 flex items-center justify-between">
-            <Link href="/" className="flex items-center">
+            <Link href="/dashboard" className="flex items-center">
                 <Image src="/yubi-logo.png" alt="Yubi Logo" width={65} height={65} />
                 <span className="text-4xl font-bold text-[#1e1e1e]">Yubi</span>
             </Link>

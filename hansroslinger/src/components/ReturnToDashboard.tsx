@@ -10,7 +10,7 @@ export default function ReturnToDashboard() {
 
   return (
     <Link
-      href="/"
+      href="/dashboard"
       aria-label="Return to dashboard home"
       className="text-xl px-4 py-2 rounded transition-colors duration-200"
       style={{
