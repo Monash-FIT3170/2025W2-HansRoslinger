@@ -37,7 +37,7 @@ export default function Home() {
     const hand: Promise<handpose.AnnotatedPrediction[]> = await net.estimateHands(video);
     console.log(hand)
     //draw mesh
-    const ctx: CanvasRenderingContext2D | null = canvasRef.current.getContext("2d");
+    // const ctx: CanvasRenderingContext2D | null = canvasRef.current.getContext("2d");
     }
   }
 
