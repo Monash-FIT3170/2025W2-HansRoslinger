@@ -3,7 +3,11 @@
 import * as tf from "@tensorflow/tfjs";
 import * as handpose from "@tensorflow-models/handpose";
 import Webcam from "react-webcam";
-import React, { useRef } from "react";
+import '@tensorflow/tfjs-backend-cpu';
+import '@tensorflow/tfjs-backend-webgl';
+import React, { useEffect, useRef } from "react";
+import { drawHand } from "./drawHand";
+import "./page.css"
 
 export default function Home() {
   const webcamRef = useRef<Webcam>(null);
@@ -34,10 +38,14 @@ export default function Home() {
     canvasRef.current.height = videoHeight;
 
     //make detections
-    const hand: Promise<handpose.AnnotatedPrediction[]> = await net.estimateHands(video);
-    console.log(hand)
+    const hand: handpose.AnnotatedPrediction[] = await net.estimateHands(video);
+    // console.log(hand)
     //draw mesh
-    // const ctx: CanvasRenderingContext2D | null = canvasRef.current.getContext("2d");
+    const ctx: CanvasRenderingContext2D | null = canvasRef.current.getContext("2d");
+    if(ctx !== null){
+      // console.log(ctx)
+      drawHand(hand, ctx);
+    }
     }
   }
 
