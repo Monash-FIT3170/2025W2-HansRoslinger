@@ -9,6 +9,40 @@ export default function Home() {
   const webcamRef = useRef<Webcam>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
+  const runHandpose = async (): Promise<void> => {
+    const net: handpose.HandPose = await handpose.load();
+    console.log("Handpose model loaded");
+    //loop and detect hands
+    setInterval(()=>{
+      detect(net)
+    }, 100)
+  };
+
+  const detect = async (net: handpose.HandPose) => {
+    //check data is available 
+    if(webcamRef.current !== null && webcamRef.current.video !== null && webcamRef.current.video.readyState === 4 && canvasRef.current !== null){
+    //get video properties
+      const video: HTMLVideoElement = webcamRef.current.video;
+      const videoWidth: number = video.width;
+      const videoHeight: number = video.height;
+      //set video height and width
+      webcamRef.current.video.width = videoWidth; //done to force the video height and width 
+      webcamRef.current.video.height = videoHeight;
+
+    //set canvas height and width
+    canvasRef.current.width = videoWidth;
+    canvasRef.current.height = videoHeight;
+
+    //make detections
+    const hand: Promise<handpose.AnnotatedPrediction[]> = await net.estimateHands(video);
+    console.log(hand)
+    //draw mesh
+    const ctx: CanvasRenderingContext2D | null = canvasRef.current.getContext("2d");
+    }
+  }
+
+  runHandpose();
+
   return (
     <div className="Webcam">
       <header className="Webcam-header">
