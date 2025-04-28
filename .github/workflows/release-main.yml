@@ -1,6 +1,8 @@
 name: "build development"
 on: # rebuild any PRs and main branch changes
   pull_request:
+    branches:
+      - main
   push:
     branches:
       - main
@@ -22,6 +24,10 @@ jobs:
     needs: test
     environment: main-devel
     if: github.repository == 'Monash-FIT3170/2025W2-HansRoslinger'
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./hansroslinger
     steps:
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
