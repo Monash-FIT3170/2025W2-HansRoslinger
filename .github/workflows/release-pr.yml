@@ -27,7 +27,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./hansroslinger
+        working-directory: hansroslinger
     steps:
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
