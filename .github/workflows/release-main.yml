@@ -1,4 +1,4 @@
-name: "build development"
+name: "Deploy main"
 on: # rebuild any PRs and main branch changes
   pull_request:
     branches:
@@ -6,6 +6,8 @@ on: # rebuild any PRs and main branch changes
   push:
     branches:
       - main
+permissions:
+  pull-requests: write # Add PR comments
 
 jobs:
   test:
@@ -25,6 +27,9 @@ jobs:
     environment: main-devel
     if: github.repository == 'Monash-FIT3170/2025W2-HansRoslinger'
     steps:
+      - name: Checkout (GitHub)
+        uses: actions/checkout@v3
+
       - uses: amondnet/vercel-action@v25 #deploy
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }} # Required

@@ -1,4 +1,4 @@
-name: "build development"
+name: "Deploy develop"
 on: # rebuild any PRs and main branch changes
   pull_request:
     branches:
@@ -7,30 +7,29 @@ on: # rebuild any PRs and main branch changes
     branches:
       - develop
 permissions:
-  pull-requests: write
+  pull-requests: write # Add PR comments
 
 jobs:
-  # test:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout (GitHub)
-  #       uses: actions/checkout@v3
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (GitHub)
+        uses: actions/checkout@v3
 
-  #     - name: Build and run dev container task
-  #       uses: devcontainers/ci@v0.3
-  #       with:
-  #         # TODO: Add test
-  #         runCmd: cd hansroslinger && npm run lint
-  #     - name: "THING"
-  #       run: ls
+      - name: Build and run dev container task
+        uses: devcontainers/ci@v0.3
+        with:
+          # TODO: Add test and lint
+          runCmd: cd hansroslinger && npm run lint
   deploy:
     runs-on: ubuntu-latest
-    # needs: test
+    needs: test
     environment: develop
     if: github.repository == 'Monash-FIT3170/2025W2-HansRoslinger'
     steps:
       - name: Checkout (GitHub)
         uses: actions/checkout@v3
+
       - uses: amondnet/vercel-action@v25 #deploy
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }} # Required
