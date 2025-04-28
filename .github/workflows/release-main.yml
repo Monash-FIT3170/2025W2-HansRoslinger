@@ -20,7 +20,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: test
-    environment: develop
+    environment: main-devel
     if: github.repository == 'Monash-FIT3170/2025W2-HansRoslinger'
     steps:
       - name: Install Vercel CLI
