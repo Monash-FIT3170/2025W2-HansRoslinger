@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint && prettier --check **/*.{js,ts,jsx,tsx,json,css,md}",
+    "format": "prettier --write **/*.{js,ts,jsx,tsx,json,css,md}"
   },
   "dependencies": {
     "next": "15.2.4",

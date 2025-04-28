@@ -1,9 +1,7 @@
-'use client';
+"use client";
 
 const Preview = () => {
-  return (
-    <div></div>
-  );
-  };
-  
-  export default Preview;
+  return <div></div>;
+};
+
+export default Preview;

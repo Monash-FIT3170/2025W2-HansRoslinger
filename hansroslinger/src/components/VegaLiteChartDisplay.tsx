@@ -1,13 +1,13 @@
-'use client';
-import React, { useEffect, useRef } from 'react';
-import { UploadProp } from 'types/application';
-import embed from 'vega-embed';
+"use client";
+import React, { useEffect, useRef } from "react";
+import { UploadProp } from "types/application";
+import embed from "vega-embed";
 
 type VegaLiteChartDisplayProp = {
-  data: UploadProp
-}
+  data: UploadProp;
+};
 
-const VegaLiteChartDisplay = ({data}: VegaLiteChartDisplayProp) => {
+const VegaLiteChartDisplay = ({ data }: VegaLiteChartDisplayProp) => {
   const chartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -22,7 +22,7 @@ const VegaLiteChartDisplay = ({data}: VegaLiteChartDisplayProp) => {
     <div className="w-full h-full">
       <div ref={chartRef} className="w-full h-full" />
     </div>
-  )
+  );
 };
 
 export default VegaLiteChartDisplay;

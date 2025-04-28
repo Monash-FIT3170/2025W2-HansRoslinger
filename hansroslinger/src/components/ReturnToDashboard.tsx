@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function ReturnToDashboard() {
   const pathname = usePathname();
 
-  if (!pathname.startsWith('/preview')) return null;
+  if (!pathname.startsWith("/preview")) return null;
 
   return (
     <Link
@@ -14,13 +14,13 @@ export default function ReturnToDashboard() {
       aria-label="Return to dashboard"
       className="text-xl px-4 py-2 rounded transition-colors duration-200"
       style={{
-        color: 'black',
+        color: "black",
       }}
       onMouseEnter={(e) => {
-        (e.target as HTMLElement).style.color = 'var(--accent)';
+        (e.target as HTMLElement).style.color = "var(--accent)";
       }}
       onMouseLeave={(e) => {
-        (e.target as HTMLElement).style.color = 'black';
+        (e.target as HTMLElement).style.color = "black";
       }}
     >
       Return to Dashboard
