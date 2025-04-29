@@ -45,6 +45,7 @@ const CameraFeed = () => {
           ref={videoRef}
           autoPlay
           playsInline
+          muted
           className="w-full h-full object-cover transform -scale-x-100"
         />
       )}
