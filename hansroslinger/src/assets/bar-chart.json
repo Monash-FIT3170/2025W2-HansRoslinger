@@ -42,7 +42,10 @@
       }
     ]
   },
-  "mark": "bar",
+  "mark": {
+    "type": "bar",
+    "tooltip": true
+  },
   "encoding": {
     "x": {
       "field": "a",
@@ -54,6 +57,10 @@
     "y": {
       "field": "b",
       "type": "quantitative"
-    }
+    },
+    "tooltip": [
+      { "field": "a", "type": "nominal", "title": "Category" },
+      { "field": "b", "type": "quantitative", "title": "Value"}
+    ]
   }
 }
