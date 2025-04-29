@@ -42,7 +42,8 @@ const Preview = () => {
           ref={videoRef}
           autoPlay
           playsInline
-          className="w-full h-full object-cover"
+          // transform -scale-x-100 to mirror the video horizontally
+          className="w-full h-full object-cover transform -scale-x-100"
         />
       </div>
     </div>
