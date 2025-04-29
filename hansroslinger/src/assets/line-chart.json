@@ -1,24 +1,31 @@
 // Data obtained from vegalite example https://vega.github.io/editor/#/examples/vega-lite/line
 {
-  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
-  "description": "Google's stock price over time.",
-  "data": {
-    "url": "data/stocks.csv"
-  },
-  "transform": [
-    {
-      "filter": "datum.symbol==='GOOG'"
-    }
-  ],
-  "mark": "line",
-  "encoding": {
-    "x": {
-      "field": "date",
-      "type": "temporal"
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "description": "Google's stock price over time.",
+    "data": {
+        "url": "data/stocks.csv"
     },
-    "y": {
-      "field": "price",
-      "type": "quantitative"
+    "transform": [
+        {
+            "filter": "datum.symbol==='GOOG'"
+        }
+    ],
+    "mark": {
+        "type": "line",
+        "tooltip": true
+    },
+    "encoding": {
+        "x": {
+            "field": "date",
+            "type": "temporal"
+        },
+        "y": {
+            "field": "price",
+            "type": "quantitative"
+        },
+        "tooltip": [
+            { "field": "date", "type": "temporal", "title": "Date" },
+            { "field": "price", "type": "quantitative", "title": "Price"}
+        ]
     }
-  }
 }
