@@ -1,12 +1,5 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
-  "autosize": {
-    "type": "fit",
-    "contains": "padding"
-  },
-  "width": "container",
-  "height": "container",
-  "padding": 0,
   "data": {
     "values": [
       { "a": "A", "b": 28 },
@@ -22,20 +15,11 @@
   "encoding": {
     "x": {
       "field": "a",
-      "type": "ordinal",
-      "axis": {
-        "labelAngle": -45,
-        "labelFontSize": 8,
-        "title": null
-      }
+      "type": "ordinal"
     },
     "y": {
       "field": "b",
-      "type": "quantitative",
-      "axis": {
-        "title": null,
-        "labelFontSize": 8
-      }
+      "type": "quantitative"
     }
   },
   "config": {
