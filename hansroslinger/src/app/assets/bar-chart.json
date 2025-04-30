@@ -1,4 +1,3 @@
-// Data obtained from vegalite example https://vega.github.io/editor/#/examples/vega-lite/bar
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
   "description": "A simple bar chart with embedded data.",
