@@ -1,4 +1,3 @@
-// Data obtained from vegalite example https://vega.github.io/editor/#/examples/vega-lite/arc_pie
 {
     "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
     "description": "A simple pie chart with embedded data.",

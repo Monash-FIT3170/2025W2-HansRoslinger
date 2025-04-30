@@ -1,4 +1,3 @@
-// Data obtained from vegalite example https://vega.github.io/editor/#/examples/vega-lite/line
 {
     "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
     "description": "Google's stock price over time.",
