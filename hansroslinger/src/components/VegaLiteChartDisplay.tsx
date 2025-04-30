@@ -11,11 +11,33 @@ const VegaLiteChartDisplay = ({ data }: VegaLiteChartDisplayProp) => {
   const chartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (chartRef.current) {
-      embed(chartRef.current, data.src, {
-        actions: false, // disables the action menu
+    fetch(data.src)
+      .then((res) => res.json())
+      .then((jsonData) => {
+        // Add format for thumbnail
+        jsonData.autosize = {
+          type: "fit",
+          contain: "padding",
+        };
+        jsonData.width = "container"; // Makes it fits to the container
+        jsonData.height = "container";
+        jsonData.padding = 0;
+        jsonData.encoding.x.axis = {
+          labelAngle: -45,
+          labelFontSize: 8,
+          title: null,
+        };
+        jsonData.encoding.y.axis = {
+          title: null,
+          labelFontSize: 8,
+        };
+
+        if (chartRef.current) {
+          embed(chartRef.current, jsonData, {
+            actions: false, // disables the action menu
+          });
+        }
       });
-    }
   }, [data.src]);
 
   return (
