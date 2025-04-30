@@ -6,8 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint && prettier --check ./{src,public}",
-    "format": "prettier --write ./{src,public}"
+    "lint": "next lint && prettier --check ./src ./public",
+    "format": "prettier --write ./src ./public"
   },
   "dependencies": {
     "next": "15.2.4",
