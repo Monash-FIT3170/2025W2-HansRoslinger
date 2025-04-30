@@ -7,7 +7,6 @@
   "features": {
     "ghcr.io/devcontainers-extra/features/act:1": {},
     "ghcr.io/devcontainers-extra/features/gh-cli:1": {},
-    "ghcr.io/devcontainers-extra/features/prettier:1": {},
     "ghcr.io/devcontainers-extra/features/vercel-cli:1": {},
     "ghcr.io/devcontainers-extra/features/vercel-pkg:1": {},
     "ghcr.io/meaningful-ooo/devcontainer-features/fish:2": {},
@@ -15,15 +14,20 @@
     "ghcr.io/jungaretti/features/vim:1": {},
     "ghcr.io/kreemer/features/helix:1": {},
     "ghcr.io/devcontainers-extra/features/fzf:1": {},
-    "ghcr.io/devcontainers-community/npm-features/typescript:1": {}
   },
   // Features to add to the dev container. More info: https://containers.dev/features.
   // "features": {},
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  // Uncomment for podman relabelling under SELinux
+  // "workspaceMount": "source=${localWorkspaceFolder},target=/workspace/${localWorkspaceFolderBasename},type=bind,consistency=cached,relabel=shared",
+  // Docker compatible mount options
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace/${localWorkspaceFolderBasename},type=bind,consistency=cached",
+  "workspaceFolder": "/workspace/${localWorkspaceFolderBasename}",
   "forwardPorts": [3000],
   // Use 'postCreateCommand' to run commands after the container is created.
   "postCreateCommand": "cd ./hansroslinger/ && npm install",
   // More info: https://aka.ms/dev-containers-non-root.
+  "containerUser": "node",
   "remoteUser": "node",
   "remoteEnv": {
     "PATH": "${containerEnv:PATH}:${containerWorkspaceFolder}/hansroslinger/node_modules/.bin"
