@@ -10,15 +10,15 @@
     <div id="vis"></div>
 
     <script type="text/javascript">
-        fetch("./pie-chart.json")
-          .then(response => response.json())
-          .then(data => {
-            var vegalite_spec = data;
-            vegaEmbed("#vis", vegalite_spec);
-          })
-          .catch(error => {
-            console.error("Error loading the pie-chart JSON file:", error);
-          });
+      fetch("./pie-chart.json")
+        .then((response) => response.json())
+        .then((data) => {
+          var vegalite_spec = data;
+          vegaEmbed("#vis", vegalite_spec);
+        })
+        .catch((error) => {
+          console.error("Error loading the pie-chart JSON file:", error);
+        });
     </script>
   </body>
 </html>

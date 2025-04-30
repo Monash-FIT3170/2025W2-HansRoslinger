@@ -10,15 +10,15 @@
     <div id="vis"></div>
 
     <script type="text/javascript">
-        fetch("./bar-chart.json")
-          .then(response => response.json())
-          .then(data => {
-            var vegalite_spec = data;
-            vegaEmbed("#vis", vegalite_spec);
-          })
-          .catch(error => {
-            console.error("Error loading the bar-chart JSON file:", error);
-          });
+      fetch("./bar-chart.json")
+        .then((response) => response.json())
+        .then((data) => {
+          var vegalite_spec = data;
+          vegaEmbed("#vis", vegalite_spec);
+        })
+        .catch((error) => {
+          console.error("Error loading the bar-chart JSON file:", error);
+        });
     </script>
   </body>
 </html>
