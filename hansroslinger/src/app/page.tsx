@@ -1,13 +1,15 @@
 "use client";
 
-import * as tf from "@tensorflow/tfjs";
+//import * as tf from "@tensorflow/tfjs";
 import * as handpose from "@tensorflow-models/handpose";
 import Webcam from "react-webcam";
 import '@tensorflow/tfjs-backend-cpu';
 import '@tensorflow/tfjs-backend-webgl';
-import React, { useEffect, useRef } from "react";
+import React, {useRef } from "react";
 import { drawHand } from "./drawHand";
 import "./page.css"
+import grabGesture from './gestures/grabGesture';
+import * as fp from 'fingerpose';
 
 export default function Home() {
   const webcamRef = useRef<Webcam>(null);
@@ -39,7 +41,17 @@ export default function Home() {
 
     //make detections
     const hand: handpose.AnnotatedPrediction[] = await net.estimateHands(video);
-    // console.log(hand)
+    console.log(hand)
+    
+    if(hand.length > 0){
+      const GE = new fp.GestureEstimator([grabGesture])
+
+      const gesture = await GE.estimate(hand[0].landmarks, 8);
+      console.log(gesture);
+    }
+
+    
+
     //draw mesh
     const ctx: CanvasRenderingContext2D | null = canvasRef.current.getContext("2d");
     if(ctx !== null){
