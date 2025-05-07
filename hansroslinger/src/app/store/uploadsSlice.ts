@@ -26,7 +26,9 @@ export const useUploadStore = create<SelectedUploadState>((set, get) => ({
       // use formEntries to change list of [assetId, uploadProp] into an object
       selectedUploads: Object.fromEntries(
         // .entries returns a list
-        Object.entries(state.selectedUploads).filter(([key]) => key !== assetId)
+        Object.entries(state.selectedUploads).filter(
+          ([key]) => key !== assetId,
+        ),
       ),
     })),
 

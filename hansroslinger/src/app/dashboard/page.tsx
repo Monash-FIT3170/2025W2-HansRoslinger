@@ -34,9 +34,7 @@ const Dashboard = () => {
 
   return (
     <main className="flex-1 overflow-y-auto scroll-auto scroll-smooth lg:overflow-hidden">
-      <UploadsDisplay
-        uploads={uploads ? uploads : {}}
-      />
+      <UploadsDisplay uploads={uploads ? uploads : {}} />
 
       {/* Section 2: Preview Button */}
       <section className="flex items-center justify-center mb-8 mt-8">
