@@ -3,18 +3,12 @@ import Image from "next/image";
 import UploadsDisplay from "./UploadsDisplay";
 import { Uploads } from "types/application";
 import { hardcodedUploads } from "hardcodedData";
-import { useState } from "react";
 import Preview from "@/components/Preview";
 
 const Dashboard = () => {
   // Right now this is hard coded, once we have data base setup, we can fetch instead
   const uploads: Uploads = hardcodedUploads;
 
-  // variable containing the selected upload id.
-  // Two ways we can go from here to get it to the preview page:
-  // Store in local storage (can do one at a time)
-  // Or pass it as part of the url to the preview page /preview/:assetId or /preview?assetID= (can open multiple at a time)
-  const [selectedUploadId, setSelectedUploadId] = useState<string>("");
   const gestures = [
     {
       img: "/gestures/left-pinch.png",
@@ -38,17 +32,9 @@ const Dashboard = () => {
     },
   ];
 
-  const handleSelectUpload = (newSelectedUploadId: string) => {
-    setSelectedUploadId(newSelectedUploadId);
-  };
-
   return (
     <main className="flex-1 overflow-y-auto scroll-auto scroll-smooth lg:overflow-hidden">
-      <UploadsDisplay
-        uploads={uploads ? uploads : {}}
-        selectedUploadId={selectedUploadId}
-        onSelect={handleSelectUpload}
-      />
+      <UploadsDisplay uploads={uploads ? uploads : {}} />
 
       {/* Section 2: Preview Button */}
       <section className="flex items-center justify-center mb-8 mt-8">
