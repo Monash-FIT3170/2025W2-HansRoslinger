@@ -2,7 +2,7 @@ import { UploadProp, Uploads } from "types/application";
 import { create } from "zustand";
 
 type SelectedUploadState = {
-  uploads: Uploads;
+  selectedUploads: Uploads;
 
   setSelectedUpload: (assetId: string, data: UploadProp) => void;
   removeSelectedUpload: (assetId: string) => void;
@@ -11,12 +11,12 @@ type SelectedUploadState = {
 };
 
 export const useUploadStore = create<SelectedUploadState>((set, get) => ({
-  uploads: {},
+  selectedUploads: {},
 
   setSelectedUpload: (assetId, data) =>
     set((state) => ({
-      uploads: {
-        ...state.uploads,
+      selectedUploads: {
+        ...state.selectedUploads,
         [assetId]: data,
       },
     })),
@@ -24,13 +24,13 @@ export const useUploadStore = create<SelectedUploadState>((set, get) => ({
   removeSelectedUpload: (assetId) =>
     set((state) => ({
       // use formEntries to change list of [assetId, uploadProp] into an object
-      uploads: Object.fromEntries(
+      selectedUploads: Object.fromEntries(
         // .entries returns a list
-        Object.entries(state.uploads).filter(([key]) => key !== assetId)
+        Object.entries(state.selectedUploads).filter(([key]) => key !== assetId)
       ),
     })),
 
-  clearSelectedUploads: () => set({ uploads: {} }),
+  clearSelectedUploads: () => set({ selectedUploads: {} }),
 
-  getSelectedUpload: (assetId) => get().uploads[assetId],
+  getSelectedUpload: (assetId) => get().selectedUploads[assetId],
 }));

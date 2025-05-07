@@ -3,6 +3,8 @@
 import CameraFeed from "./CameraFeed";
 
 const Preview = () => {
+  // Example of getting all the selected uploads
+  // const selectedUploads = useUploadStore((state) => state.uploads);
   return (
     <div className="flex justify-center px-4 sm:px-8">
       <div
