@@ -9,6 +9,8 @@ import React, {useRef } from "react";
 import { drawHand } from "./drawHand";
 import "./page.css"
 import grabGesture from './gestures/grabGesture';
+import pinchGesture from './gestures/pinchGesture';
+import pointGesture from './gestures/pointGesture';
 import * as fp from 'fingerpose';
 
 export default function Home() {
@@ -41,12 +43,12 @@ export default function Home() {
 
     //make detections
     const hand: handpose.AnnotatedPrediction[] = await net.estimateHands(video);
-    console.log(hand)
     
     if(hand.length > 0){
-      const GE = new fp.GestureEstimator([grabGesture])
+      const GE = new fp.GestureEstimator([grabGesture,pinchGesture])
 
       const gesture = await GE.estimate(hand[0].landmarks, 8);
+      console.log(hand)
       console.log(gesture);
     }
 
