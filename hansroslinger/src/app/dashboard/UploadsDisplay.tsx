@@ -10,21 +10,20 @@ type UploadsDisplayProps = {
   uploads: Uploads;
 };
 
-const UploadsDisplay = ({
-  uploads,
-}: UploadsDisplayProps) => {
-
+const UploadsDisplay = ({ uploads }: UploadsDisplayProps) => {
   const setSelectedUpload = useUploadStore((state) => state.setSelectedUpload);
-  const removeSelectedUpload = useUploadStore((state) => state.removeSelectedUpload);
+  const removeSelectedUpload = useUploadStore(
+    (state) => state.removeSelectedUpload,
+  );
   const selectedUploads = useUploadStore((state) => state.selectedUploads);
 
   const handleCLick = (assetId: string, uploadData: UploadProp) => {
-    if (assetId in selectedUploads){
-      removeSelectedUpload(assetId)
-      return
+    if (assetId in selectedUploads) {
+      removeSelectedUpload(assetId);
+      return;
     }
-    setSelectedUpload(assetId, uploadData)
-  }
+    setSelectedUpload(assetId, uploadData);
+  };
 
   return (
     <section className="w-full mb-8 mt-8">
