@@ -46,7 +46,7 @@ const KonvaOverlay = () => {
 
   const updateShapePosition = (id: string, x: number, y: number) => {
     setShapes((prev) =>
-      prev.map((shape) => (shape.id === id ? { ...shape, x, y } : shape))
+      prev.map((shape) => (shape.id === id ? { ...shape, x, y } : shape)),
     );
   };
 
