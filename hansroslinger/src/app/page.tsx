@@ -31,8 +31,8 @@ export default function Home() {
     if(webcamRef.current !== null && webcamRef.current.video !== null && webcamRef.current.video.readyState === 4 && canvasRef.current !== null){
     //get video properties
       const video: HTMLVideoElement = webcamRef.current.video;
-      const videoWidth: number = video.width;
-      const videoHeight: number = video.height;
+      const videoWidth: number = 640;
+      const videoHeight: number = 480;
       //set video height and width
       webcamRef.current.video.width = videoWidth; //done to force the video height and width 
       webcamRef.current.video.height = videoHeight;
