@@ -2,23 +2,23 @@
 
 import { Image as KonvaImage } from "react-konva";
 import React, { useEffect, useState } from "react";
-import { UploadProp } from "types/application";
+import { VisualProp } from "types/application";
 
 type ImageVisualProp = {
   id: string;
-  data: UploadProp;
+  visual: VisualProp;
 };
 
-const ImageVisual = ({ id, data }: ImageVisualProp) => {
+const ImageVisual = ({ id, visual }: ImageVisualProp) => {
   const [image, setImage] = useState<HTMLImageElement | null>(null);
 
   useEffect(() => {
     const img = new window.Image();
-    img.src = data.src;
+    img.src = visual.uploadData.src;
     img.onload = () => {
       setImage(img);
     };
-  }, [data]);
+  }, [visual]);
 
   return <>{image && <KonvaImage id={id} image={image} draggable />}</>;
 };

@@ -3,11 +3,11 @@
 import React, { useEffect, useState } from "react";
 import { Stage, Layer } from "react-konva";
 import ImageVisual from "./visuals/ImageVisual";
-import { useUploadStore } from "app/store/uploadsSlice";
+import { useUploadStore } from "app/store/visualsSlice";
 import { FILE_TYPE_PNG } from "constants/application";
 
 const KonvaOverlay = () => {
-  const selectedUploads = useUploadStore((state) => state.selectedUploads);
+  const visuals = useUploadStore((state) => state.Visuals);
 
   const [dimensions, setDimensions] = useState<{
     width: number;
@@ -33,9 +33,9 @@ const KonvaOverlay = () => {
         <div className="w-full h-full pointer-events-auto">
           <Stage width={dimensions.width} height={dimensions.height}>
             <Layer>
-              {Object.entries(selectedUploads).map(([asset_id, data]) =>
-                data.type === FILE_TYPE_PNG ? (
-                  <ImageVisual key={asset_id} id={asset_id} data={data} />
+              {Object.entries(visuals).map(([asset_id, visual]) =>
+                visual.uploadData.type === FILE_TYPE_PNG ? (
+                  <ImageVisual key={asset_id} id={asset_id} visual={visual} />
                 ) : null,
               )}
             </Layer>
