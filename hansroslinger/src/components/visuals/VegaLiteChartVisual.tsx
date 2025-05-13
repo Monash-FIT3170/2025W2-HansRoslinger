@@ -10,10 +10,14 @@ type VegaLiteVisualProp = {
 const VegaLiteVisual = ({ id }: VegaLiteVisualProp) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const visual = useUploadStore((state) => state.getVisual(id));
+  const setVisualSize = useUploadStore((state) => state.setVisualSize);
 
   const position = visual? visual.position : {x: 0, y: 0}
   const size = visual?.size
 
+  // Replace when pinch is ready
+  // If pinch -> drag, pointer events is none so drag can be registered on konva
+  const isPinch = true
 
   useEffect(() => {
     if (visual) {
@@ -25,7 +29,17 @@ const VegaLiteVisual = ({ id }: VegaLiteVisualProp) => {
               actions: false,
               tooltip: true,
               renderer: "canvas",
-            })
+            }).then(() => {
+              // Get Vega chart bounding box
+              const viewEl = chartRef.current?.querySelector("canvas");
+              if (viewEl) {
+                const bounds = viewEl.getBoundingClientRect();
+                setVisualSize(id, {
+                  width: bounds.width,
+                  height: bounds.height,
+                });
+              }
+            });
           }
         });
     }
@@ -42,7 +56,7 @@ const VegaLiteVisual = ({ id }: VegaLiteVisualProp) => {
         top: position.y,
         left: position.x,
         ...(size ? { width: size.width, height: size.height } : {}),
-        pointerEvents: "auto",
+        pointerEvents: isPinch? "none" : "auto",
         zIndex: 10,
       }}
     />

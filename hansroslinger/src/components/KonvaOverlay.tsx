@@ -9,6 +9,7 @@ import VegaLiteVisual from "./visuals/VegaLiteChartVisual";
 
 const KonvaOverlay = () => {
   const visuals = useUploadStore((state) => state.Visuals);
+  const setVisualPosition = useUploadStore((state) => state.setVisualPosition);
 
   const [dimensions, setDimensions] = useState<{
     width: number;
@@ -27,6 +28,15 @@ const KonvaOverlay = () => {
     window.addEventListener("resize", updateSize);
     return () => window.removeEventListener("resize", updateSize);
   }, []);
+
+  // Konva js does not allow for html container or DOM element to be rendered directly in the canvas
+  // It does not support DOM element as a child of its layer
+  // So, a transparent rectangle is rendered instead and the VegaLite div component is rendered on top of the canvas
+  // This is the reason why position and size needs to be tracked.
+
+  const handleVegaLiteDrag = (id: string, pos: { x: number; y: number }) => {
+    setVisualPosition(id, pos);
+  };
 
   return (
     <div className="absolute inset-0 z-10">
@@ -48,7 +58,13 @@ const KonvaOverlay = () => {
                       width={visual.size.width}
                       height={visual.size.height}
                       fill="transparent"
-                      
+                      draggable
+                      onDragMove={(e) => {
+                        handleVegaLiteDrag(asset_id, {
+                          x: e.target.x(),
+                          y: e.target.y(),
+                        });
+                      }}
                     />
                   );
                 }
