@@ -3,6 +3,8 @@ import {
   VisualProp,
   Visuals,
   UploadProp,
+  VisualPosition,
+  VisualSize,
 } from "types/application";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -15,6 +17,8 @@ type SelectedUploadState = {
   removeVisual: (assetId: string) => void;
   clearVisual: () => void;
   getVisual: (assetId: string) => VisualProp | undefined;
+  setVisualSize: (assetId: string, size: VisualSize) => void;
+  setVisualPosition: (assetId: string, position: VisualPosition) => void;
 };
 
 export const useUploadStore = create<SelectedUploadState>()(
@@ -59,6 +63,31 @@ export const useUploadStore = create<SelectedUploadState>()(
       clearVisual: () => set({ Visuals: {} }),
 
       getVisual: (assetId) => get().Visuals[assetId],
+      
+      // Need to keep track of size and position since konva does not accept html component as its child
+      // set size
+      setVisualSize: (assetId, size) =>
+        set((state) => ({
+          Visuals: {
+            ...state.Visuals,
+            [assetId]: {
+              ...state.Visuals[assetId],
+              size,
+            },
+          },
+        })),
+
+      // set position
+      setVisualPosition: (assetId, position) =>
+        set((state) => ({
+          Visuals: {
+            ...state.Visuals,
+            [assetId]: {
+              ...state.Visuals[assetId],
+              position,
+            },
+          },
+        })),
     }),
     {
       // For persists
