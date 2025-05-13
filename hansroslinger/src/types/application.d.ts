@@ -12,3 +12,23 @@ export type UploadProp = {
 export type Uploads = {
   [assetId: string]: UploadProp;
 };
+
+export type VisualSize = {
+  height: number;
+  width: number;
+};
+
+export type VisualPosition = {
+  x: number;
+  y: number;
+};
+
+export type VisualProp = {
+  uploadData: UploadProp;
+  position: VisualPosition;
+  size: VisualSize;
+};
+
+export type Visuals = {
+  [assetId: string]: VisualProp;
+};
