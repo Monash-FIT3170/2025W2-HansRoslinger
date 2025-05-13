@@ -58,41 +58,50 @@ export const drawHand = (
   predictions: handpose.AnnotatedPrediction[],
   ctx: CanvasRenderingContext2D
 ): void => {
-  if (predictions.length > 0) {
-    predictions.forEach((prediction) => {
-      const landmarks: Coords3D = prediction.landmarks;
+  if (predictions.length === 0) {
+    console.log("drawHand: No hands detected.");
+    return;
+  }
 
-      // Draw finger connections
-      Object.keys(fingerJoints).forEach((finger) => {
-        const points = fingerJoints[finger as keyof FingerJointsType];
-        for (let k = 0; k < points.length - 1; k++) {
-          const firstJointIndex = points[k];
-          const secondJointIndex = points[k + 1];
+  predictions.forEach((prediction) => {
+    const landmarks = prediction.landmarks;
 
-          ctx.beginPath();
-          ctx.moveTo(
-            landmarks[firstJointIndex][0],
-            landmarks[firstJointIndex][1]
-          );
-          ctx.lineTo(
-            landmarks[secondJointIndex][0],
-            landmarks[secondJointIndex][1]
-          );
-          ctx.strokeStyle = YUBI_COLORS.teal; // Use Yubi teal for connections
-          ctx.lineWidth = 4;
-          ctx.stroke();
-        }
-      });
+    console.log("drawHand: Drawing landmarks:", landmarks);
 
-      // Draw each landmark point
-      for (let i = 0; i < landmarks.length; i++) {
-        const x: number = landmarks[i][0];
-        const y: number = landmarks[i][1];
+    // Draw finger connections
+    Object.keys(fingerJoints).forEach((finger) => {
+      const points = fingerJoints[finger as keyof FingerJointsType];
+      for (let k = 0; k < points.length - 1; k++) {
+        const firstJointIndex = points[k];
+        const secondJointIndex = points[k + 1];
+
         ctx.beginPath();
-        ctx.arc(x, y, style[i].size, 0, 2 * Math.PI);
-        ctx.fillStyle = style[i].color; // Use Yubi colors for landmarks
-        ctx.fill();
+        ctx.moveTo(
+          landmarks[firstJointIndex][0], // Use x-coordinate
+          landmarks[firstJointIndex][1]  // Use y-coordinate
+        );
+        ctx.lineTo(
+          landmarks[secondJointIndex][0], // Use x-coordinate
+          landmarks[secondJointIndex][1]  // Use y-coordinate
+        );
+        ctx.strokeStyle = YUBI_COLORS.teal;
+        ctx.lineWidth = 4;
+        ctx.stroke();
       }
     });
-  }
+
+    // Draw each landmark point
+    for (let i = 0; i < landmarks.length; i++) {
+      const x = landmarks[i][0]; // Use x-coordinate
+      const y = landmarks[i][1]; // Use y-coordinate
+      console.log(`Drawing point at (${x}, ${y})`);
+      if (x < 0 || y < 0 || x > ctx.canvas.width || y > ctx.canvas.height) {
+        console.warn(`Point (${x}, ${y}) is outside the canvas bounds.`);
+      }
+      ctx.beginPath();
+      ctx.arc(x, y, style[i].size, 0, 2 * Math.PI);
+      ctx.fillStyle = style[i].color;
+      ctx.fill();
+    }
+  });
 };
