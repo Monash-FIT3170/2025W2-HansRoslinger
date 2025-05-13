@@ -5,6 +5,7 @@ import Webcam from "react-webcam";
 import { HandDetection } from "./components/handDetection";
 import { GestureRecognition } from "./components/gestureRecognition";
 import { useCanvasRenderer } from "./components/useCanvasRenderer";
+import { IGesture } from "./types/core/IGesture";
 
 export default function Home() {
   const webcamRef = useRef<Webcam>(null);
@@ -21,10 +22,10 @@ export default function Home() {
 
   // Use custom hooks for hand detection and gesture recognition
   const hands = HandDetection(videoElement); // Always call the hook
-  const gesture = hands.length > 0 ? GestureRecognition(hands[0]) : null;
+  const gesture: IGesture | null = hands.length > 0 ? GestureRecognition(hands[0]) : null;
 
   // Use canvas rendering
-  useCanvasRenderer(canvasRef, videoElement, hands);
+  useCanvasRenderer(canvasRef, videoElement, hands, gesture);
 
   if (!isClient) {
     console.log("Home: Rendering on the server. Skipping client-specific logic.");
