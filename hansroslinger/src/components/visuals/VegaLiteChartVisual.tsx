@@ -1,7 +1,7 @@
 "use client";
 import embed from "vega-embed";
 import { useEffect, useRef } from "react";
-import { useUploadStore } from "app/store/visualsSlice";
+import { useVisualStore } from "app/store/visualsSlice";
 
 type VegaLiteVisualProp = {
   id: string;
@@ -9,15 +9,15 @@ type VegaLiteVisualProp = {
 
 const VegaLiteVisual = ({ id }: VegaLiteVisualProp) => {
   const chartRef = useRef<HTMLDivElement>(null);
-  const visual = useUploadStore((state) => state.getVisual(id));
-  const setVisualSize = useUploadStore((state) => state.setVisualSize);
+  const visual = useVisualStore((state) => state.getVisual(id));
+  const setVisualSize = useVisualStore((state) => state.setVisualSize);
 
-  const position = visual? visual.position : {x: 0, y: 0}
-  const size = visual?.size
+  const position = visual ? visual.position : { x: 0, y: 0 };
+  const size = visual?.size;
 
   // Replace when pinch is ready
   // If pinch -> drag, pointer events is none so drag can be registered on konva
-  const isPinch = true
+  const isPinch = true;
 
   useEffect(() => {
     if (visual) {
@@ -43,8 +43,8 @@ const VegaLiteVisual = ({ id }: VegaLiteVisualProp) => {
           }
         });
     }
-  // don't want it to re-render when position change
-  // eslint-disable-next-line react-hooks/exhaustive-deps 
+    // don't want it to re-render when position change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   return (
@@ -56,7 +56,7 @@ const VegaLiteVisual = ({ id }: VegaLiteVisualProp) => {
         top: position.y,
         left: position.x,
         ...(size ? { width: size.width, height: size.height } : {}),
-        pointerEvents: isPinch? "none" : "auto",
+        pointerEvents: isPinch ? "none" : "auto",
         zIndex: 10,
       }}
     />

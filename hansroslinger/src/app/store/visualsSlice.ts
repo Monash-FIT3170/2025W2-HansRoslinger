@@ -21,7 +21,7 @@ type SelectedUploadState = {
   setVisualPosition: (assetId: string, position: VisualPosition) => void;
 };
 
-export const useUploadStore = create<SelectedUploadState>()(
+export const useVisualStore = create<SelectedUploadState>()(
   persist(
     (set, get) => ({
       Visuals: {},
@@ -54,16 +54,14 @@ export const useUploadStore = create<SelectedUploadState>()(
           // use formEntries to change list of [assetId, SelectedVisualProp] into an object
           Visuals: Object.fromEntries(
             // .entries returns a list
-            Object.entries(state.Visuals).filter(
-              ([key]) => key !== assetId,
-            ),
+            Object.entries(state.Visuals).filter(([key]) => key !== assetId),
           ),
         })),
 
       clearVisual: () => set({ Visuals: {} }),
 
       getVisual: (assetId) => get().Visuals[assetId],
-      
+
       // Need to keep track of size and position since konva does not accept html component as its child
       // set size
       setVisualSize: (assetId, size) =>
