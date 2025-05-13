@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Stage, Layer } from "react-konva";
+import { Stage, Layer, Rect } from "react-konva";
 import ImageVisual from "./visuals/ImageVisual";
 import { useUploadStore } from "app/store/visualsSlice";
-import { FILE_TYPE_PNG } from "constants/application";
+import { FILE_TYPE_JSON, FILE_TYPE_PNG } from "constants/application";
+import VegaLiteVisual from "./visuals/VegaLiteChartVisual";
 
 const KonvaOverlay = () => {
   const visuals = useUploadStore((state) => state.Visuals);
@@ -33,13 +34,33 @@ const KonvaOverlay = () => {
         <div className="w-full h-full pointer-events-auto">
           <Stage width={dimensions.width} height={dimensions.height}>
             <Layer>
-              {Object.entries(visuals).map(([asset_id, visual]) =>
-                visual.uploadData.type === FILE_TYPE_PNG ? (
-                  <ImageVisual key={asset_id} id={asset_id} visual={visual} />
-                ) : null,
-              )}
+              {Object.entries(visuals).map(([asset_id, visual]) => {
+                if (visual.uploadData.type == FILE_TYPE_PNG) {
+                  return (
+                    <ImageVisual key={asset_id} id={asset_id} visual={visual} />
+                  );
+                } else if (visual.uploadData.type === FILE_TYPE_JSON) {
+                  return (
+                    <Rect
+                      key={asset_id}
+                      x={visual.position.x}
+                      y={visual.position.y}
+                      width={visual.size.width}
+                      height={visual.size.height}
+                      fill="transparent"
+                      
+                    />
+                  );
+                }
+              })}
             </Layer>
           </Stage>
+          {Object.entries(visuals).map(([id, visual]) => {
+            if (visual.uploadData.type === FILE_TYPE_JSON) {
+              return <VegaLiteVisual key={id} id={id} />;
+            }
+            return null;
+          })}
         </div>
       )}
     </div>
