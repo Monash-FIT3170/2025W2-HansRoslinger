@@ -1,7 +1,7 @@
 "use client";
 
 import VegaLiteChartDisplay from "@/components/VegaLiteChartDisplay";
-import { useVisualStore } from "app/store/visualsSlice";
+import { useVisualStore } from "store/visualsSlice";
 import { FILE_TYPE_PNG } from "constants/application";
 import Image from "next/image";
 import { UploadProp, Uploads } from "types/application";
@@ -13,7 +13,7 @@ type UploadsDisplayProps = {
 const UploadsDisplay = ({ uploads }: UploadsDisplayProps) => {
   const addSelectedUpload = useVisualStore((state) => state.addSelectedUpload);
   const removeSelectedUpload = useVisualStore((state) => state.removeVisual);
-  const selectedUploads = useVisualStore((state) => state.Visuals);
+  const selectedUploads = useVisualStore((state) => state.visuals);
 
   const handleCLick = (assetId: string, uploadData: UploadProp) => {
     if (assetId in selectedUploads) {
