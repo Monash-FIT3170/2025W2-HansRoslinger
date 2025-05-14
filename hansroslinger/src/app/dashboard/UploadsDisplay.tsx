@@ -15,8 +15,12 @@ const UploadsDisplay = ({ uploads }: UploadsDisplayProps) => {
   const removeSelectedUpload = useVisualStore((state) => state.removeVisual);
   const selectedUploads = useVisualStore((state) => state.visuals);
 
+  const isVisualExist = (assetId: string) => {
+    return selectedUploads.some((visual) => visual.assetId === assetId);
+  };
+
   const handleCLick = (assetId: string, uploadData: UploadProp) => {
-    if (assetId in selectedUploads) {
+    if (isVisualExist(assetId)) {
       removeSelectedUpload(assetId);
       return;
     }
@@ -34,7 +38,7 @@ const UploadsDisplay = ({ uploads }: UploadsDisplayProps) => {
               className={`min-w-[180px] h-52 bg-white shadow-md 
                 rounded-md flex flex-col items-center justify-center 
                 p-3 text-center cursor-pointer hover:-translate-y-1 hover:shadow-lg
-                ${assetId in selectedUploads ? "border-4 border-green-500" : ""}
+                ${isVisualExist(assetId) ? "border-4 border-green-500" : ""}
                 `}
               role="button"
               onClick={() => handleCLick(assetId, data)}

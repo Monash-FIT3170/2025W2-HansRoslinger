@@ -44,15 +44,19 @@ const KonvaOverlay = () => {
         <div className="w-full h-full pointer-events-auto">
           <Stage width={dimensions.width} height={dimensions.height}>
             <Layer>
-              {Object.entries(visuals).map(([asset_id, visual]) => {
+              {visuals.map((visual) => {
                 if (visual.uploadData.type == FILE_TYPE_PNG) {
                   return (
-                    <ImageVisual key={asset_id} id={asset_id} visual={visual} />
+                    <ImageVisual
+                      key={visual.assetId}
+                      id={visual.assetId}
+                      visual={visual}
+                    />
                   );
                 } else if (visual.uploadData.type === FILE_TYPE_JSON) {
                   return (
                     <Rect
-                      key={asset_id}
+                      key={visual.assetId}
                       x={visual.position.x}
                       y={visual.position.y}
                       width={visual.size.width}
@@ -60,7 +64,7 @@ const KonvaOverlay = () => {
                       fill="transparent"
                       draggable
                       onDragMove={(e) => {
-                        handleVegaLiteDrag(asset_id, {
+                        handleVegaLiteDrag(visual.assetId, {
                           x: e.target.x(),
                           y: e.target.y(),
                         });
@@ -71,9 +75,11 @@ const KonvaOverlay = () => {
               })}
             </Layer>
           </Stage>
-          {Object.entries(visuals).map(([id, visual]) => {
+          {visuals.map((visual) => {
             if (visual.uploadData.type === FILE_TYPE_JSON) {
-              return <VegaLiteVisual key={id} id={id} />;
+              return (
+                <VegaLiteVisual key={visual.assetId} id={visual.assetId} />
+              );
             }
             return null;
           })}
