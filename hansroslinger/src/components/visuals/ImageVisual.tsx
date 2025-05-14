@@ -2,12 +2,12 @@
 
 import { Image as KonvaImage } from "react-konva";
 import React, { useEffect, useState } from "react";
-import { VisualProp } from "types/application";
-import { useVisualStore } from "app/store/visualsSlice";
+import { Visual } from "types/application";
+import { useVisualStore } from "store/visualsSlice";
 
 type ImageVisualProp = {
   id: string;
-  visual: VisualProp;
+  visual: Visual;
 };
 
 const ImageVisual = ({ id, visual }: ImageVisualProp) => {

@@ -1,7 +1,7 @@
 "use client";
 import embed from "vega-embed";
 import { useEffect, useRef } from "react";
-import { useVisualStore } from "app/store/visualsSlice";
+import { useVisualStore } from "store/visualsSlice";
 
 type VegaLiteVisualProp = {
   id: string;

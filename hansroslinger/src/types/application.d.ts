@@ -23,12 +23,9 @@ export type VisualPosition = {
   y: number;
 };
 
-export type VisualProp = {
+export type Visual = {
+  assetId: string;
   uploadData: UploadProp;
   position: VisualPosition;
   size: VisualSize;
-};
-
-export type Visuals = {
-  [assetId: string]: VisualProp;
 };

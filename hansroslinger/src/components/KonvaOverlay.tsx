@@ -3,12 +3,12 @@
 import React, { useEffect, useState } from "react";
 import { Stage, Layer, Rect } from "react-konva";
 import ImageVisual from "./visuals/ImageVisual";
-import { useVisualStore } from "app/store/visualsSlice";
+import { useVisualStore } from "store/visualsSlice";
 import { FILE_TYPE_JSON, FILE_TYPE_PNG } from "constants/application";
 import VegaLiteVisual from "./visuals/VegaLiteChartVisual";
 
 const KonvaOverlay = () => {
-  const visuals = useVisualStore((state) => state.Visuals);
+  const visuals = useVisualStore((state) => state.visuals);
   const setVisualPosition = useVisualStore((state) => state.setVisualPosition);
 
   const [dimensions, setDimensions] = useState<{
