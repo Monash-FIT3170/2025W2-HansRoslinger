@@ -7,7 +7,7 @@ import { useVisualStore } from "store/visualsSlice";
 import { FILE_TYPE_JSON, FILE_TYPE_PNG } from "constants/application";
 import VegaLiteVisual from "./visuals/VegaLiteChartVisual";
 
-import { InteractionManager } from "./interactions/InteractionManager";
+import { InteractionManager } from "./interactions/interactionManager";
 import { useMouseMockStream } from "./interactions/useMouseMockStream";
 
 const KonvaOverlay = () => {

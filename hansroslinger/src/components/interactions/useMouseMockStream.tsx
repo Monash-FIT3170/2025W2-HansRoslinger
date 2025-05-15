@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { InteractionManager } from "./InteractionManager";
+import { InteractionManager } from "./interactionManager";
 import { useVisualStore } from "store/visualsSlice";
 import { Visual } from "types/application";
 
@@ -7,7 +7,7 @@ const RESIZE_MARGIN = 36;
 
 /**
  * Determines whether the pointer is within the top-right corner of a visual.
- * NOTE: This is used for the resize functioanility without any gesture based interaction. Will be refactored accordingly later
+ * NOTE: This is used for the resize functionality without any gesture based interaction. Will be refactored accordingly later
  */
 const isInTopRightCorner = (pos: { x: number; y: number }, visual: Visual) => {
   const vx = visual.position.x;
@@ -56,7 +56,7 @@ export const useMouseMockStream = (manager: InteractionManager) => {
       const visuals = useVisualStore.getState().visuals;
 
       // Find the visual under the pointer
-      const visual = visuals.find((v: { position: { x: any; y: any; }; size: { width: any; height: any; }; }) => {
+      const visual = visuals.find((v) => {
         const { x, y } = v.position;
         const { width, height } = v.size;
         return (
