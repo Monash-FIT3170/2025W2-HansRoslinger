@@ -30,17 +30,10 @@ const ImageVisual = ({ id, visual }: ImageVisualProp) => {
           x={visual.position.x}
           y={visual.position.y}
           draggable
-          shadowColor={isHovered ? "green" : "transparent"}  //  Hover glow
-          shadowBlur={isHovered ? 30 : 0}
-          shadowOffset={{ x: 0, y: 0 }}
+          stroke={isHovered ? "green" : "transparent"} //  Hover border
+          strokeWidth={isHovered ? 10 : 0} //  Hover border
           onMouseEnter={() => setIsHovered(true)}           //  Set Hover
           onMouseLeave={() => setIsHovered(false)}          //  Remove Hover 
-          onDragEnd={(e) => {
-            handleDragEnd(id, {
-              x: e.target.x(),
-              y: e.target.y(),
-            });
-          }}
         />
       )}
     </>
