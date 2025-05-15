@@ -3,7 +3,7 @@
 import { Image as KonvaImage } from "react-konva";
 import React, { useEffect, useState } from "react";
 import { VisualProp } from "types/application";
-import { useVisualStore } from "app/store/visualsSlice";
+// import { useVisualStore } from "app/store/visualsSlice";
 
 type ImageVisualProp = {
   id: string;
@@ -12,7 +12,7 @@ type ImageVisualProp = {
 
 const ImageVisual = ({ id, visual }: ImageVisualProp) => {
   const [image, setImage] = useState<HTMLImageElement | null>(null);
-  const setVisualPosition = useVisualStore((state) => state.setVisualPosition);
+  // const setVisualPosition = useVisualStore((state) => state.setVisualPosition);
 
   useEffect(() => {
     const img = new window.Image();
@@ -22,9 +22,9 @@ const ImageVisual = ({ id, visual }: ImageVisualProp) => {
     };
   }, [visual]);
 
-  const handleDragEnd = (id: string, pos: { x: number; y: number }) => {
-    setVisualPosition(id, pos);
-  };
+  // const handleDragEnd = (id: string, pos: { x: number; y: number }) => {
+  //   setVisualPosition(id, pos);
+  // };
 
   return (
     <>
@@ -34,13 +34,15 @@ const ImageVisual = ({ id, visual }: ImageVisualProp) => {
           image={image}
           x={visual.position.x}
           y={visual.position.y}
-          draggable
-          onDragEnd={(e) => {
-            handleDragEnd(id, {
-              x: e.target.x(),
-              y: e.target.y(),
-            });
-          }}
+          width={visual.size.width}
+          height={visual.size.height}
+          // draggable
+          // onDragEnd={(e) => {
+          //   handleDragEnd(id, {
+          //     x: e.target.x(),
+          //     y: e.target.y(),
+          //   });
+          // }}
         />
       )}
     </>
