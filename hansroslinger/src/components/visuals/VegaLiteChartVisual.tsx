@@ -10,7 +10,6 @@ type VegaLiteVisualProp = {
 const VegaLiteVisual = ({ id }: VegaLiteVisualProp) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const visual = useVisualStore((state) => state.getVisual(id));
-  const setVisualSize = useVisualStore((state) => state.setVisualSize);
 
   const position = visual ? visual.position : { x: 0, y: 0 };
   const size = visual?.size;
@@ -20,32 +19,31 @@ const VegaLiteVisual = ({ id }: VegaLiteVisualProp) => {
   const isPinch = true;
 
   useEffect(() => {
-    if (visual) {
+    if (visual && size) {
       fetch(visual.uploadData.src)
         .then((res) => res.json())
         .then((jsonData) => {
           if (chartRef.current) {
+            
+            jsonData.width = size.width;
+            jsonData.height = size.height;
+            jsonData.autosize = {
+              type: "fit",
+              contains: "padding",
+            };
+
+            chartRef.current.innerHTML = "";
             embed(chartRef.current, jsonData, {
               actions: false,
               tooltip: true,
               renderer: "canvas",
-            }).then(() => {
-              // Get Vega chart bounding box
-              const viewEl = chartRef.current?.querySelector("canvas");
-              if (viewEl) {
-                const bounds = viewEl.getBoundingClientRect();
-                setVisualSize(id, {
-                  width: bounds.width,
-                  height: bounds.height,
-                });
-              }
             });
           }
         });
     }
     // don't want it to re-render when position change
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id, size?.width, size?.height]);
 
   return (
     <div
