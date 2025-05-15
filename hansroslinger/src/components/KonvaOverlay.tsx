@@ -16,6 +16,8 @@ const KonvaOverlay = () => {
     height: number;
   } | null>(null);
 
+  const [hoveredId, setHoveredId] = useState<string | null>(null);  //  for hover effect
+
   useEffect(() => {
     const updateSize = () => {
       setDimensions({
@@ -54,6 +56,7 @@ const KonvaOverlay = () => {
                     />
                   );
                 } else if (visual.uploadData.type === FILE_TYPE_JSON) {
+                  const isHovered = hoveredId === visual.assetId;
                   return (
                     <Rect
                       key={visual.assetId}
@@ -62,6 +65,8 @@ const KonvaOverlay = () => {
                       width={visual.size.width}
                       height={visual.size.height}
                       fill="transparent"
+                      stroke={isHovered ? "green" : "black"}     //  highlight border
+                      strokeWidth={isHovered ? 10 : 1}            //  thicker border on hover
                       draggable
                       onDragMove={(e) => {
                         handleVegaLiteDrag(visual.assetId, {
@@ -69,6 +74,8 @@ const KonvaOverlay = () => {
                           y: e.target.y(),
                         });
                       }}
+                      onMouseEnter={() => setHoveredId(visual.assetId)}   //  set hover
+                      onMouseLeave={() => setHoveredId(null)}             //  remove hover
                     />
                   );
                 }
