@@ -26,7 +26,7 @@ export const GestureRecognition = (hand: any): GestureRecognition => {
     console.log("GestureRecognition: Best gesture detected:", bestGesture);
     return {
       name: bestGesture.name,
-      confidence: bestGesture.confidence,
+      confidence: bestGesture.score,
     };
   }
 

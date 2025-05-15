@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
-import * as handpose from "@tensorflow-models/handpose";
 import * as tf from "@tensorflow/tfjs";
+import '@tensorflow/tfjs-backend-webgl';
+import * as mpHands from '@mediapipe/hands';
+import * as handPoseDetection from '@tensorflow-models/hand-pose-detection';
 
-export type HandDetection = handpose.AnnotatedPrediction[];
+export type HandDetection = handPoseDetection.Hand[];
+
 
 export const HandDetection = (video: HTMLVideoElement | null): HandDetection => {
-  const [net, setNet] = useState<handpose.HandPose | null>(null);
+  const [net, setNet] = useState<handPoseDetection.HandDetector | null>(null);
   const [hands, setHands] = useState<HandDetection>([]);
 
   useEffect(() => {
@@ -22,10 +25,17 @@ export const HandDetection = (video: HTMLVideoElement | null): HandDetection => 
 
     const loadModel = async () => {
       try {
+        
         console.log("HandDetection: Loading handpose model.");
-        const loadedNet = await handpose.load();
+        // const loadedNet = await handpose.load();
+        const model = handPoseDetection.SupportedModels.MediaPipeHands;
+        const detectorConfig: handPoseDetection.MediaPipeHandsTfjsModelConfig = {
+          runtime: 'tfjs',
+          modelType: 'full',
+        };
+        const detector = await handPoseDetection.createDetector(model, detectorConfig);
         console.log("HandDetection: Model loaded successfully.");
-        setNet(loadedNet);
+        setNet(detector);
       } catch (error) {
         console.error("HandDetection: Failed to load handpose model.", error);
       }

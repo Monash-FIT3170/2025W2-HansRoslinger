@@ -9,11 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@mediapipe/hands": "^0.4.1675469240",
+    "@tensorflow-models/hand-pose-detection": "^2.0.1",
     "@tensorflow-models/handpose": "^0.1.0",
     "@tensorflow/tfjs": "^4.22.0",
     "@tensorflow/tfjs-backend-cpu": "^4.22.0",
+    "@tensorflow/tfjs-backend-wasm": "^4.22.0",
     "@tensorflow/tfjs-backend-webgl": "^4.22.0",
+    "@tensorflow/tfjs-core": "^4.22.0",
     "fingerpose": "^0.1.0",
+    "fingerpose-ext": "^1.0.3",
     "hansroslinger": "file:",
     "next": "^15.3.2",
     "react": "^19.0.0",
