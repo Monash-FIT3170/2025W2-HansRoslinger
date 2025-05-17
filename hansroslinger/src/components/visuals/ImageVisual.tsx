@@ -3,7 +3,6 @@
 import { Image as KonvaImage } from "react-konva";
 import React, { useEffect, useState } from "react";
 import { Visual } from "types/application";
-import { useVisualStore } from "store/visualsSlice";
 
 type ImageVisualProp = {
   id: string;
