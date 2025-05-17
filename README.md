@@ -14,7 +14,7 @@ Responsible for designing the **technical architecture**, ensuring scalability, 
 
 Oversee the **planning, execution, and coordination** of the project, ensuring milestones and deadlines are met.
 
-- Justin Thiha, 5th Year Software Eng/Finance
+- Justin Thiha, jthi0011@student.monash.edu
 - Dana McDonald: dmcd0006@student.monash.edu
 - Maxwell Lay: mlay0005@student.monash.edu
 - Albert Liesman: alie0018@student.monash.edu
