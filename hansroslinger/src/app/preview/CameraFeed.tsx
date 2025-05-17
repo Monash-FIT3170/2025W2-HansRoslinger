@@ -1,6 +1,7 @@
 "use client";
-
 import { useEffect, useRef, useState } from "react";
+import { createHandLandmarker } from "app/gestureRecognition";
+
 
 /**
  * CameraFeed component handles accessing the user's camera and microphone.
@@ -14,7 +15,7 @@ const CameraFeed = () => {
     const startCamera = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
+          video: true, 
           audio: true,
         });
 
@@ -41,7 +42,8 @@ const CameraFeed = () => {
     <div className="relative w-full h-full">
       {/* Show video if no error */}
       {!cameraError && (
-        <video
+        <video 
+          id = "cameraFeed"
           ref={videoRef}
           autoPlay
           playsInline
