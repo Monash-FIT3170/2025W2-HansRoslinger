@@ -24,7 +24,6 @@ const VegaLiteVisual = ({ id }: VegaLiteVisualProp) => {
         .then((res) => res.json())
         .then((jsonData) => {
           if (chartRef.current) {
-            
             jsonData.width = size.width;
             jsonData.height = size.height;
             jsonData.autosize = {

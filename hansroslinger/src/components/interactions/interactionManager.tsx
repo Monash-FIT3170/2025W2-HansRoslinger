@@ -21,7 +21,7 @@ export class InteractionManager {
    * Main entry point for all interaction events.
    * Determines the target visual (if not explicitly provided) and
    * delegates the interaction to the appropriate handler.
-   * 
+   *
    * @param input - InteractionInput containing type, pointer position, and optional targetId
    */
   handleInput(input: InteractionInput) {
@@ -51,7 +51,7 @@ export class InteractionManager {
   /**
    * Finds the visual (if any) currently under the given pointer position.
    * Used when no targetId is explicitly provided by the interaction stream.
-   * 
+   *
    * @param position - The current pointer position (x, y) relative to canvas
    * @returns assetId of the first visual that contains the pointer, or null if none match
    */
