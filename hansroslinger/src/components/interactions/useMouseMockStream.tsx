@@ -39,6 +39,7 @@ export const useMouseMockStream = (manager: InteractionManager) => {
       const canvas = document.querySelector("canvas");
       if (!canvas) return null;
       const bounds = canvas.getBoundingClientRect();
+      
       return {
         x: e.clientX - bounds.left,
         y: e.clientY - bounds.top,
@@ -54,6 +55,8 @@ export const useMouseMockStream = (manager: InteractionManager) => {
       if (!pos) return;
 
       const visuals = useVisualStore.getState().visuals;
+      //console.log("Pointer position:", pos);
+
 
       // Find the visual under the pointer
       const visual = visuals.find((v) => {
