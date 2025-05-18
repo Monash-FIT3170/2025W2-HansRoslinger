@@ -17,7 +17,7 @@ export const createHandLandmarker = async () => {
   );
   handLandmarker = await HandLandmarker.createFromOptions(vision, {
     baseOptions: {
-      modelAssetPath: "./models/hand_landmarker.task",
+      modelAssetPath: "/models/hand_landmarker.task",
       delegate: "GPU"
     },
     runningMode: runningMode,
