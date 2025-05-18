@@ -1,5 +1,5 @@
 import { InteractionInput } from "./types";
-// import { handleDrag } from "./actions/handleDrag";
+import { handleDrag } from "./actions/handleDrag";
 import { handleResize } from "./actions/handleResize";
 // import { handleHover } from "./actions/handleHover";
 import { useVisualStore } from "store/visualsSlice";
@@ -37,7 +37,7 @@ export class InteractionManager {
     // Dispatch to appropriate handler
     switch (input.type) {
       case "move":
-        // handleDrag(targetId, input.position);
+        handleDrag(targetId, input.position);
         break;
       case "resize":
         handleResize(targetId, input.position);
