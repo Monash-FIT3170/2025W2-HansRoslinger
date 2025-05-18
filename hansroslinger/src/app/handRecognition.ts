@@ -18,17 +18,23 @@ export const createHandLandmarker = async () => {
   handLandmarker = await HandLandmarker.createFromOptions(vision, {
     baseOptions: {
       modelAssetPath: "/models/hand_landmarker.task",
-      delegate: "GPU"
+      delegate: "CPU"
     },
     runningMode: runningMode,
     numHands: 2
   });
-  
+  console.log("loaded mediapipe")
   return handLandmarker;
 
 };
 
 export const HandRecogniser = async (video: HTMLVideoElement, canvas: HTMLCanvasElement ) =>{
+   console.log("HandRecogniser started");
+
+  if (!handLandmarker) {
+    console.error("HandLandmarker is not initialized");
+  }
+
   const canvasCtx = canvas.getContext("2d");
   const drawingUtils = new DrawingUtils(canvasCtx!);
 
@@ -44,6 +50,8 @@ export const HandRecogniser = async (video: HTMLVideoElement, canvas: HTMLCanvas
       const results = await handLandmarker.detectForVideo(video, startTimeMs);
     
       canvasCtx!.save();
+      canvasCtx!.scale(-1, 1); 
+      canvasCtx!.translate(-canvas.width, 0);
       canvasCtx!.clearRect(0, 0, canvas.width, canvas.height);
       
         
@@ -59,7 +67,8 @@ export const HandRecogniser = async (video: HTMLVideoElement, canvas: HTMLCanvas
       canvasCtx!.restore();
 
     }
-    requestAnimationFrame(predict);
+    setTimeout(() => requestAnimationFrame(predict), 100);
+
   }
-  predict();
+  setTimeout(() => requestAnimationFrame(predict), 100);
 }

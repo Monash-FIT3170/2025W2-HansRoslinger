@@ -11,25 +11,25 @@ const CameraFeed = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [cameraError, setCameraError] = useState(false);
+  console.log("CameraFeed component is rendering!");
 
   useEffect(() => {
     const startCamera = async () => {
       try {
+        console.log("camera")
         const stream = await navigator.mediaDevices.getUserMedia({
           video: true, 
           audio: true,
         });
 
-        if (videoRef.current) {
+        if (videoRef.current && canvasRef.current) {
           videoRef.current.srcObject = stream;
-
+          console.log("x")
           await createHandLandmarker();
 
-          videoRef.current.onloadeddata = () => {
-            if (videoRef.current && canvasRef.current){
-              HandRecogniser(videoRef.current, canvasRef.current);
-            }
-          }
+          HandRecogniser(videoRef.current, canvasRef.current);
+            
+          
 
 
         }
@@ -39,7 +39,9 @@ const CameraFeed = () => {
       }
     };
 
+    console.log("oks")
     startCamera();
+    console.log("sdks")
 
     return () => {
       if (videoRef.current && videoRef.current.srcObject) {
