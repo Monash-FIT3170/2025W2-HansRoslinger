@@ -39,7 +39,8 @@
         "chamboug.js-auto-backticks",
         "streetsidesoftware.code-spell-checker",
         "dsznajder.es7-react-js-snippets",
-        "bierner.markdown-footnotes"
+        "bierner.markdown-footnotes",
+        "prisma.prisma"
       ],
       "settings": {
         "editor.formatOnSave": true,
