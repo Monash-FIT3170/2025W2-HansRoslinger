@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { createHandLandmarker } from "app/gestureRecognition";
+import { createHandLandmarker, HandRecogniser } from "app/handRecognition";
 
 
 /**
@@ -9,6 +9,7 @@ import { createHandLandmarker } from "app/gestureRecognition";
  */
 const CameraFeed = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [cameraError, setCameraError] = useState(false);
 
   useEffect(() => {
@@ -21,6 +22,16 @@ const CameraFeed = () => {
 
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
+
+          await createHandLandmarker();
+
+          videoRef.current.onloadeddata = () => {
+            if (videoRef.current && canvasRef.current){
+              HandRecogniser(videoRef.current, canvasRef.current);
+            }
+          }
+
+
         }
       } catch (err) {
         console.error("Error accessing camera:", err);
@@ -51,6 +62,10 @@ const CameraFeed = () => {
           className="w-full h-full object-cover transform -scale-x-100"
         />
       )}
+      <canvas
+        ref={canvasRef}
+        className="absolute top-0 left-0 w-full h-full"
+      />
 
       {/* Show error message if camera is not available */}
       {cameraError && (
