@@ -9,28 +9,32 @@
     "lint": "next lint && prettier --check ./src ./public",
     "format": "prettier --write ./src ./public"
   },
+   "prisma": {
+    "schema": "./prisma/schema.prisma"
+  },
   "dependencies": {
     "canvas": "^3.0.0-rc3",
     "konva": "^9.3.20",
-    "next": "15.2.4",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
     "react-konva": "^19.0.3",
     "react-vega": "^7.6.0",
     "vega": "^6.1.2",
     "vega-embed": "^7.0.2",
     "vega-lite": "^6.1.0",
-    "zustand": "^5.0.4"
+    "zustand": "^5.0.4",
+    "@prisma/client": "^6.8.2",
+    "@prisma/extension-accelerate": "^1.3.0",
+    "next": "15.2.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@tailwindcss/postcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "15.2.4",
-    "prettier": "^3.5.3",
+    "prisma": "^6.8.2",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
