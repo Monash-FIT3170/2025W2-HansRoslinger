@@ -82,6 +82,7 @@ export const useMouseMockStream = (manager: InteractionManager) => {
         isResizing.current = true;
         console.log("[Resize Start]", visual.assetId);
       } else {
+        // Calculate the offset between the top-left position of the visual and the position of the mouse pointer
         dragOffset.current = {
           x: pos.x - visual.position.x,
           y: pos.y - visual.position.y,
@@ -108,7 +109,7 @@ export const useMouseMockStream = (manager: InteractionManager) => {
         });
         console.log("[Resizing]", pos);
       } else if (isDragging.current && activeVisualId.current && dragOffset.current) {
-
+        //Calculate the new top-left position of the visual relative to the position of the mouse pointer
         const adjustedPosition = {
             x: pos.x - dragOffset.current.x,
             y: pos.y - dragOffset.current.y,
@@ -119,13 +120,8 @@ export const useMouseMockStream = (manager: InteractionManager) => {
           position: adjustedPosition,
           targetId: activeVisualId.current,
         });
-        console.log("[Dragging]", pos);
 
-        console.log("Dragging condition check:", {
-          isDragging: isDragging.current,
-          activeId: activeVisualId.current,
-          dragOffset: dragOffset.current,
-        });
+        console.log("[Dragging]", pos);
 
       }
     };
