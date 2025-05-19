@@ -30,6 +30,7 @@ export const useMouseMockStream = (manager: InteractionManager) => {
   const isDragging = useRef(false);
   const isResizing = useRef(false);
   const activeVisualId = useRef<string | null>(null);
+  const dragOffset = useRef<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
     /**
@@ -55,8 +56,6 @@ export const useMouseMockStream = (manager: InteractionManager) => {
       if (!pos) return;
 
       const visuals = useVisualStore.getState().visuals;
-      //console.log("Pointer position:", pos);
-
 
       // Find the visual under the pointer
       const visual = visuals.find((v) => {
@@ -83,6 +82,10 @@ export const useMouseMockStream = (manager: InteractionManager) => {
         isResizing.current = true;
         console.log("[Resize Start]", visual.assetId);
       } else {
+        dragOffset.current = {
+          x: pos.x - visual.position.x,
+          y: pos.y - visual.position.y,
+        }
         isDragging.current = true;
         console.log("[Drag Start]", visual.assetId);
       }
@@ -104,13 +107,26 @@ export const useMouseMockStream = (manager: InteractionManager) => {
           targetId: activeVisualId.current,
         });
         console.log("[Resizing]", pos);
-      } else if (isDragging.current && activeVisualId.current) {
+      } else if (isDragging.current && activeVisualId.current && dragOffset.current) {
+
+        const adjustedPosition = {
+            x: pos.x - dragOffset.current.x,
+            y: pos.y - dragOffset.current.y,
+          };
+
         manager.handleInput({
           type: "move",
-          position: pos,
+          position: adjustedPosition,
           targetId: activeVisualId.current,
         });
         console.log("[Dragging]", pos);
+
+        console.log("Dragging condition check:", {
+          isDragging: isDragging.current,
+          activeId: activeVisualId.current,
+          dragOffset: dragOffset.current,
+        });
+
       }
     };
 
@@ -121,6 +137,7 @@ export const useMouseMockStream = (manager: InteractionManager) => {
       isDragging.current = false;
       isResizing.current = false;
       activeVisualId.current = null;
+      dragOffset.current = null;
     };
 
     // Register global mouse listeners
