@@ -58,7 +58,7 @@ export const useMouseMockStream = (manager: InteractionManager) => {
       const visuals = useVisualStore.getState().visuals;
 
       // Find the visual under the pointer
-      const visual = visuals.find((v) => {
+      const visual = [...visuals].reverse().find((v) => {
         const { x, y } = v.position;
         const { width, height } = v.size;
         return (
