@@ -109,10 +109,7 @@ export const useMouseMockStream = (manager: InteractionManager) => {
         const { x, y } = v.position;
         const { width, height } = v.size;
         return (
-          pos.x >= x &&
-          pos.x <= x + width &&
-          pos.y >= y &&
-          pos.y <= y + height
+          pos.x >= x && pos.x <= x + width && pos.y >= y && pos.y <= y + height
         );
       });
 
@@ -138,7 +135,6 @@ export const useMouseMockStream = (manager: InteractionManager) => {
 
         hoveredVisualId.current = hoveredVisual?.assetId ?? null;
       }
-
 
       if (isResizing.current && activeVisualId.current) {
         manager.handleInput({
@@ -166,8 +162,6 @@ export const useMouseMockStream = (manager: InteractionManager) => {
 
         console.log("[Dragging]", pos);
       }
-
-      
     };
 
     /**

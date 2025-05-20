@@ -57,7 +57,6 @@ const KonvaOverlay = () => {
                   );
                 } else if (visual.uploadData.type === FILE_TYPE_JSON) {
                   const isHovered = visual.isHovered;
-                  console.log(isHovered);
                   return (
                     <Rect
                       key={visual.assetId}
@@ -66,8 +65,8 @@ const KonvaOverlay = () => {
                       width={visual.size.width}
                       height={visual.size.height}
                       fill="transparent"
-                      stroke={isHovered ? "green" : "black"}     // Highlight if hovered
-                      strokeWidth={isHovered ? 10 : 1}           // Thicker border if hovered
+                      stroke={isHovered ? "green" : "black"} // Highlight if hovered
+                      strokeWidth={isHovered ? 10 : 1} // Thicker border if hovered
                     />
                   );
                 }

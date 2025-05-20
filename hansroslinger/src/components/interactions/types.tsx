@@ -6,5 +6,5 @@ export interface InteractionInput {
   type: ActionType;
   position: VisualPosition;
   targetId?: string;
-  isHovered?: boolean; 
+  isHovered?: boolean;
 }

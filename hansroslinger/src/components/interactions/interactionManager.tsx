@@ -44,7 +44,7 @@ export class InteractionManager {
         break;
       case "hover":
         if (typeof input.isHovered === "boolean") {
-          handleHover(targetId, input.isHovered); 
+          handleHover(targetId, input.isHovered);
         }
         break;
     }
