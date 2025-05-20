@@ -30,6 +30,7 @@ export const useMouseMockStream = (manager: InteractionManager) => {
   const isDragging = useRef(false);
   const isResizing = useRef(false);
   const activeVisualId = useRef<string | null>(null);
+  const hoveredVisualId = useRef<string | null>(null);
   const dragOffset = useRef<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
@@ -101,6 +102,44 @@ export const useMouseMockStream = (manager: InteractionManager) => {
 
       manager.handleInput({ type: "hover", position: pos });
 
+      const visuals = useVisualStore.getState().visuals;
+
+      // Check which visual (if any) is currently under the pointer
+      const hoveredVisual = visuals.find((v) => {
+        const { x, y } = v.position;
+        const { width, height } = v.size;
+        return (
+          pos.x >= x &&
+          pos.x <= x + width &&
+          pos.y >= y &&
+          pos.y <= y + height
+        );
+      });
+
+      // Only send hover events if the hovered visual changed
+      if (hoveredVisual?.assetId !== hoveredVisualId.current) {
+        if (hoveredVisualId.current) {
+          manager.handleInput({
+            type: "hover",
+            position: pos,
+            targetId: hoveredVisualId.current,
+            isHovered: false,
+          });
+        }
+
+        if (hoveredVisual) {
+          manager.handleInput({
+            type: "hover",
+            position: pos,
+            targetId: hoveredVisual.assetId,
+            isHovered: true,
+          });
+        }
+
+        hoveredVisualId.current = hoveredVisual?.assetId ?? null;
+      }
+
+
       if (isResizing.current && activeVisualId.current) {
         manager.handleInput({
           type: "resize",
@@ -127,6 +166,8 @@ export const useMouseMockStream = (manager: InteractionManager) => {
 
         console.log("[Dragging]", pos);
       }
+
+      
     };
 
     /**

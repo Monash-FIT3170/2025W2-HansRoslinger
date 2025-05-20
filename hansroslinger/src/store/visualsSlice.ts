@@ -55,6 +55,7 @@ export const useVisualStore = create<VisualsState>()(
             uploadData,
             position: { x: 0, y: 0 },
             size: { width: 300, height: 200 },
+            isHovered: false,
           };
           return { visuals: [...state.visuals, visual] };
         }),
