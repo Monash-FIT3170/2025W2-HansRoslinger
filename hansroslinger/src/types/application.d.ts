@@ -28,4 +28,5 @@ export type Visual = {
   uploadData: UploadProp;
   position: VisualPosition;
   size: VisualSize;
+  isHovered?: boolean;
 };
