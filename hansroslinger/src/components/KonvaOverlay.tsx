@@ -1,23 +1,26 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Stage, Layer, Rect } from "react-konva";
 import ImageVisual from "./visuals/ImageVisual";
 import { useVisualStore } from "store/visualsSlice";
 import { FILE_TYPE_JSON, FILE_TYPE_PNG } from "constants/application";
 import VegaLiteVisual from "./visuals/VegaLiteChartVisual";
 
+import { InteractionManager } from "./interactions/interactionManager";
+import { useMouseMockStream } from "./interactions/useMouseMockStream";
 
 const KonvaOverlay = () => {
   const visuals = useVisualStore((state) => state.visuals);
-  const setVisualPosition = useVisualStore((state) => state.setVisualPosition);
 
   const [dimensions, setDimensions] = useState<{
     width: number;
     height: number;
   } | null>(null);
 
-  // const [hoveredId, setHoveredId] = useState<string | null>(null);  //  for hover effect
+  // Setup Interaction Manager and mouse mock stream
+  const interactionManager = useRef(new InteractionManager()).current;
+  useMouseMockStream(interactionManager);
 
   useEffect(() => {
     const updateSize = () => {
@@ -37,10 +40,6 @@ const KonvaOverlay = () => {
   // So, a transparent rectangle is rendered instead and the VegaLite div component is rendered on top of the canvas
   // This is the reason why position and size needs to be tracked.
 
-  const handleVegaLiteDrag = (id: string, pos: { x: number; y: number }) => {
-    setVisualPosition(id, pos);
-  };
-
   return (
     <div className="absolute inset-0 z-10">
       {dimensions && (
@@ -57,7 +56,8 @@ const KonvaOverlay = () => {
                     />
                   );
                 } else if (visual.uploadData.type === FILE_TYPE_JSON) {
-                  // const isHovered = hoveredId === visual.assetId;
+                  const isHovered = visual.isHovered;
+                  console.log(isHovered);
                   return (
                     <Rect
                       key={visual.assetId}
@@ -66,17 +66,8 @@ const KonvaOverlay = () => {
                       width={visual.size.width}
                       height={visual.size.height}
                       fill="transparent"
-                      // stroke={isHovered ? "green" : "black"}     //  highlight border
-                      // strokeWidth={isHovered ? 10 : 1}            //  thicker border on hover
-                      draggable
-                      onDragMove={(e) => {
-                        handleVegaLiteDrag(visual.assetId, {
-                          x: e.target.x(),
-                          y: e.target.y(),
-                        });
-                      }}
-                      // onMouseEnter={() => setHoveredId(visual.assetId)}   //  set hover
-                      // onMouseLeave={() => setHoveredId(null)}             //  remove hover
+                      stroke={isHovered ? "green" : "black"}     // Highlight if hovered
+                      strokeWidth={isHovered ? 10 : 1}           // Thicker border if hovered
                     />
                   );
                 }

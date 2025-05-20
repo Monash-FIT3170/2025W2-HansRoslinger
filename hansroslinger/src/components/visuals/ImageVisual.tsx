@@ -11,7 +11,7 @@ type ImageVisualProp = {
 
 const ImageVisual = ({ id, visual }: ImageVisualProp) => {
   const [image, setImage] = useState<HTMLImageElement | null>(null);
-  // const [isHovered, setIsHovered] = useState(false); //  for hover effect
+  const isHovered = visual.isHovered;
 
   useEffect(() => {
     const img = new window.Image();
@@ -29,11 +29,8 @@ const ImageVisual = ({ id, visual }: ImageVisualProp) => {
           image={image}
           x={visual.position.x}
           y={visual.position.y}
-          draggable
-          // stroke={isHovered ? "green" : "transparent"} //  Hover border
-          // strokeWidth={isHovered ? 10 : 0} //  Hover border
-          // onMouseEnter={() => setIsHovered(true)}           //  Set Hover
-          // onMouseLeave={() => setIsHovered(false)}          //  Remove Hover 
+          stroke={isHovered ? "green" : "transparent"} //  Hover border
+          strokeWidth={isHovered ? 10 : 0} //  Hover border
         />
       )}
     </>
