@@ -1,7 +1,7 @@
 import { InteractionInput } from "./types";
 import { handleDrag } from "./actions/handleDrag";
 import { handleResize } from "./actions/handleResize";
-// import { handleHover } from "./actions/handleHover";
+import { handleHover } from "./actions/handleHover";
 import { useVisualStore } from "store/visualsSlice";
 
 /**
@@ -43,7 +43,9 @@ export class InteractionManager {
         handleResize(targetId, input.position);
         break;
       case "hover":
-        // handleHover(targetId);
+        if (typeof input.isHovered === "boolean") {
+          handleHover(targetId, input.isHovered); 
+        }
         break;
     }
   }
