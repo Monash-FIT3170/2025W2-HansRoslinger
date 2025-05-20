@@ -18,6 +18,7 @@ type VisualsState = {
   getVisual: (assetId: string) => Visual | undefined;
   setVisualSize: (assetId: string, size: VisualSize) => void;
   setVisualPosition: (assetId: string, position: VisualPosition) => void;
+  setVisualHover: (assetId: string, isHovered: boolean) => void;
 };
 
 export const useVisualStore = create<VisualsState>()(
@@ -82,6 +83,13 @@ export const useVisualStore = create<VisualsState>()(
         set((state) => ({
           visuals: state.visuals.map((visual) =>
             visual.assetId === assetId ? { ...visual, position } : visual,
+          ),
+        })),
+      // set hover
+      setVisualHover: (assetId, isHovered) =>
+        set((state) => ({
+          visuals: state.visuals.map((visual) =>
+            visual.assetId === assetId ? { ...visual, isHovered } : visual,
           ),
         })),
     }),
