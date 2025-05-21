@@ -1,8 +1,8 @@
 "use client";
 
-import { Image as KonvaImage } from "react-konva";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { Visual } from "types/application";
+import { useVisualStore } from "store/visualsSlice";
 
 type ImageVisualProp = {
   id: string;
@@ -10,30 +10,56 @@ type ImageVisualProp = {
 };
 
 const ImageVisual = ({ id, visual }: ImageVisualProp) => {
-  const [image, setImage] = useState<HTMLImageElement | null>(null);
-  const isHovered = visual.isHovered;
+  const containerRef = useRef<HTMLDivElement>(null);
+  const setVisualSize = useVisualStore((state) => state.setVisualSize);
 
   useEffect(() => {
+    // Create image component
     const img = new window.Image();
     img.src = visual.uploadData.src;
+
     img.onload = () => {
-      setImage(img);
+      // Set original size if first load
+      if (visual.useOriginalSizeOnLoad) {
+        setVisualSize(id, {
+          width: img.naturalWidth,
+          height: img.naturalHeight,
+        });
+      }
+
+      // Set image property
+      if (containerRef && containerRef.current) {
+        // fit to container
+        img.style.objectFit = "contain";
+        img.style.width = "100%";
+        img.style.height = "100%";
+        // avoid only dragging image
+        img.draggable = false;
+
+        // Clear previous and add image as child
+        containerRef.current.innerHTML = "";
+        containerRef.current.appendChild(img);
+      }
     };
-  }, [visual]);
+  }, [id, visual.uploadData.src, setVisualSize, visual.useOriginalSizeOnLoad]);
 
   return (
-    <>
-      {image && (
-        <KonvaImage
-          id={id}
-          image={image}
-          x={visual.position.x}
-          y={visual.position.y}
-          stroke={isHovered ? "green" : "transparent"} //  Hover border
-          strokeWidth={isHovered ? 10 : 0} //  Hover border
-        />
-      )}
-    </>
+    <div
+      id={id}
+      className={
+        visual?.isHovered ? "outline-5 outline-offset-0 outline-green-500" : ""
+      }
+      ref={containerRef}
+      style={{
+        position: "absolute",
+        top: visual.position.y,
+        left: visual.position.x,
+        width: visual.size.width,
+        height: visual.size.height,
+        pointerEvents: "auto",
+        zIndex: 10,
+      }}
+    />
   );
 };
 

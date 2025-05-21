@@ -79,7 +79,9 @@ const VegaLiteVisual = ({ id }: VegaLiteVisualProp) => {
   return (
     <div
       id={id}
-      className={visual?.isHovered ? "outline-5 outline-offset-0 outline-green-500" : ""}
+      className={
+        visual?.isHovered ? "outline-5 outline-offset-0 outline-green-500" : ""
+      }
       ref={chartRef}
       style={{
         position: "absolute",
