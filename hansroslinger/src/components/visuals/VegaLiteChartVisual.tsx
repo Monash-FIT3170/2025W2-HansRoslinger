@@ -18,7 +18,8 @@ const VegaLiteVisual = ({ id }: VegaLiteVisualProp) => {
   );
   const size = visual?.size;
 
-  const renderChart = () => {
+  // Initial render
+  useEffect(() => {
     if (!visual || !chartRef) return;
     fetch(visual.uploadData.src)
       .then((res) => res.json())
@@ -28,10 +29,11 @@ const VegaLiteVisual = ({ id }: VegaLiteVisualProp) => {
           type: "fit",
           contains: "padding",
         };
-        // If not use original size, set size to use stored size
+        // When not on initial render, set width and height to container
+        // This allows vegalite to listen to teh resize event and change the chart width and height according to the container
         if (!visual.useOriginalSizeOnLoad && size) {
-          jsonData.width = size.width;
-          jsonData.height = size.height;
+          jsonData.width = "container";
+          jsonData.height = "container";
         }
 
         if (chartRef.current) {
@@ -59,22 +61,17 @@ const VegaLiteVisual = ({ id }: VegaLiteVisualProp) => {
           });
         }
       });
-  };
-
-  // Initial render
-  useEffect(() => {
-    renderChart();
+    // Only render when the id change or when it is first loaded and original size is to be used
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id, visual?.useOriginalSizeOnLoad]);
 
-  // Render when size updates
+  /**
+   * Vegalite listen to resize events when the chart width and height is set to container
+   * This allows size updates without re-render (costly)
+   */
   useEffect(() => {
-    if (visual && !visual.useOriginalSizeOnLoad) {
-      renderChart();
-    }
-    // don't want it to re-render when position change, only when size change
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [size, visual?.useOriginalSizeOnLoad]);
+    window.dispatchEvent(new Event("resize"));
+  }, [size]);
 
   return (
     <div
