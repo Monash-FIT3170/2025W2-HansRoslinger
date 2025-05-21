@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { createHandLandmarker, HandRecogniser } from "app/handRecognition";
+import {HandRecogniser } from "app/handRecognition";
 
 
 /**
@@ -24,14 +24,9 @@ const CameraFeed = () => {
 
         if (videoRef.current && canvasRef.current) {
           videoRef.current.srcObject = stream;
-          console.log("x")
-          await createHandLandmarker();
 
           HandRecogniser(videoRef.current, canvasRef.current);
           
-          
-
-
         }
       } catch (err) {
         console.error("Error accessing camera:", err);
@@ -39,9 +34,7 @@ const CameraFeed = () => {
       }
     };
 
-    console.log("oks")
     startCamera();
-    console.log("sdks")
 
     return () => {
       if (videoRef.current && videoRef.current.srcObject) {
