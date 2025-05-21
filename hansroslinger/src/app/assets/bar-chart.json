@@ -1,6 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
-  "description": "Interactive bar chart",
+  "description": "Interactive bar chart with persistent click highlight",
   "data": {
     "values": [
       { "a": "A", "b": 28 },
@@ -17,9 +17,9 @@
   "selection": {
     "highlight": {
       "type": "single",
-      "on": "mouseover",
-      "empty": "all",
-      "fields": ["a"]
+      "on": "click",
+      "fields": ["a"],
+      "clear": "none"
     },
     "grid": {
       "type": "interval",
