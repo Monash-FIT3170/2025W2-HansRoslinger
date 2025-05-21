@@ -65,7 +65,16 @@ const VegaLiteVisual = ({ id }: VegaLiteVisualProp) => {
   useEffect(() => {
     renderChart();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, size]);
+  }, [id]);
+
+  // Render when size updates
+  useEffect(() => {
+    if (visual && !visual.useOriginalSizeOnLoad) {
+      renderChart();
+    }
+    // don't want it to re-render when position change, only when size change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [size, visual?.useOriginalSizeOnLoad]);
 
   return (
     <div
