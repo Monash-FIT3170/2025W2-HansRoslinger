@@ -18,6 +18,7 @@
     "@mediapipe/hands": "^0.4.1675469240",
     "@mediapipe/tasks-vision": "^0.10.22-rc.20250304",
     "canvas": "^3.0.0-rc3",
+    "fingerpose": "^0.1.0",
     "konva": "^9.3.20",
     "next": "15.2.4",
     "react": "^18.3.1",
