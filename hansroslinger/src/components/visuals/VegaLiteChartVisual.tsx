@@ -12,37 +12,65 @@ const VegaLiteVisual = ({ id }: VegaLiteVisualProp) => {
   const visual = useVisualStore((state) => state.getVisual(id));
 
   const position = visual ? visual.position : { x: 0, y: 0 };
+  const setVisualSize = useVisualStore((state) => state.setVisualSize);
+  const setUseOriginalSizeOnLoad = useVisualStore(
+    (state) => state.setUseOriginalSizeOnLoad,
+  );
   const size = visual?.size;
 
-  useEffect(() => {
-    if (visual && size) {
-      fetch(visual.uploadData.src)
-        .then((res) => res.json())
-        .then((jsonData) => {
-          if (chartRef.current) {
-            jsonData.width = size.width;
-            jsonData.height = size.height;
-            jsonData.autosize = {
-              type: "fit",
-              contains: "padding",
-            };
+  const renderChart = () => {
+    if (!visual || !chartRef) return;
+    fetch(visual.uploadData.src)
+      .then((res) => res.json())
+      .then((jsonData) => {
+        // WIll fit into div, if div change size, chart will follow
+        jsonData.autosize = {
+          type: "fit",
+          contains: "padding",
+        };
+        // If not use original size, set size to use stored size
+        if (!visual.useOriginalSizeOnLoad && size) {
+          jsonData.width = size.width;
+          jsonData.height = size.height;
+        }
 
-            chartRef.current.innerHTML = "";
-            embed(chartRef.current, jsonData, {
-              actions: false,
-              tooltip: true,
-              renderer: "canvas",
-            });
-          }
-        });
-    }
-    // don't want it to re-render when position change
+        if (chartRef.current) {
+          // embed vegalite into div
+          embed(chartRef.current, jsonData, {
+            actions: false,
+            tooltip: true,
+            renderer: "canvas",
+          }).then(() => {
+            // Get Vega chart bounding box
+            const viewEl = chartRef.current?.querySelector("canvas");
+
+            if (viewEl) {
+              const bounds = viewEl.getBoundingClientRect();
+
+              // On first load, need to use size define in json file
+              if (visual.useOriginalSizeOnLoad) {
+                setVisualSize(id, {
+                  width: bounds.width,
+                  height: bounds.height,
+                });
+                setUseOriginalSizeOnLoad(id, false);
+              }
+            }
+          });
+        }
+      });
+  };
+
+  // Initial render
+  useEffect(() => {
+    renderChart();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, size?.width, size?.height]);
+  }, [id, size]);
 
   return (
     <div
       id={id}
+      className={visual?.isHovered ? "outline-5 outline-offset-0 outline-green-500" : ""}
       ref={chartRef}
       style={{
         position: "absolute",
