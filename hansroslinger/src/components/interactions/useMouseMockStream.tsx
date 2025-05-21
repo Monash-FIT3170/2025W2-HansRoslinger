@@ -40,7 +40,7 @@ export const useMouseMockStream = (manager: InteractionManager) => {
       const canvas = document.querySelector("canvas");
       if (!canvas) return null;
       const bounds = canvas.getBoundingClientRect();
-      
+
       return {
         x: e.clientX - bounds.left,
         y: e.clientY - bounds.top,
@@ -86,7 +86,7 @@ export const useMouseMockStream = (manager: InteractionManager) => {
         dragOffset.current = {
           x: pos.x - visual.position.x,
           y: pos.y - visual.position.y,
-        }
+        };
         isDragging.current = true;
         console.log("[Drag Start]", visual.assetId);
       }
@@ -108,12 +108,16 @@ export const useMouseMockStream = (manager: InteractionManager) => {
           targetId: activeVisualId.current,
         });
         console.log("[Resizing]", pos);
-      } else if (isDragging.current && activeVisualId.current && dragOffset.current) {
+      } else if (
+        isDragging.current &&
+        activeVisualId.current &&
+        dragOffset.current
+      ) {
         //Calculate the new top-left position of the visual relative to the position of the mouse pointer
         const adjustedPosition = {
-            x: pos.x - dragOffset.current.x,
-            y: pos.y - dragOffset.current.y,
-          };
+          x: pos.x - dragOffset.current.x,
+          y: pos.y - dragOffset.current.y,
+        };
 
         manager.handleInput({
           type: "move",
@@ -122,7 +126,6 @@ export const useMouseMockStream = (manager: InteractionManager) => {
         });
 
         console.log("[Dragging]", pos);
-
       }
     };
 
