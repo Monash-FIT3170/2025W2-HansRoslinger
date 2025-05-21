@@ -14,10 +14,6 @@ const VegaLiteVisual = ({ id }: VegaLiteVisualProp) => {
   const position = visual ? visual.position : { x: 0, y: 0 };
   const size = visual?.size;
 
-  // Replace when pinch is ready
-  // If pinch -> drag, pointer events is none so drag can be registered on konva
-  const isPinch = true;
-
   useEffect(() => {
     if (visual && size) {
       fetch(visual.uploadData.src)
@@ -53,7 +49,7 @@ const VegaLiteVisual = ({ id }: VegaLiteVisualProp) => {
         top: position.y,
         left: position.x,
         ...(size ? { width: size.width, height: size.height } : {}),
-        pointerEvents: isPinch ? "none" : "auto",
+        pointerEvents: "auto",
         zIndex: 10,
       }}
     />

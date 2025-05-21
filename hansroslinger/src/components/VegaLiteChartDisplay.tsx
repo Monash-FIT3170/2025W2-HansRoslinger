@@ -24,8 +24,8 @@ const VegaLiteChartDisplay = ({ data }: VegaLiteChartDisplayProp) => {
         jsonData.width = "container"; // Makes it fits to the container
         jsonData.height = "container";
         jsonData.padding = 0;
-        jsonData.encoding.tooltip = null
-        jsonData.mark.tooltip = null
+        jsonData.encoding.tooltip = null;
+        jsonData.mark.tooltip = null;
 
         if (chartRef.current) {
           embed(chartRef.current, jsonData, {
