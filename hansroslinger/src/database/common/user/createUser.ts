@@ -1,6 +1,11 @@
-import prisma from '../client';
+import prisma from "../client";
 
-export async function createUser(email: string, name: string, s3BucketUrl: string, password: string) {
+export async function createUser(
+  email: string,
+  name: string,
+  s3BucketUrl: string,
+  password: string,
+) {
   try {
     const user = await prisma.user.create({
       data: {
@@ -10,10 +15,10 @@ export async function createUser(email: string, name: string, s3BucketUrl: strin
         password,
       },
     });
-    console.log('User created:', user);
+    console.log("User created:", user);
     return user;
   } catch (error) {
-    console.error('Error creating user:', error);
+    console.error("Error creating user:", error);
     throw error;
   }
 }
