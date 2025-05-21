@@ -67,7 +67,7 @@ const VegaLiteVisual = ({ id }: VegaLiteVisualProp) => {
 
   /**
    * Vegalite listen to resize events when the chart width and height is set to container
-   * This allows size updates without re-render (costly)
+   * This allows size updates without re-embed (costly)
    */
   useEffect(() => {
     window.dispatchEvent(new Event("resize"));
