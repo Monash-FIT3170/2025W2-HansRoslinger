@@ -23,6 +23,22 @@ const isInTopRightCorner = (pos: { x: number; y: number }, visual: Visual) => {
 };
 
 /**
+ * Finds and return the highest index visual on a specified position
+ */
+const findVisualUnderPointer = (
+  pos: { x: number; y: number },
+  visuals: Visual[],
+) => {
+  return [...visuals].reverse().find((v) => {
+    const { x, y } = v.position;
+    const { width, height } = v.size;
+    return (
+      pos.x >= x && pos.x <= x + width && pos.y >= y && pos.y <= y + height
+    );
+  });
+};
+
+/**
  * Sets up mock interaction stream using the native mouse events.
  * Handles drag, resize, and hover interactions for visuals.
  */
@@ -59,13 +75,7 @@ export const useMouseMockStream = (manager: InteractionManager) => {
       const visuals = useVisualStore.getState().visuals;
 
       // Find the visual under the pointer
-      const visual = [...visuals].reverse().find((v) => {
-        const { x, y } = v.position;
-        const { width, height } = v.size;
-        return (
-          pos.x >= x && pos.x <= x + width && pos.y >= y && pos.y <= y + height
-        );
-      });
+      const visual = findVisualUnderPointer(pos, visuals);
 
       if (!visual) return;
 
@@ -105,13 +115,7 @@ export const useMouseMockStream = (manager: InteractionManager) => {
       const visuals = useVisualStore.getState().visuals;
 
       // Check which visual (if any) is currently under the pointer
-      const hoveredVisual = visuals.find((v) => {
-        const { x, y } = v.position;
-        const { width, height } = v.size;
-        return (
-          pos.x >= x && pos.x <= x + width && pos.y >= y && pos.y <= y + height
-        );
-      });
+      const hoveredVisual = findVisualUnderPointer(pos, visuals);
 
       // Only send hover events if the hovered visual changed
       if (hoveredVisual?.assetId !== hoveredVisualId.current) {
