@@ -29,4 +29,6 @@ export type Visual = {
   position: VisualPosition;
   size: VisualSize;
   isHovered?: boolean;
+  // set to true when visual need to be set to original size, false otherwise
+  useOriginalSizeOnLoad: boolean;
 };
