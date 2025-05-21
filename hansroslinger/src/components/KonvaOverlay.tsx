@@ -2,9 +2,8 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { Stage, Layer, Rect } from "react-konva";
-import ImageVisual from "./visuals/ImageVisual";
 import { useVisualStore } from "store/visualsSlice";
-import { FILE_TYPE_JSON, FILE_TYPE_PNG } from "constants/application";
+import { FILE_TYPE_JSON } from "constants/application";
 import VegaLiteVisual from "./visuals/VegaLiteChartVisual";
 
 import { InteractionManager } from "./interactions/interactionManager";
@@ -46,31 +45,16 @@ const KonvaOverlay = () => {
         <div className="w-full h-full pointer-events-auto">
           <Stage width={dimensions.width} height={dimensions.height}>
             <Layer>
-              {visuals.map((visual) => {
-                if (visual.uploadData.type == FILE_TYPE_PNG) {
-                  return (
-                    <ImageVisual
-                      key={visual.assetId}
-                      id={visual.assetId}
-                      visual={visual}
-                    />
-                  );
-                } else if (visual.uploadData.type === FILE_TYPE_JSON) {
-                  const isHovered = visual.isHovered;
-                  return (
-                    <Rect
-                      key={visual.assetId}
-                      x={visual.position.x}
-                      y={visual.position.y}
-                      width={visual.size.width}
-                      height={visual.size.height}
-                      fill="transparent"
-                      stroke={isHovered ? "green" : "black"} // Highlight if hovered
-                      strokeWidth={isHovered ? 10 : 1} // Thicker border if hovered
-                    />
-                  );
-                }
-              })}
+              {visuals.map((visual) => 
+                  <Rect
+                    key={visual.assetId}
+                    x={visual.position.x}
+                    y={visual.position.y}
+                    width={visual.size.width}
+                    height={visual.size.height}
+                    fill="transparent"
+                  />
+                )}
             </Layer>
           </Stage>
           {visuals.map((visual) => {
