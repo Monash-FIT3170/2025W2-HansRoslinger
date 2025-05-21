@@ -2,7 +2,7 @@
   "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
   "description": "Google's stock price over time.",
   "data": {
-    "url": "data/stocks.csv"
+    "url": "/uploads/data/stocks.csv"
   },
   "transform": [
     {
