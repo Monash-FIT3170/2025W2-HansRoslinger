@@ -37,6 +37,27 @@ export const createGestureRecognizer = async () => {
 };
 await createGestureRecognizer();
 
+/**
+ * Detects if the hand is making a pinch gesture.
+ * @param worldLandmarks The 3D landmarks of a hand from Mediapipe.
+ * @param threshold Distance threshold to consider it a pinch.
+ * @returns true if pinching, false otherwise.
+ */
+export const isPinch = (worldLandmarks: { x: number, y: number, z: number }[], threshold = 0.06): boolean => {
+  if (!worldLandmarks || worldLandmarks.length < 9) {
+    console.log("huh"); 
+    return false;
+  }
+
+  const thumbTip = worldLandmarks[4];
+  const indexTip = worldLandmarks[8];
+
+  const dx = thumbTip.x - indexTip.x;
+  const dy = thumbTip.y - indexTip.y;
+  const dz = thumbTip.z - indexTip.z;
+
+  return Math.hypot(dx,dy,dz) < threshold;
+};
 
 export const HandRecogniser = async (video: HTMLVideoElement, canvas: HTMLCanvasElement ) =>{
   console.log("HandRecogniser started");
@@ -66,7 +87,6 @@ export const HandRecogniser = async (video: HTMLVideoElement, canvas: HTMLCanvas
       for (let i =0; i<gestureRecognitionResult.worldLandmarks.length; i++) {
         
         const landmarks = gestureRecognitionResult.landmarks[i];
-        //const isPinching = pinch(landmarks);
         //console.log(results);
 
         console.log("Hand landmarks:", landmarks);
@@ -79,8 +99,13 @@ export const HandRecogniser = async (video: HTMLVideoElement, canvas: HTMLCanvas
       
       canvasCtx!.restore();
       if (gestureRecognitionResult.gestures.length > 0) {
-        const categoryName = gestureRecognitionResult.gestures[0][0].categoryName;
-        const categoryScore = Math.round(gestureRecognitionResult.gestures[0][0].score * 10000) / 100;
+        let categoryName = gestureRecognitionResult.gestures[0][0].categoryName;
+        let categoryScore = Math.round(gestureRecognitionResult.gestures[0][0].score * 10000) / 100;
+
+        if (categoryName === "None" && isPinch(gestureRecognitionResult.worldLandmarks[0])) {
+          categoryName = "Pinch";
+          categoryScore = -1;
+        }
         console.log(`Detected gesture: ${categoryName}, Confidence: ${categoryScore}%`);
       }
 
