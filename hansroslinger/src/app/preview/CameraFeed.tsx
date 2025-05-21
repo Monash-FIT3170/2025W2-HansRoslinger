@@ -28,7 +28,7 @@ const CameraFeed = () => {
           await createHandLandmarker();
 
           HandRecogniser(videoRef.current, canvasRef.current);
-            
+          
           
 
 
