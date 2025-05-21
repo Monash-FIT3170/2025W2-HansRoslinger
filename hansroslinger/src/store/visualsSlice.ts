@@ -19,6 +19,10 @@ type VisualsState = {
   setVisualSize: (assetId: string, size: VisualSize) => void;
   setVisualPosition: (assetId: string, position: VisualPosition) => void;
   setVisualHover: (assetId: string, isHovered: boolean) => void;
+  setUseOriginalSizeOnLoad: (
+    assetId: string,
+    useOriginalSizeOnLoad: boolean,
+  ) => void;
 };
 
 export const useVisualStore = create<VisualsState>()(
@@ -56,6 +60,8 @@ export const useVisualStore = create<VisualsState>()(
             position: { x: 0, y: 0 },
             size: { width: 300, height: 200 },
             isHovered: false,
+            // When selected, should default to original size
+            useOriginalSizeOnLoad: true,
           };
           return { visuals: [...state.visuals, visual] };
         }),
@@ -91,6 +97,16 @@ export const useVisualStore = create<VisualsState>()(
         set((state) => ({
           visuals: state.visuals.map((visual) =>
             visual.assetId === assetId ? { ...visual, isHovered } : visual,
+          ),
+        })),
+
+      // To determine whether original size (obtained from image or json file) will be used for render or the stored size
+      setUseOriginalSizeOnLoad: (assetId, useOriginalSizeOnLoad) =>
+        set((state) => ({
+          visuals: state.visuals.map((visual) =>
+            visual.assetId === assetId
+              ? { ...visual, useOriginalSizeOnLoad }
+              : visual,
           ),
         })),
     }),
