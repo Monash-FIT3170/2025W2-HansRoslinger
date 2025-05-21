@@ -7,9 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint && prettier --check ./src ./public",
-    "format": "prettier --write ./src ./public"
+    "format": "prettier --write ./src ./public",
   },
-   "prisma": {
+  "prisma": {
     "schema": "./prisma/schema.prisma"
   },
   "dependencies": {
@@ -36,6 +36,7 @@
     "eslint-config-next": "15.2.4",
     "prisma": "^6.8.2",
     "tailwindcss": "^4",
+    "tsx": "^4.19.4",
     "typescript": "^5"
   }
 }

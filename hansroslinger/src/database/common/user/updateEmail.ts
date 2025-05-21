@@ -1,4 +1,4 @@
-import prisma from '../client';
+import prisma from "../client";
 
 export async function updateUserEmail(userId: number, newEmail: string) {
   try {
@@ -6,10 +6,10 @@ export async function updateUserEmail(userId: number, newEmail: string) {
       where: { id: userId },
       data: { email: newEmail },
     });
-    console.log('Email updated:', user);
+    console.log("Email updated:", user);
     return user;
   } catch (error) {
-    console.error('Error updating email:', error);
+    console.error("Error updating email:", error);
     throw error;
   }
 }
