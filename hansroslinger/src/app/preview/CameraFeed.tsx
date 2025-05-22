@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import {HandRecogniser } from "app/handRecognition";
-
+import { HandRecogniser } from "app/handRecognition";
 
 /**
  * CameraFeed component handles accessing the user's camera and microphone.
@@ -16,9 +15,9 @@ const CameraFeed = () => {
   useEffect(() => {
     const startCamera = async () => {
       try {
-        console.log("camera")
+        console.log("camera");
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: true, 
+          video: true,
           audio: true,
         });
 
@@ -26,7 +25,6 @@ const CameraFeed = () => {
           videoRef.current.srcObject = stream;
 
           HandRecogniser(videoRef.current, canvasRef.current);
-          
         }
       } catch (err) {
         console.error("Error accessing camera:", err);
@@ -48,8 +46,8 @@ const CameraFeed = () => {
     <div className="relative w-full h-full">
       {/* Show video if no error */}
       {!cameraError && (
-        <video 
-          id = "cameraFeed"
+        <video
+          id="cameraFeed"
           ref={videoRef}
           autoPlay
           playsInline
@@ -57,10 +55,7 @@ const CameraFeed = () => {
           className="w-full h-full object-cover transform -scale-x-100"
         />
       )}
-      <canvas
-        ref={canvasRef}
-        className="absolute top-0 left-0 w-full h-full"
-      />
+      <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full" />
 
       {/* Show error message if camera is not available */}
       {cameraError && (
