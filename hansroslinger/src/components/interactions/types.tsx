@@ -1,4 +1,4 @@
-export type ActionType = "move" | "resize" | "hover";
+export type ActionType = "move" | "resize" | "hover" | "point";
 
 export type VisualPosition = { x: number; y: number };
 

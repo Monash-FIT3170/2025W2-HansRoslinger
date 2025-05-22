@@ -97,72 +97,81 @@ export const useMouseMockStream = (manager: InteractionManager) => {
      * Triggered on mouse move — sends interaction updates to the manager.
      */
     const onMouseMove = (e: MouseEvent) => {
-      const pos = getPointer(e);
-      if (!pos) return;
+    const pos = getPointer(e);
+    if (!pos) return;
 
-      manager.handleInput({ type: "hover", position: pos });
+    const visuals = useVisualStore.getState().visuals;
 
-      const visuals = useVisualStore.getState().visuals;
+    // Check if any visual is currently under the pointer
+    const hoveredVisual = visuals.find((v) => {
+      const { x, y } = v.position;
+      const { width, height } = v.size;
+      return (
+        pos.x >= x && pos.x <= x + width && pos.y >= y && pos.y <= y + height
+      );
+    });
 
-      // Check which visual (if any) is currently under the pointer
-      const hoveredVisual = visuals.find((v) => {
-        const { x, y } = v.position;
-        const { width, height } = v.size;
-        return (
-          pos.x >= x && pos.x <= x + width && pos.y >= y && pos.y <= y + height
-        );
+    // 🔁 ALWAYS emit point if Ctrl is held, even if no visual is found
+    if (e.ctrlKey) {
+      manager.handleInput({
+        type: "point",
+        position: pos,
+        targetId: hoveredVisual?.assetId ?? undefined,
+      });
+      console.log("[Point]", hoveredVisual?.assetId ?? "none", pos);
+    }
+
+    // ✅ Still send hover enter/leave events when visual changes
+    if (hoveredVisual?.assetId !== hoveredVisualId.current) {
+      if (hoveredVisualId.current) {
+        manager.handleInput({
+          type: "hover",
+          position: pos,
+          targetId: hoveredVisualId.current,
+          isHovered: false,
+        });
+      }
+
+      if (hoveredVisual) {
+        manager.handleInput({
+          type: "hover",
+          position: pos,
+          targetId: hoveredVisual.assetId,
+          isHovered: true,
+        });
+      }
+
+      hoveredVisualId.current = hoveredVisual?.assetId ?? null;
+    }
+
+    // 👇 Keep drag/resize interactions
+    if (isResizing.current && activeVisualId.current) {
+      manager.handleInput({
+        type: "resize",
+        position: pos,
+        targetId: activeVisualId.current,
+      });
+      console.log("[Resizing]", pos);
+    } else if (
+      isDragging.current &&
+      activeVisualId.current &&
+      dragOffset.current
+    ) {
+      const adjustedPosition = {
+        x: pos.x - dragOffset.current.x,
+        y: pos.y - dragOffset.current.y,
+      };
+
+      manager.handleInput({
+        type: "move",
+        position: adjustedPosition,
+        targetId: activeVisualId.current,
       });
 
-      // Only send hover events if the hovered visual changed
-      if (hoveredVisual?.assetId !== hoveredVisualId.current) {
-        if (hoveredVisualId.current) {
-          manager.handleInput({
-            type: "hover",
-            position: pos,
-            targetId: hoveredVisualId.current,
-            isHovered: false,
-          });
-        }
+      console.log("[Dragging]", pos);
+    }
+  };
 
-        if (hoveredVisual) {
-          manager.handleInput({
-            type: "hover",
-            position: pos,
-            targetId: hoveredVisual.assetId,
-            isHovered: true,
-          });
-        }
-
-        hoveredVisualId.current = hoveredVisual?.assetId ?? null;
-      }
-
-      if (isResizing.current && activeVisualId.current) {
-        manager.handleInput({
-          type: "resize",
-          position: pos,
-          targetId: activeVisualId.current,
-        });
-        console.log("[Resizing]", pos);
-      } else if (
-        isDragging.current &&
-        activeVisualId.current &&
-        dragOffset.current
-      ) {
-        //Calculate the new top-left position of the visual relative to the position of the mouse pointer
-        const adjustedPosition = {
-          x: pos.x - dragOffset.current.x,
-          y: pos.y - dragOffset.current.y,
-        };
-
-        manager.handleInput({
-          type: "move",
-          position: adjustedPosition,
-          targetId: activeVisualId.current,
-        });
-
-        console.log("[Dragging]", pos);
-      }
-    };
 
     /**
      * Resets interaction state when the mouse is released.

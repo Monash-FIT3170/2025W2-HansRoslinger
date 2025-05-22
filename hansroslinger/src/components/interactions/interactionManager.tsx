@@ -25,16 +25,16 @@ export class InteractionManager {
    * @param input - InteractionInput containing type, pointer position, and optional targetId
    */
   handleInput(input: InteractionInput) {
-    // Resolve the target visual: use targetId if provided, otherwise find visual under pointer
+    const { x, y } = input.position;
+
+    // Log input action, coordinates, and resolved target (for debugging)
+    console.log("[Manager] Inputs:", input.type, "at", `(${x}, ${y})`);
+
     const targetId = input.targetId ?? this.findTargetAt(input.position);
+    console.log("[Manager] Resolved Target:", targetId);
 
-    // Log input action and resolved target (for debugging)
-    console.log("[Manager] Input:", input.type, "Target:", targetId);
-
-    // If no valid target was found, exit early
     if (!targetId) return;
 
-    // Dispatch to appropriate handler
     switch (input.type) {
       case "move":
         handleDrag(targetId, input.position);
@@ -58,6 +58,8 @@ export class InteractionManager {
    * @returns assetId of the first visual that contains the pointer, or null if none match
    */
   private findTargetAt(position: { x: number; y: number }): string | null {
+    console.log("[Manager] Finding target at position:", position);
+
     for (const visual of this.visuals) {
       const { x, y } = visual.position;
       const { width, height } = visual.size;
@@ -69,11 +71,13 @@ export class InteractionManager {
         position.y <= y + height;
 
       if (withinBounds) {
+        console.log(`[Manager] Found target ${visual.assetId} under pointer at (${position.x}, ${position.y})`);
         return visual.assetId;
       }
     }
 
-    // No matching visual found under the pointer
+    console.log("[Manager] No target found at position:", position);
     return null;
   }
+
 }
