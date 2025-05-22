@@ -1,7 +1,10 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import CameraFeed from "./CameraFeed";
+
+const CameraFeed = dynamic(() => import("./CameraFeed"), {
+  ssr: false,
+});
 
 const KonvaOverlay = dynamic(() => import("@/components/KonvaOverlay"), {
   ssr: false,
