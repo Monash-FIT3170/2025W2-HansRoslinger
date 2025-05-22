@@ -44,7 +44,7 @@ await createGestureRecognizer();
  * @param threshold Distance threshold to consider it a pinch.
  * @returns true if pinching, false otherwise.
  */
-export const isPinch = (worldLandmarks: { x: number, y: number, z: number }[], threshold = 0.06): boolean => {
+export const isPinch = (worldLandmarks: { x: number, y: number, z: number }[], threshold = 0.07): boolean => {
   if (!worldLandmarks || worldLandmarks.length < 9) {
     console.log("huh"); 
     return false;
@@ -57,7 +57,9 @@ export const isPinch = (worldLandmarks: { x: number, y: number, z: number }[], t
   const dy = thumbTip.y - indexTip.y;
   const dz = thumbTip.z - indexTip.z;
 
-  return Math.hypot(dx,dy,dz) < threshold;
+  const distance = Math.hypot(dx, dy, dz);
+
+  return distance < threshold;
 };
 
 export const HandRecogniser = async (video: HTMLVideoElement, canvas: HTMLCanvasElement ) =>{
