@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint && prettier --check ./src ./public",
-    "format": "prettier --write ./src ./public"
+    "format": "prettier --write ./src ./public",
+    "postinstall": "prisma generate"
   },
   "prisma": {
     "schema": "./prisma/schema.prisma"
@@ -20,11 +21,11 @@
     "next": "15.2.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-konva": "^19.0.3",
+    "react-konva": "^18.2.10",
     "react-vega": "^7.6.0",
-    "vega": "^6.1.2",
-    "vega-embed": "^7.0.2",
-    "vega-lite": "^6.1.0",
+    "vega": "^5.33.0",
+    "vega-embed": "^6.29.0",
+    "vega-lite": "^5.14.1",
     "zustand": "^5.0.4"
   },
   "devDependencies": {
