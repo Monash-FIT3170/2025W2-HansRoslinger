@@ -30,7 +30,8 @@ export const createGestureRecognizer = async () => {
       modelAssetPath: "https://storage.googleapis.com/mediapipe-tasks/gesture_recognizer/gesture_recognizer.task",
       delegate: "GPU"
     },
-    runningMode: runningMode
+    runningMode: runningMode,
+    numHands: 2
   });
   console.log("gesture recognise mediapipe")
   
@@ -98,16 +99,20 @@ export const HandRecogniser = async (video: HTMLVideoElement, canvas: HTMLCanvas
       }
       
       canvasCtx!.restore();
-      if (gestureRecognitionResult.gestures.length > 0) {
-        let categoryName = gestureRecognitionResult.gestures[0][0].categoryName;
-        let categoryScore = Math.round(gestureRecognitionResult.gestures[0][0].score * 10000) / 100;
 
-        if (categoryName === "None" && isPinch(gestureRecognitionResult.worldLandmarks[0])) {
+      gestureRecognitionResult.gestures.forEach((gestureCandidates, i) => {
+        let categoryName = gestureCandidates[0]?.categoryName;
+        let categoryScore = Math.round((gestureCandidates[0]?.score ?? 0) * 10000) / 100;
+
+        // Check pinch if gesture is not recognized
+        if (categoryName === "None" && isPinch(gestureRecognitionResult.worldLandmarks[i])) {
           categoryName = "Pinch";
           categoryScore = -1;
         }
-        console.log(`Detected gesture: ${categoryName}, Confidence: ${categoryScore}%`);
-      }
+
+        console.log(`Hand ${i + 1}: Detected gesture: ${categoryName}, Confidence: ${categoryScore}%`);
+      });
+
 
     }
     setTimeout(() => requestAnimationFrame(predict), 100);
