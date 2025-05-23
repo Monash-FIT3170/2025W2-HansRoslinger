@@ -29,6 +29,7 @@ const VegaLiteVisual = ({ id }: VegaLiteVisualProp) => {
           type: "fit",
           contains: "padding",
         };
+        jsonData.background = null;
         // When not on initial render, set width and height to container
         // This allows vegalite to listen to teh resize event and change the chart width and height according to the container
         if (!visual.useOriginalSizeOnLoad && size) {
