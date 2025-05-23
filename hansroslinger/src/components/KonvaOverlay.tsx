@@ -9,7 +9,7 @@ import VegaLiteVisual from "./visuals/VegaLiteChartVisual";
 import { InteractionManager } from "./interactions/interactionManager";
 import { useMouseMockStream } from "./interactions/useMouseMockStream";
 
-const KonvaOverlay = () => {
+const CanvasOverlay = () => {
   const visuals = useVisualStore((state) => state.visuals);
 
   const [dimensions, setDimensions] = useState<{
@@ -60,4 +60,4 @@ const KonvaOverlay = () => {
   );
 };
 
-export default KonvaOverlay;
+export default CanvasOverlay;
