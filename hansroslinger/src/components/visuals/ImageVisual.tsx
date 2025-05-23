@@ -12,6 +12,9 @@ type ImageVisualProp = {
 const ImageVisual = ({ id, visual }: ImageVisualProp) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const setVisualSize = useVisualStore((state) => state.setVisualSize);
+  const setUseOriginalSizeOnLoad = useVisualStore(
+    (state) => state.setUseOriginalSizeOnLoad,
+  );
 
   useEffect(() => {
     // Create image component
@@ -25,6 +28,7 @@ const ImageVisual = ({ id, visual }: ImageVisualProp) => {
           width: img.naturalWidth,
           height: img.naturalHeight,
         });
+        setUseOriginalSizeOnLoad(visual.assetId, false);
       }
 
       // Set image property
@@ -41,7 +45,14 @@ const ImageVisual = ({ id, visual }: ImageVisualProp) => {
         containerRef.current.appendChild(img);
       }
     };
-  }, [id, visual.uploadData.src, setVisualSize, visual.useOriginalSizeOnLoad]);
+  }, [
+    id,
+    visual.uploadData.src,
+    setVisualSize,
+    visual.useOriginalSizeOnLoad,
+    setUseOriginalSizeOnLoad,
+    visual.assetId,
+  ]);
 
   return (
     <div
