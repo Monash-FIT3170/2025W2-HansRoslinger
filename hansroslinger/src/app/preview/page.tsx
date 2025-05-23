@@ -2,11 +2,9 @@
 
 import dynamic from "next/dynamic";
 
-const CameraFeed = dynamic(() => import("./CameraFeed"), {
-  ssr: false,
-});
+import CanvasOverlay from "@/components/KonvaOverlay";
 
-const KonvaOverlay = dynamic(() => import("@/components/KonvaOverlay"), {
+const CameraFeed = dynamic(() => import("./CameraFeed"), {
   ssr: false,
 });
 
@@ -18,7 +16,7 @@ const Preview = () => {
         aspect-video border-2 border-black overflow-hidden bg-black"
       >
         <CameraFeed />
-        <KonvaOverlay />
+        <CanvasOverlay />
       </div>
     </div>
   );
