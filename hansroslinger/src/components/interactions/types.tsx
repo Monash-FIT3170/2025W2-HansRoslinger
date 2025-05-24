@@ -7,4 +7,5 @@ export interface InteractionInput {
   position: VisualPosition;
   targetId?: string;
   isHovered?: boolean;
+  dragOffset?: {x: number; y: number};
 }
