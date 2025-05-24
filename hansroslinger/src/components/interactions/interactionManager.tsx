@@ -1,8 +1,8 @@
-import { InteractionInput } from "./types";
 import { handleDrag } from "./actions/handleDrag";
 import { handleResize } from "./actions/handleResize";
 import { handleHover } from "./actions/handleHover";
 import { useVisualStore } from "store/visualsSlice";
+import { ActionPayload, InteractionInput } from "types/application";
 import { GesturePayload } from "app/detection/Gesture";
 
 /**
@@ -19,6 +19,10 @@ export class InteractionManager {
    */
   private get visuals() {
     return useVisualStore.getState().visuals;
+  }
+
+  handleAction(actionPayload: ActionPayload) {
+    console.log(actionPayload);
   }
 
   /**

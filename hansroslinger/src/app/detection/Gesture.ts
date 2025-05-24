@@ -1,7 +1,14 @@
 import { GestureRecognizerResult } from "@mediapipe/tasks-vision";
+import {
+  DOUBLE_PINCH,
+  OPEN_PALM,
+  PINCH,
+  POINT_UP,
+} from "constants/application";
+import { GestureType } from "types/application";
 
 interface GesturePayload {
-  name: string;
+  name: GestureType;
   points: {
     [name: string]: {
       x: number;
@@ -27,7 +34,7 @@ abstract class Gesture {
 
 class OpenPalm extends Gesture {
   constructor() {
-    super("Open_Palm");
+    super(OPEN_PALM);
   }
 
   payload(
@@ -48,7 +55,7 @@ class OpenPalm extends Gesture {
 
 class PointUp extends Gesture {
   constructor() {
-    super("Pointing_Up");
+    super(POINT_UP);
   }
 
   payload(
@@ -69,7 +76,7 @@ class PointUp extends Gesture {
 
 class Pinch extends Gesture {
   constructor() {
-    super("Pinch");
+    super(PINCH);
   }
 
   payload(
@@ -92,7 +99,7 @@ class Pinch extends Gesture {
 
 class DoublePinch extends Gesture {
   constructor() {
-    super("Double_Pinch");
+    super(DOUBLE_PINCH);
   }
 
   payload(
