@@ -1,8 +1,8 @@
-import { InteractionInput } from "./types";
 import { handleDrag } from "./actions/handleDrag";
 import { handleResize } from "./actions/handleResize";
 import { handleHover } from "./actions/handleHover";
 import { useVisualStore } from "store/visualsSlice";
+import { InteractionInput } from "types/application";
 
 /**
  * The InteractionManager routes user input actions (e.g. drag, resize, hover)
@@ -59,8 +59,8 @@ export class InteractionManager {
    */
   private findTargetAt(position: { x: number; y: number }): string | null {
     for (const visual of this.visuals) {
-      const { x, y } = visual.position;
-      const { width, height } = visual.size;
+    const { x, y } = visual.position;
+    const { width, height } = visual.size;
 
       const withinBounds =
         position.x >= x &&
