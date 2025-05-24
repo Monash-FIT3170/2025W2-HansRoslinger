@@ -2,50 +2,25 @@ import { handleDrag } from "./actions/handleDrag";
 import { handleResize } from "./actions/handleResize";
 import { handleHover } from "./actions/handleHover";
 import { useVisualStore } from "store/visualsSlice";
-import { ActionPayload, InteractionInput } from "types/application";
-import { GesturePayload } from "app/detection/Gesture";
+import { InteractionInput, ActionPayload } from "types/application";
 
-/**
- * The InteractionManager routes user input actions (e.g. drag, resize, hover)
- * to the correct handler based on pointer location and interaction type.
- */
 export class InteractionManager {
   private gestureTargetId: string | null = null;
   private dragOffset: { x: number; y: number } | null = null;
 
-  /**
-   * Returns the current list of visuals from the Zustand store.
-   * This reflects the latest state of all on-screen visual elements.
-   */
   private get visuals() {
     return useVisualStore.getState().visuals;
   }
 
-  handleAction(actionPayload: ActionPayload) {
-    console.log(actionPayload);
-  }
-
-  /**
-   * Main entry point for all interaction events.
-   * Determines the target visual (if not explicitly provided) and
-   * delegates the interaction to the appropriate handler.
-   *
-   * @param input - InteractionInput containing type, pointer position, and optional targetId
-   */
   handleInput(input: InteractionInput) {
-    // Resolve the target visual: use targetId if provided, otherwise find visual under pointer
     const targetId = input.targetId ?? this.findTargetAt(input.position);
-
-    // Log input action and resolved target (for debugging)
     console.log("[Manager] Input:", input.type, "Target:", targetId);
 
-    // If no valid target was found, exit early
     if (!targetId) return;
 
-    // Dispatch to appropriate handler
     switch (input.type) {
       case "move":
-        handleDrag(targetId, input.position, {x: 0, y: 0});
+        handleDrag(targetId, input.position, {x:0, y:0});
         break;
       case "resize":
         handleResize(targetId, input.position);
@@ -56,66 +31,50 @@ export class InteractionManager {
     }
   }
 
-  handleGestureInput(payload: GesturePayload) {
-    switch (payload.name) {
-      case "Open_Palm": {
-        const pos = payload.points.palmCenter;
-        console.log(pos);
-        const targetId = this.findTargetAt(pos);
-        if (targetId) handleHover(targetId, true);
-        break;
-      }
+  /**
+   * Primary handler for all gesture-to-action mappings.
+   * Called by `useGestureListener` with mapped ActionPayloads.
+   */
+  handleAction(actionPayload: ActionPayload) {
+    const { action, coordinates } = actionPayload;
 
-      case "Pointing_Up": {
-        const pos = payload.points.indexFingerTip;
-        const targetId = this.findTargetAt(pos);
-        if (targetId) handleHover(targetId, true);
-        break;
-      }
+    if (!coordinates || coordinates.length === 0) return;
 
-      case "Pinch": {
-        const pos = payload.points.pinchPoint;
-        const targetId = this.findTargetAt(pos);
-        if (!targetId) {
-          // Gesture moved off target → reset
-          this.gestureTargetId = null;
-          this.dragOffset = null;
-          return;
-        }
+    // Use the first gesture point as the targeting reference
+    const point = coordinates[0];
+    const targetId = this.findTargetAt(point);
+    if (!targetId) return;
 
-        const store = useVisualStore.getState();
-        const visual = store.getVisual(targetId);
-        if (!visual) return;
+    const store = useVisualStore.getState();
+    const visual = store.getVisual(targetId);
+    if (!visual) return;
 
-        // If new gesture target, calculate and store offset
+    switch (action) {
+      case "move": {
+        // Calculate drag offset only on new visual grab
         if (this.gestureTargetId !== targetId) {
           this.gestureTargetId = targetId;
           this.dragOffset = {
-            x: pos.x - visual.position.x,
-            y: pos.y - visual.position.y,
+            x: point.x - visual.position.x,
+            y: point.y - visual.position.y,
           };
         }
 
-        // Reuse stored offset for drag
-        handleDrag(targetId, pos, this.dragOffset!);
+        handleDrag(targetId, point, this.dragOffset!);
         break;
       }
 
+      case "hover":
+        handleHover(targetId, true);
+        break;
 
-      case "Double_Pinch": {
-        const p1 = payload.points.pinchPoint1;
-        const p2 = payload.points.pinchPoint2;
-        const midpoint = {
-          x: (p1.x + p2.x) / 2,
-          y: (p1.y + p2.y) / 2,
-        };
-        const targetId = this.findTargetAt(midpoint);
-        if (targetId) handleResize(targetId, midpoint);
+      case "resize": {
+        // Use midpoint or first point if no second point is available
+        handleResize(targetId, point);
         break;
       }
     }
-  }  
-
+  }
   /**
    * Finds the visual (if any) currently under the given pointer position.
    * Used when no targetId is explicitly provided by the interaction stream.
@@ -134,12 +93,8 @@ export class InteractionManager {
         position.y >= y &&
         position.y <= y + height;
 
-      if (withinBounds) {
-        return visual.assetId;
-      }
+      if (withinBounds) return visual.assetId;
     }
-
-    // No matching visual found under the pointer
     return null;
   }
 }
