@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { HandRecogniser } from "app/handRecognition";
-
+import { HandRecogniser } from "app/detection/handRecognition";
+import { canvasRenderer } from "app/detection/canvasRenderer";
 /**
  * CameraFeed component handles accessing the user's camera and microphone.
  * It shows a mirrored live video feed with an error handling message if access fails.
@@ -20,23 +20,33 @@ const CameraFeed = () => {
           video: true,
           audio: true,
         });
+        
+          if (videoRef.current && canvasRef.current) {
 
-        if (videoRef.current && canvasRef.current) {
-          videoRef.current.srcObject = stream;
+            videoRef.current.srcObject = stream;
+            setInterval(() => {
+              requestAnimationFrame(async () => {
+                if (videoRef.current && canvasRef.current) {
+                  const payload = await HandRecogniser(videoRef.current);
+                  console.log(payload);
+                  await canvasRenderer(canvasRef.current, videoRef.current, payload);
+                }
+              });
+            }, 1000);
+          }
 
-          HandRecogniser(videoRef.current, canvasRef.current);
-        }
       } catch (err) {
         console.error("Error accessing camera:", err);
         setCameraError(true);
       }
     };
-
     startCamera();
 
+    const videoElement = videoRef.current;
+
     return () => {
-      if (videoRef.current && videoRef.current.srcObject) {
-        const tracks = (videoRef.current.srcObject as MediaStream).getTracks();
+      if (videoElement && videoElement.srcObject) {
+        const tracks = (videoElement.srcObject as MediaStream).getTracks();
         tracks.forEach((track) => track.stop());
       }
     };
