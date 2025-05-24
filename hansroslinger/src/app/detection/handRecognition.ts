@@ -35,7 +35,7 @@ export const HandRecogniser = async (
   const startTimeMs = performance.now();
     
   const gestureRecognitionResult = gestureRecognizer.recognizeForVideo(video, startTimeMs);
-  let returnResult: GesturePayload[] = [];
+  let payloads: GesturePayload[] = [];
 
   gestureRecognitionResult.gestures.forEach((gestureCandidates, i) => {
     let categoryName = gestureCandidates[0]?.categoryName;
@@ -58,23 +58,22 @@ export const HandRecogniser = async (
     const gesture = GestureFactory(categoryName);
     if (gesture){
       const payload = gesture.payload(i, gestureRecognitionResult, canvas)
-      returnResult.push(payload)
+      payloads.push(payload)
     }
 
     
   });
 
 
-  if (returnResult.length === 2) {
-    if (returnResult[0].name == "Pinch" && returnResult[1].name == "Pinch"){
-      returnResult = [];
+  if (payloads.length === 2) {
+    if (payloads[0].name == "Pinch" && payloads[1].name == "Pinch"){
+      payloads = [];
       const doublePinch = GestureFactory("DoublePinch");
       const doublePinchPayload = doublePinch!.payload(2, gestureRecognitionResult, canvas)
-      returnResult.push(doublePinchPayload);
+      payloads.push(doublePinchPayload);
     }
-
   }
 
-  return {returnResult, gestureRecognitionResult};
+  return {payloads, gestureRecognitionResult};
 
 };
