@@ -2,6 +2,8 @@
 import { useEffect, useRef, useState } from "react";
 import { HandRecogniser } from "app/detection/handRecognition";
 import { canvasRenderer } from "app/detection/canvasRenderer";
+import { InteractionManager } from "@/components/interactions/interactionManager";
+const interactionManager = new InteractionManager();
 /**
  * CameraFeed component handles accessing the user's camera and microphone.
  * It shows a mirrored live video feed with an error handling message if access fails.
@@ -31,6 +33,10 @@ const CameraFeed = () => {
                   canvasRef.current,
                 );
                 console.log(payload);
+                const { payloads } = payload;
+                payloads.forEach((gesturePayload) =>
+                  interactionManager.handleGestureInput(gesturePayload)
+              );
                 canvasRenderer(
                   canvasRef.current,
                   videoRef.current,
