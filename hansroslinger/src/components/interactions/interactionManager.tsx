@@ -17,8 +17,8 @@ export class InteractionManager {
     return useVisualStore.getState().visuals;
   }
 
-  handleAction(actionPayload: ActionPayload){
-    console.log(actionPayload)
+  handleAction(actionPayload: ActionPayload) {
+    console.log(actionPayload);
   }
 
   /**
@@ -63,8 +63,8 @@ export class InteractionManager {
    */
   private findTargetAt(position: { x: number; y: number }): string | null {
     for (const visual of this.visuals) {
-    const { x, y } = visual.position;
-    const { width, height } = visual.size;
+      const { x, y } = visual.position;
+      const { width, height } = visual.size;
 
       const withinBounds =
         position.x >= x &&

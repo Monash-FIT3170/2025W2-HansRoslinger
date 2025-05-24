@@ -21,7 +21,7 @@ const CanvasOverlay = () => {
   // Setup Interaction Manager and mouse mock stream
   const interactionManager = useRef(new InteractionManager()).current;
   useMouseMockStream(interactionManager);
-  useGestureListener(interactionManager)
+  useGestureListener(interactionManager);
 
   useEffect(() => {
     const updateSize = () => {

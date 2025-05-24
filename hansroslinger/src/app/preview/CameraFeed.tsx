@@ -11,7 +11,9 @@ const CameraFeed = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [cameraError, setCameraError] = useState(false);
-  const setGesturePayload = useGestureStore((state) => state.setGesturePayloads)
+  const setGesturePayload = useGestureStore(
+    (state) => state.setGesturePayloads,
+  );
   console.log("CameraFeed component is rendering!");
 
   useEffect(() => {
@@ -38,7 +40,7 @@ const CameraFeed = () => {
                   videoRef.current,
                   payload.gestureRecognitionResult,
                 );
-                setGesturePayload(payload.payloads)
+                setGesturePayload(payload.payloads);
               }
             });
           }, 100);
