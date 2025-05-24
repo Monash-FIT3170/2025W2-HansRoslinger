@@ -2,6 +2,7 @@ import { GestureRecognizer, FilesetResolver } from "@mediapipe/tasks-vision";
 import { isPinch } from "./pinch";
 import { GestureFactory } from "./GestureFactory";
 import { GesturePayload } from "./Gesture";
+import { PINCH } from "constants/application";
 
 let gestureRecognizer: GestureRecognizer;
 const runningMode: "VIDEO" | "IMAGE" = "VIDEO";
@@ -63,7 +64,7 @@ export const HandRecogniser = async (
   });
 
   if (payloads.length === 2) {
-    if (payloads[0].name == "Pinch" && payloads[1].name == "Pinch") {
+    if (payloads[0].name == PINCH && payloads[1].name == PINCH) {
       payloads = [];
       const doublePinch = GestureFactory("DoublePinch");
       const doublePinchPayload = doublePinch!.payload(
