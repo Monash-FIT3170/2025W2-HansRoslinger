@@ -20,21 +20,26 @@ const CameraFeed = () => {
           video: true,
           audio: true,
         });
-        
-          if (videoRef.current && canvasRef.current) {
 
-            videoRef.current.srcObject = stream;
-            setInterval(() => {
-              requestAnimationFrame(async () => {
-                if (videoRef.current && canvasRef.current) {
-                  const payload = await HandRecogniser(videoRef.current, canvasRef.current);
-                  console.log(payload);
-                  canvasRenderer(canvasRef.current, videoRef.current, payload.gestureRecognitionResult);
-                }
-              });
-            }, 100);            
-          }
-
+        if (videoRef.current && canvasRef.current) {
+          videoRef.current.srcObject = stream;
+          setInterval(() => {
+            requestAnimationFrame(async () => {
+              if (videoRef.current && canvasRef.current) {
+                const payload = await HandRecogniser(
+                  videoRef.current,
+                  canvasRef.current,
+                );
+                console.log(payload);
+                canvasRenderer(
+                  canvasRef.current,
+                  videoRef.current,
+                  payload.gestureRecognitionResult,
+                );
+              }
+            });
+          }, 100);
+        }
       } catch (err) {
         console.error("Error accessing camera:", err);
         setCameraError(true);
