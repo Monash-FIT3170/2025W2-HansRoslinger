@@ -32,7 +32,7 @@ export const HandRecogniser = async (
 
   const startTimeMs = performance.now();
     
-  const gestureRecognitionResult = await gestureRecognizer.recognizeForVideo(video, startTimeMs);
+  const gestureRecognitionResult = gestureRecognizer.recognizeForVideo(video, startTimeMs);
 
   gestureRecognitionResult.gestures.forEach((gestureCandidates, i) => {
     let categoryName = gestureCandidates[0]?.categoryName;
