@@ -2,8 +2,9 @@ import {
   GestureRecognizer,
   FilesetResolver,
 } from "@mediapipe/tasks-vision";
-
 import { isPinch } from "./pinch";
+import { GestureFactory } from "./GestureFactory";
+import {GesturePayload} from "./Gesture";
 
 let gestureRecognizer: GestureRecognizer;
 const runningMode: "VIDEO" | "IMAGE" = "VIDEO";
@@ -27,12 +28,14 @@ await createGestureRecognizer();
 
 export const HandRecogniser = async (
   video: HTMLVideoElement,
+  canvas: HTMLCanvasElement
 ) => {
   console.log("HandRecogniser started"); 
 
   const startTimeMs = performance.now();
     
   const gestureRecognitionResult = gestureRecognizer.recognizeForVideo(video, startTimeMs);
+  let returnResult: GesturePayload[] = [];
 
   gestureRecognitionResult.gestures.forEach((gestureCandidates, i) => {
     let categoryName = gestureCandidates[0]?.categoryName;
@@ -51,8 +54,27 @@ export const HandRecogniser = async (
     console.log(
       `Hand ${i + 1}: Detected gesture: ${categoryName}, Confidence: ${categoryScore}%`,
     );
+    
+    const gesture = GestureFactory(categoryName);
+    if (gesture){
+      const payload = gesture.payload(i, gestureRecognitionResult, canvas)
+      returnResult.push(payload)
+    }
+
+    
   });
 
-  return gestureRecognitionResult;
+
+  if (returnResult.length === 2) {
+    if (returnResult[0].name == "Pinch" && returnResult[1].name == "Pinch"){
+      returnResult = [];
+      const doublePinch = GestureFactory("DoublePinch");
+      const doublePinchPayload = doublePinch!.payload(2, gestureRecognitionResult, canvas)
+      returnResult.push(doublePinchPayload);
+    }
+
+  }
+
+  return {returnResult, gestureRecognitionResult};
 
 };
