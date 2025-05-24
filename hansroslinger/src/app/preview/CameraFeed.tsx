@@ -27,9 +27,9 @@ const CameraFeed = () => {
             setInterval(() => {
               requestAnimationFrame(async () => {
                 if (videoRef.current && canvasRef.current) {
-                  const payload = await HandRecogniser(videoRef.current);
+                  const payload = await HandRecogniser(videoRef.current,canvasRef.current);
                   console.log(payload);
-                  await canvasRenderer(canvasRef.current, videoRef.current, payload);
+                  canvasRenderer(canvasRef.current, videoRef.current, payload.gestureRecognitionResult);
                 }
               });
             }, 1000);
