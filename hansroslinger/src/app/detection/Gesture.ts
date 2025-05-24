@@ -45,7 +45,7 @@ class OpenPalm extends Gesture {
     const wrist = landmarks.landmarks[hand][0];
     const middleBase = landmarks.landmarks[hand][9];
     const palmCenterY = canvas.height * ((wrist.y + middleBase.y) / 2);
-    const palmCenterX = canvas.width * wrist.x;
+    const palmCenterX = canvas.width - canvas.width * wrist.x;
     return {
       name: this.name,
       points: { palmCenter: { x: palmCenterX, y: palmCenterY } },
@@ -87,7 +87,7 @@ class Pinch extends Gesture {
     const thumbTip = landmarks.landmarks[hand][4];
     const indexTip = landmarks.landmarks[hand][8];
 
-    const pinchPointX = canvas.width * ((thumbTip.x + indexTip.x) / 2);
+    const pinchPointX = canvas.width - canvas.width * ((thumbTip.x + indexTip.x) / 2);
     const pinchPointY = canvas.height * ((thumbTip.y + indexTip.y) / 2);
 
     return {
