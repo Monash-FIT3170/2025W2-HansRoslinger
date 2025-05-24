@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { HandRecogniser } from "app/detection/handRecognition";
 import { canvasRenderer } from "app/detection/canvasRenderer";
+import { useGestureStore } from "store/gestureSlice";
 /**
  * CameraFeed component handles accessing the user's camera and microphone.
  * It shows a mirrored live video feed with an error handling message if access fails.
@@ -10,6 +11,7 @@ const CameraFeed = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [cameraError, setCameraError] = useState(false);
+  const setGesturePayload = useGestureStore((state) => state.setGesturePayloads)
   console.log("CameraFeed component is rendering!");
 
   useEffect(() => {
@@ -36,6 +38,7 @@ const CameraFeed = () => {
                   videoRef.current,
                   payload.gestureRecognitionResult,
                 );
+                setGesturePayload(payload.payloads)
               }
             });
           }, 100);
