@@ -2,7 +2,7 @@ import { handleDrag } from "./actions/handleDrag";
 import { handleResize } from "./actions/handleResize";
 import { handleHover } from "./actions/handleHover";
 import { useVisualStore } from "store/visualsSlice";
-import { InteractionInput } from "types/application";
+import { ActionPayload, InteractionInput } from "types/application";
 
 /**
  * The InteractionManager routes user input actions (e.g. drag, resize, hover)
@@ -15,6 +15,10 @@ export class InteractionManager {
    */
   private get visuals() {
     return useVisualStore.getState().visuals;
+  }
+
+  handleAction(actionPayload: ActionPayload){
+    console.log(actionPayload)
   }
 
   /**

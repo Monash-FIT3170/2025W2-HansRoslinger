@@ -8,6 +8,7 @@ import VegaLiteVisual from "./visuals/VegaLiteChartVisual";
 
 import { InteractionManager } from "./interactions/interactionManager";
 import { useMouseMockStream } from "./interactions/useMouseMockStream";
+import { useGestureListener } from "./interactions/useGestureListener";
 
 const CanvasOverlay = () => {
   const visuals = useVisualStore((state) => state.visuals);
@@ -20,6 +21,7 @@ const CanvasOverlay = () => {
   // Setup Interaction Manager and mouse mock stream
   const interactionManager = useRef(new InteractionManager()).current;
   useMouseMockStream(interactionManager);
+  useGestureListener(interactionManager)
 
   useEffect(() => {
     const updateSize = () => {
