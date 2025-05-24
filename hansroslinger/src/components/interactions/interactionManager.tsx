@@ -78,9 +78,9 @@ export class InteractionManager {
     }
     return null;
   }
-  
+
   // ONLY USED FOR MOUSE MOCK
-    handleInput(input: InteractionInput) {
+  handleInput(input: InteractionInput) {
     const targetId = input.targetId ?? this.findTargetAt(input.position);
     console.log("[Manager] Input:", input.type, "Target:", targetId);
 
@@ -88,7 +88,7 @@ export class InteractionManager {
 
     switch (input.type) {
       case "move":
-        handleDrag(targetId, input.position, {x:0, y:0});
+        handleDrag(targetId, input.position, { x: 0, y: 0 });
         break;
       case "resize":
         handleResize(targetId, input.position);
