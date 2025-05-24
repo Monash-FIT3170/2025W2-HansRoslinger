@@ -1,5 +1,10 @@
 import { GestureRecognizerResult } from "@mediapipe/tasks-vision";
-import { DOUBLE_PINCH, OPEN_PALM, PINCH, POINT_UP } from "constants/application";
+import {
+  DOUBLE_PINCH,
+  OPEN_PALM,
+  PINCH,
+  POINT_UP,
+} from "constants/application";
 import { GestureType } from "types/application";
 
 interface GesturePayload {

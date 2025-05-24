@@ -33,19 +33,19 @@ export type Visual = {
   useOriginalSizeOnLoad: boolean;
 };
 
-export type ActionType = (typeof ACTIONS)[number]
+export type ActionType = (typeof ACTIONS)[number];
 
 export type InteractionInput = {
   type: ActionType;
   position: VisualPosition;
   targetId?: string;
   isHovered?: boolean;
-}
+};
 
-export type GestureType = (typeof GESTURES)[number]
+export type GestureType = (typeof GESTURES)[number];
 
 export type ActionPayload = {
-  action: ActionType,
-  coordinates: VisualPosition[]
-  resizeScale?: number
-}
+  action: ActionType;
+  coordinates: VisualPosition[];
+  resizeScale?: number;
+};

@@ -10,16 +10,15 @@ export const useGestureListener = (interactionManager: InteractionManager) => {
     if (!gesturePayloads) return;
 
     gesturePayloads.forEach((payload) => {
-      const action = gestureToActionMap[payload.name]
-      if (action){
+      const action = gestureToActionMap[payload.name];
+      if (action) {
         // change this to handle action when implemented
         interactionManager.handleAction({
           action: action,
-          coordinates: Object.values(payload.points)
-        })
+          coordinates: Object.values(payload.points),
+        });
       }
-    })
-
+    });
   }, [gesturePayloads, interactionManager]);
 
   return null;
