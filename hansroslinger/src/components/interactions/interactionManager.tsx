@@ -2,7 +2,7 @@ import { handleDrag } from "./actions/handleDrag";
 import { handleResize } from "./actions/handleResize";
 import { handleHover } from "./actions/handleHover";
 import { useVisualStore } from "store/visualsSlice";
-import { InteractionInput, ActionPayload } from "types/application";
+import { ActionPayload, InteractionInput } from "types/application";
 
 export class InteractionManager {
   private gestureTargetId: string | null = null;
@@ -10,25 +10,6 @@ export class InteractionManager {
 
   private get visuals() {
     return useVisualStore.getState().visuals;
-  }
-
-  handleInput(input: InteractionInput) {
-    const targetId = input.targetId ?? this.findTargetAt(input.position);
-    console.log("[Manager] Input:", input.type, "Target:", targetId);
-
-    if (!targetId) return;
-
-    switch (input.type) {
-      case "move":
-        handleDrag(targetId, input.position, {x:0, y:0});
-        break;
-      case "resize":
-        handleResize(targetId, input.position);
-        break;
-      case "hover":
-        handleHover(targetId, input.isHovered ?? true);
-        break;
-    }
   }
 
   /**
@@ -96,5 +77,25 @@ export class InteractionManager {
       if (withinBounds) return visual.assetId;
     }
     return null;
+  }
+  
+  // ONLY USED FOR MOUSE MOCK
+    handleInput(input: InteractionInput) {
+    const targetId = input.targetId ?? this.findTargetAt(input.position);
+    console.log("[Manager] Input:", input.type, "Target:", targetId);
+
+    if (!targetId) return;
+
+    switch (input.type) {
+      case "move":
+        handleDrag(targetId, input.position, {x:0, y:0});
+        break;
+      case "resize":
+        handleResize(targetId, input.position);
+        break;
+      case "hover":
+        handleHover(targetId, input.isHovered ?? true);
+        break;
+    }
   }
 }
