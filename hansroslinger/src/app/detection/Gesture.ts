@@ -49,3 +49,32 @@ class PointUp extends Gesture {
     }
 }
 
+class Pinch extends Gesture {
+    constructor(){
+        super("Pinch");
+    }
+
+    payload(hand: number, landmarks: GestureRecognizerResult, canvas: HTMLCanvasElement) {
+        
+        const indexFingerTip = landmarks.landmarks[hand][8]; // Index finger tip
+        const thumbTip = landmarks.landmarks[hand][4]; // Thumb tip
+
+        // Calculate pixel positions on the canvas
+        const indexFingerX = canvas.width * indexFingerTip.x;
+        const indexFingerY = canvas.height * indexFingerTip.y;
+        const thumbX = canvas.width * thumbTip.x;
+        const thumbY = canvas.height * thumbTip.y;
+
+        // Average to find pinch point
+        const pinchX = (indexFingerX + thumbX) / 2;
+        const pinchY = (indexFingerY + thumbY) / 2;
+
+        return {
+            gesture: this.name,
+            pinchPoint: { x: pinchX, y: pinchY },
+            landmarks: landmarks
+        };
+    }
+
+}
+
