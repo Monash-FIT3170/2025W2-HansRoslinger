@@ -44,8 +44,8 @@ export type InteractionInput = {
 
 export type GestureType = (typeof GESTURES)[number]
 
-export type HandGesture = {
-  gestureType: GestureType
-  coordinates: { x: number; y: number; z?: number };
-  zoomPercentage: number
-};
+export type ActionPayload = {
+  action: ActionType,
+  coordinates: VisualPosition[]
+  resizeScale?: number
+}
