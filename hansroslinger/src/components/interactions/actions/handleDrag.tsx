@@ -3,7 +3,7 @@ import { useVisualStore } from "store/visualsSlice";
 export const handleDrag = (
   id: string,
   pointer: { x: number; y: number },
-  offset: { x: number; y: number }
+  offset: { x: number; y: number },
 ) => {
   const store = useVisualStore.getState();
   const visual = store.getVisual(id);
