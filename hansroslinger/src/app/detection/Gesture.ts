@@ -87,7 +87,8 @@ class Pinch extends Gesture {
     const thumbTip = landmarks.landmarks[hand][4];
     const indexTip = landmarks.landmarks[hand][8];
 
-    const pinchPointX = canvas.width - canvas.width * ((thumbTip.x + indexTip.x) / 2);
+    const pinchPointX =
+      canvas.width - canvas.width * ((thumbTip.x + indexTip.x) / 2);
     const pinchPointY = canvas.height * ((thumbTip.y + indexTip.y) / 2);
 
     return {
