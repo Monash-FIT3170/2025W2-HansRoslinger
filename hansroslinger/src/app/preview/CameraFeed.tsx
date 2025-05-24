@@ -35,6 +35,10 @@ const CameraFeed = () => {
                   canvasRef.current,
                 );
                 console.log(payload);
+                const { payloads } = payload;
+                payloads.forEach((gesturePayload) =>
+                  interactionManager.handleGestureInput(gesturePayload)
+              );
                 canvasRenderer(
                   canvasRef.current,
                   videoRef.current,
