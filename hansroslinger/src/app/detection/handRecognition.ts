@@ -1,10 +1,7 @@
-import {
-  GestureRecognizer,
-  FilesetResolver,
-} from "@mediapipe/tasks-vision";
+import { GestureRecognizer, FilesetResolver } from "@mediapipe/tasks-vision";
 import { isPinch } from "./pinch";
 import { GestureFactory } from "./GestureFactory";
-import {GesturePayload} from "./Gesture";
+import { GesturePayload } from "./Gesture";
 
 let gestureRecognizer: GestureRecognizer;
 const runningMode: "VIDEO" | "IMAGE" = "VIDEO";
@@ -28,13 +25,16 @@ await createGestureRecognizer();
 
 export const HandRecogniser = async (
   video: HTMLVideoElement,
-  canvas: HTMLCanvasElement
+  canvas: HTMLCanvasElement,
 ) => {
-  console.log("HandRecogniser started"); 
+  console.log("HandRecogniser started");
 
   const startTimeMs = performance.now();
-    
-  const gestureRecognitionResult = gestureRecognizer.recognizeForVideo(video, startTimeMs);
+
+  const gestureRecognitionResult = gestureRecognizer.recognizeForVideo(
+    video,
+    startTimeMs,
+  );
   let payloads: GesturePayload[] = [];
 
   gestureRecognitionResult.gestures.forEach((gestureCandidates, i) => {
@@ -54,26 +54,26 @@ export const HandRecogniser = async (
     console.log(
       `Hand ${i + 1}: Detected gesture: ${categoryName}, Confidence: ${categoryScore}%`,
     );
-    
-    const gesture = GestureFactory(categoryName);
-    if (gesture){
-      const payload = gesture.payload(i, gestureRecognitionResult, canvas)
-      payloads.push(payload)
-    }
 
-    
+    const gesture = GestureFactory(categoryName);
+    if (gesture) {
+      const payload = gesture.payload(i, gestureRecognitionResult, canvas);
+      payloads.push(payload);
+    }
   });
 
-
   if (payloads.length === 2) {
-    if (payloads[0].name == "Pinch" && payloads[1].name == "Pinch"){
+    if (payloads[0].name == "Pinch" && payloads[1].name == "Pinch") {
       payloads = [];
       const doublePinch = GestureFactory("DoublePinch");
-      const doublePinchPayload = doublePinch!.payload(2, gestureRecognitionResult, canvas)
+      const doublePinchPayload = doublePinch!.payload(
+        2,
+        gestureRecognitionResult,
+        canvas,
+      );
       payloads.push(doublePinchPayload);
     }
   }
 
-  return {payloads, gestureRecognitionResult};
-
+  return { payloads, gestureRecognitionResult };
 };
