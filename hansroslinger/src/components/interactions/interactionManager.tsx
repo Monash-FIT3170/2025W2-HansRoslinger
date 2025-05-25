@@ -2,7 +2,12 @@ import { handleDrag } from "./actions/handleDrag";
 import { handleResize } from "./actions/handleResize";
 import { handleHover } from "./actions/handleHover";
 import { useVisualStore } from "store/visualsSlice";
-import { ActionPayload, ActionType, InteractionInput, Visual } from "types/application";
+import {
+  ActionPayload,
+  ActionType,
+  InteractionInput,
+  Visual,
+} from "types/application";
 import { HOVER, MOVE, RESIZE } from "constants/application";
 
 export class InteractionManager {
@@ -41,10 +46,13 @@ export class InteractionManager {
         }
         // if from other action then to move action, use new target
         if (target) {
-          // Calculate drag offset only on new visual grab 
-          // or if action is not the same as previous (say pinch --> open palm --> pinch 
+          // Calculate drag offset only on new visual grab
+          // or if action is not the same as previous (say pinch --> open palm --> pinch
           // (in different position but still within the bounds of the visual))
-          if (this.gestureTargetId !== target.assetId || !isActionSameAsPrevious) {
+          if (
+            this.gestureTargetId !== target.assetId ||
+            !isActionSameAsPrevious
+          ) {
             this.gestureTargetId = target.assetId;
             this.dragOffset = {
               x: point.x - target.position.x,
@@ -61,13 +69,25 @@ export class InteractionManager {
         break;
 
       case RESIZE: {
+        const targetIdOther = this.findTargetAt(coordinates[1]);
+        if (!targetIdOther || targetIdOther.assetId === this.gestureTargetId)
+          return;
         // Use midpoint or first point if no second point is available
         if (target) handleResize(target.assetId, point);
         break;
       }
     }
-    this.gestureTargetId = target ? target.assetId : null
+    this.gestureTargetId = target ? target.assetId : null;
     this.previousAction = action;
+  }
+
+  /**
+   * Clear target and previous action
+   * Only clear if the clear threshold is reached
+   */
+  handleClear() {
+    this.gestureTargetId = null;
+    this.previousAction = null;
   }
 
   /**
@@ -95,7 +115,8 @@ export class InteractionManager {
 
   // ONLY USED FOR MOUSE MOCK
   handleInput(input: InteractionInput) {
-    const targetId = input.targetId ?? this.findTargetAt(input.position)?.assetId
+    const targetId =
+      input.targetId ?? this.findTargetAt(input.position)?.assetId;
     console.log("[Manager] Input:", input.type, "Target:", targetId);
 
     if (!targetId) return;

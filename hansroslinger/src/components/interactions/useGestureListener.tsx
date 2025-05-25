@@ -9,6 +9,11 @@ export const useGestureListener = (interactionManager: InteractionManager) => {
   useEffect(() => {
     if (!gesturePayloads) return;
 
+    // Clear when no payload
+    if (gesturePayloads.length === 0) {
+      interactionManager.handleClear();
+    }
+
     gesturePayloads.forEach((payload) => {
       const action = gestureToActionMap[payload.name];
       if (action) {
