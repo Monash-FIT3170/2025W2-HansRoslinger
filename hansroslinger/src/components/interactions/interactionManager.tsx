@@ -2,11 +2,13 @@ import { handleDrag } from "./actions/handleDrag";
 import { handleResize } from "./actions/handleResize";
 import { handleHover } from "./actions/handleHover";
 import { useVisualStore } from "store/visualsSlice";
-import { ActionPayload, InteractionInput, Visual } from "types/application";
+import { ActionPayload, ActionType, InteractionInput, Visual } from "types/application";
+import { HOVER, MOVE, RESIZE } from "constants/application";
 
 export class InteractionManager {
   private gestureTargetId: string | null = null;
   private dragOffset: { x: number; y: number } | null = null;
+  private previousAction: ActionType | null = null;
 
   private get visuals() {
     return useVisualStore.getState().visuals;
@@ -24,33 +26,48 @@ export class InteractionManager {
     // Use the first gesture point as the targeting reference
     const point = coordinates[0];
     const target = this.findTargetAt(point);
-    if (!target) return;
+
+    // Flag for checking if action is same as previous action
+    const isActionSameAsPrevious = this.previousAction === action;
 
     switch (action) {
-      case "move": {
+      case MOVE: {
+        // if action is move and previous is also move, move the same target, don't find new ones
+        if (isActionSameAsPrevious) {
+          if (this.gestureTargetId) {
+            handleDrag(this.gestureTargetId, point, this.dragOffset!);
+          }
+          return;
+        }
+        // if from other action then to move action, use new target
+        if (target) {
           // Calculate drag offset only on new visual grab 
-        if (this.gestureTargetId !== target.assetId) {
-          this.gestureTargetId = target.assetId;
+          // or if action is not the same as previous (say pinch --> open palm --> pinch 
+          // (in different position but still within the bounds of the visual))
+          if (this.gestureTargetId !== target.assetId || !isActionSameAsPrevious) {
+            this.gestureTargetId = target.assetId;
             this.dragOffset = {
-            x: point.x - target.position.x,
-            y: point.y - target.position.y,
+              x: point.x - target.position.x,
+              y: point.y - target.position.y,
             };
           }
-
-        handleDrag(target.assetId, point, this.dragOffset!);
+          handleDrag(target.assetId, point, this.dragOffset!);
+        }
         break;
       }
 
-      case "hover":
-        handleHover(target.assetId, true);
+      case HOVER:
+        handleHover(target ? target.assetId : null, true);
         break;
 
-      case "resize": {
+      case RESIZE: {
         // Use midpoint or first point if no second point is available
-        handleResize(target.assetId, point);
+        if (target) handleResize(target.assetId, point);
         break;
       }
     }
+    this.gestureTargetId = target ? target.assetId : null
+    this.previousAction = action;
   }
 
   /**
