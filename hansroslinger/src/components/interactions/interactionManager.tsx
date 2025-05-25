@@ -15,6 +15,14 @@ export class InteractionManager {
   private dragOffset: { x: number; y: number } | null = null;
   private previousAction: ActionType | null = null;
 
+  /**
+   * Clear threshold prevents flicker when pinch gestures are too fast.
+   * Without it: pinch → empty → empty → pinch. Will result in loss of target visual
+   * With threshold: pinch → pinch. Does not clear target when the number of consecutive none is less then threshold
+   */
+  private readonly CLEAR_THRESHOLD = 3;
+  private currentClearCount = 0;
+
   private get visuals() {
     return useVisualStore.getState().visuals;
   }
@@ -24,6 +32,8 @@ export class InteractionManager {
    * Called by `useGestureListener` with mapped ActionPayloads.
    */
   handleAction(actionPayload: ActionPayload) {
+    // reset count
+    this.currentClearCount = 0;
     const { action, coordinates } = actionPayload;
 
     if (!coordinates || coordinates.length === 0) return;
@@ -86,8 +96,13 @@ export class InteractionManager {
    * Only clear if the clear threshold is reached
    */
   handleClear() {
-    this.gestureTargetId = null;
-    this.previousAction = null;
+    if (this.currentClearCount === this.CLEAR_THRESHOLD) {
+      handleHover(this.gestureTargetId, false);
+      this.gestureTargetId = null;
+      this.previousAction = null;
+      return;
+    }
+    this.currentClearCount += 1;
   }
 
   /**
