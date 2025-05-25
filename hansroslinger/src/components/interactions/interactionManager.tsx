@@ -2,7 +2,7 @@ import { handleDrag } from "./actions/handleDrag";
 import { handleResize } from "./actions/handleResize";
 import { handleHover } from "./actions/handleHover";
 import { useVisualStore } from "store/visualsSlice";
-import { ActionPayload, InteractionInput } from "types/application";
+import { ActionPayload, InteractionInput, Visual } from "types/application";
 
 export class InteractionManager {
   private gestureTargetId: string | null = null;
@@ -23,48 +23,45 @@ export class InteractionManager {
 
     // Use the first gesture point as the targeting reference
     const point = coordinates[0];
-    const targetId = this.findTargetAt(point);
-    if (!targetId) return;
-
-    const store = useVisualStore.getState();
-    const visual = store.getVisual(targetId);
-    if (!visual) return;
+    const target = this.findTargetAt(point);
+    if (!target) return;
 
     switch (action) {
       case "move": {
-        // Calculate drag offset only on new visual grab
-        if (this.gestureTargetId !== targetId) {
-          this.gestureTargetId = targetId;
-          this.dragOffset = {
-            x: point.x - visual.position.x,
-            y: point.y - visual.position.y,
-          };
-        }
+          // Calculate drag offset only on new visual grab 
+        if (this.gestureTargetId !== target.assetId) {
+          this.gestureTargetId = target.assetId;
+            this.dragOffset = {
+            x: point.x - target.position.x,
+            y: point.y - target.position.y,
+            };
+          }
 
-        handleDrag(targetId, point, this.dragOffset!);
+        handleDrag(target.assetId, point, this.dragOffset!);
         break;
       }
 
       case "hover":
-        handleHover(targetId, true);
+        handleHover(target.assetId, true);
         break;
 
       case "resize": {
         // Use midpoint or first point if no second point is available
-        handleResize(targetId, point);
+        handleResize(target.assetId, point);
         break;
       }
     }
   }
+
   /**
    * Finds the visual (if any) currently under the given pointer position.
    * Used when no targetId is explicitly provided by the interaction stream.
    *
    * @param position - The current pointer position (x, y) relative to canvas
-   * @returns assetId of the first visual that contains the pointer, or null if none match
+   * @returns first visual (with the highest index) that contains the pointer, or null if none match
    */
-  private findTargetAt(position: { x: number; y: number }): string | null {
-    for (const visual of this.visuals) {
+  private findTargetAt(position: { x: number; y: number }): Visual | null {
+    for (const visual of [...this.visuals].reverse()) {
       const { x, y } = visual.position;
       const { width, height } = visual.size;
 
@@ -74,14 +71,14 @@ export class InteractionManager {
         position.y >= y &&
         position.y <= y + height;
 
-      if (withinBounds) return visual.assetId;
+      if (withinBounds) return visual;
     }
     return null;
   }
 
   // ONLY USED FOR MOUSE MOCK
   handleInput(input: InteractionInput) {
-    const targetId = input.targetId ?? this.findTargetAt(input.position);
+    const targetId = input.targetId ?? this.findTargetAt(input.position)?.assetId
     console.log("[Manager] Input:", input.type, "Target:", targetId);
 
     if (!targetId) return;
