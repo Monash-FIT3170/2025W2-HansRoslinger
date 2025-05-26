@@ -1,23 +1,88 @@
 "use client";
 
-import dynamic from "next/dynamic";
+import { useEffect } from "react";
+import CameraFeed from "./CameraFeed";
+import KonvaOverlay from "@/components/KonvaOverlay";
+import { InteractionManager } from "@/components/interactions/interactionManager";
 
-import CanvasOverlay from "@/components/KonvaOverlay";
+const manager = new InteractionManager();
 
-const CameraFeed = dynamic(() => import("./CameraFeed"), {
-  ssr: false,
-});
+export default function Preview() {
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "t") return;
 
-const Preview = () => {
+      /* --------------------------------------------------------
+       * 1. Chart-relative coordinates you want to test
+       * ------------------------------------------------------ */
+      // const x = 351;
+      // const y = 262;
+
+      const positions = [
+        { x: 351, y: 262 },
+        { x: 500, y: 300 },
+        { x: 250, y: 200 },
+      ];
+
+      const { x, y } = positions[Math.floor(Math.random() * positions.length)];
+
+      /* Tell your own app about the point interaction */
+      manager.handleInput({ type: "point", position: { x, y } });
+
+      /* --------------------------------------------------------
+       * 2. Find the REAL interactive element (canvas)
+       * ------------------------------------------------------ */
+      const canvas = document.querySelector(".vega-embed canvas");
+      if (!canvas) {
+        console.warn("Vega canvas not found");
+        return;
+      }
+
+      /* --------------------------------------------------------
+       * 3. Translate to viewport coords for PointerEvent
+       * ------------------------------------------------------ */
+      //const rect = canvas.getBoundingClientRect();
+      const clientX = x;
+      const clientY = y;
+
+      /* Whichever element sits under that point gets the events */
+      const target = document.elementFromPoint(clientX, clientY) ?? canvas;
+
+      /* --------------------------------------------------------
+       * 4. Dispatch a full event chain
+       * ------------------------------------------------------ */
+      [
+        "pointerenter",
+        "pointerover",
+        "pointermove",
+        "mouseenter",
+        "mouseover",
+        "mousemove",
+      ].forEach((type) =>
+        target.dispatchEvent(
+          new PointerEvent(type, {
+            bubbles: true,
+            cancelable: true,
+            pointerId: 1,
+            pointerType: "mouse",
+            isPrimary: true,
+            clientX,
+            clientY,
+          })
+        )
+      );
+
+      console.log("[Synthetic pointer events]", { clientX, clientY, target });
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
   return (
-    <div className="flex justify-center px-4 sm:px-8">
-      <div
-        className="relative w-full max-w-full sm:max-w-2xl md:max-w-4xl lg:max-w-6xl xl:max-w-7xl 
-        aspect-video border-2 border-black overflow-hidden bg-black"
-      >
-        <CameraFeed />
-        <CanvasOverlay />
-      </div>
+    <div className="relative w-full max-w-full">
+      <CameraFeed />
+      <KonvaOverlay />
     </div>
   );
 };
