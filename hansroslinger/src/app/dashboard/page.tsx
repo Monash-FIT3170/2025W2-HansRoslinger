@@ -18,12 +18,12 @@ const Dashboard = () => {
     {
       img: ["/gestures/left-pinch.png", "/gestures/right-pinch.png"],
       title: "DOUBLE PINCH",
-      description: "Use two hands with pinch gestures to zoom",
+      description: "Use two hands with pinch gestures to zoom in and out",
     },
     {
-      img: "/gestures/fist.png",
-      title: "FIST",
-      description: "Make a fist and move to drag the canvas around",
+      img: "/gestures/point.png",
+      title: "POINT",
+      description: "Point to interact with data objects",
     },
     {
       img: "/gestures/palm.png",
