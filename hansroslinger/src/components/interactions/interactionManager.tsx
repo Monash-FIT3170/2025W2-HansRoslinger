@@ -14,7 +14,6 @@ export class InteractionManager {
   private gestureTargetId: string | null = null;
   private dragOffset: { x: number; y: number } | null = null;
   private previousAction: ActionType | null = null;
-  
 
   /**
    * Clear threshold prevents flicker when pinch gestures are too fast.
@@ -54,10 +53,14 @@ export class InteractionManager {
         const pointerA = coordinates[0];
         const pointerB = coordinates[1];
 
-        const target = this.findTargetAt(pointerA) || this.findTargetAt(pointerB);
+        const target =
+          this.findTargetAt(pointerA) || this.findTargetAt(pointerB);
         if (!target) return;
 
-        const distance = Math.hypot(pointerA.x - pointerB.x, pointerA.y - pointerB.y);
+        const distance = Math.hypot(
+          pointerA.x - pointerB.x,
+          pointerA.y - pointerB.y,
+        );
 
         if (
           this.pinchStartDistance == null ||
@@ -76,7 +79,7 @@ export class InteractionManager {
           pointerA,
           pointerB,
           this.pinchStartDistance,
-          this.pinchStartSize
+          this.pinchStartSize,
         );
 
         this.gestureTargetId = target.assetId;
