@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 
 interface AddTodoProps {
   onAdd: (text: string) => void;
 }
 
 export default function AddTodo({ onAdd }: AddTodoProps) {
-  const [text, setText] = useState('');
+  const [text, setText] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (text.trim()) {
       onAdd(text.trim());
-      setText('');
+      setText("");
     }
   };
 
