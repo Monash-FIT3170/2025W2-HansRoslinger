@@ -59,7 +59,7 @@ export class InteractionManager {
 
         const distance = Math.hypot(
           pointerA.x - pointerB.x,
-          pointerA.y - pointerB.y,
+          pointerA.y - pointerB.y
         );
 
         if (
@@ -79,7 +79,7 @@ export class InteractionManager {
           pointerA,
           pointerB,
           this.pinchStartDistance,
-          this.pinchStartSize,
+          this.pinchStartSize
         );
 
         this.gestureTargetId = target.assetId;
@@ -171,9 +171,19 @@ export class InteractionManager {
       case "move":
         handleDrag(targetId, input.position, { x: 0, y: 0 });
         break;
-      case "resize":
-        handleResize(targetId, input.position);
+      case "resize": {
+        const target = this.findTargetAt(input.position);
+        if (!target) break;
+        // For mouse mock, use the same position for both pointers and a default pinch distance/size
+        handleResize(
+          target.assetId,
+          input.position,
+          input.position,
+          1, // mock pinchStartDistance
+          { ...target.size } // mock pinchStartSize
+        );
         break;
+      }
       case "hover":
         handleHover(targetId, input.isHovered ?? true);
         break;
