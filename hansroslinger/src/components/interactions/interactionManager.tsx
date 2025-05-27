@@ -71,7 +71,8 @@ export class InteractionManager {
         if (
           this.pinchStartDistance == null ||
           this.pinchStartSize == null ||
-          this.gestureTargetId !== target.assetId
+          this.gestureTargetId !== target.assetId ||
+          !isActionSameAsPrevious
         ) {
           this.pinchStartDistance = distance;
           this.pinchStartSize = { ...target.size };
