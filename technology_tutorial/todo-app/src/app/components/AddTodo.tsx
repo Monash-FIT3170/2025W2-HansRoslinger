@@ -1,19 +1,33 @@
+<<<<<<< HEAD
 "use client";
 
 import { useState } from "react";
+=======
+'use client';
+
+import { useState } from 'react';
+>>>>>>> ed34824 (Implement todo app with backend API)
 
 interface AddTodoProps {
   onAdd: (text: string) => void;
 }
 
 export default function AddTodo({ onAdd }: AddTodoProps) {
+<<<<<<< HEAD
   const [text, setText] = useState("");
+=======
+  const [text, setText] = useState('');
+>>>>>>> ed34824 (Implement todo app with backend API)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (text.trim()) {
       onAdd(text.trim());
+<<<<<<< HEAD
       setText("");
+=======
+      setText('');
+>>>>>>> ed34824 (Implement todo app with backend API)
     }
   };
 

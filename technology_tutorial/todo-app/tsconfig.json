@@ -21,7 +21,10 @@
     "paths": {
       "@/*": ["./src/app/*"]
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> ed34824 (Implement todo app with backend API)
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
