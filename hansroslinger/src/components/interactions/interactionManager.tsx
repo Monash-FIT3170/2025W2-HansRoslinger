@@ -2,8 +2,6 @@ import { handleDrag } from "./actions/handleDrag";
 import { handleResize } from "./actions/handleResize";
 import { handleHover } from "./actions/handleHover";
 import { useVisualStore } from "store/visualsSlice";
-//import { useInteractionStore } from "store/interactionStore";
-
 import {
   ActionPayload,
   ActionType,
@@ -159,12 +157,6 @@ export class InteractionManager {
    * @returns first visual (with the highest index) that contains the pointer, or null if none match
    */
   private findTargetAt(position: { x: number; y: number }): Visual | null {
-    console.log("[Manager] Finding target at position:", position);
-
-    
-    //useInteractionStore.getState().setPointer(position);
-
-
     for (const visual of [...this.visuals].reverse()) {
       const { x, y } = visual.position;
       const { width, height } = visual.size;
