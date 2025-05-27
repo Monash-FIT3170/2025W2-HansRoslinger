@@ -50,6 +50,48 @@ export class InteractionManager {
     const isActionSameAsPrevious = this.previousAction === action;
 
     switch (action) {
+      case RESIZE: {
+        // If no visual has been selected, don't resize visual
+        if (!this.hoveredTargetId){
+          return;
+        }
+        
+        const pointerA = coordinates[0];
+        const pointerB = coordinates[1];
+
+        const target =
+          this.findTargetAt(pointerA) || this.findTargetAt(pointerB);
+        if (!target) return;
+
+        const distance = Math.hypot(
+          pointerA.x - pointerB.x,
+          pointerA.y - pointerB.y,
+        );
+
+        if (
+          this.pinchStartDistance == null ||
+          this.pinchStartSize == null ||
+          this.gestureTargetId !== target.assetId
+        ) {
+          this.pinchStartDistance = distance;
+          this.pinchStartSize = { ...target.size };
+          this.gestureTargetId = target.assetId;
+          this.previousAction = action;
+          return;
+        }
+
+        handleResize(
+          target.assetId,
+          pointerA,
+          pointerB,
+          this.pinchStartDistance,
+          this.pinchStartSize,
+        );
+
+        this.gestureTargetId = target.assetId;
+        this.previousAction = action;
+        break;
+      }
       case HOVER:
         if (target){
           this.hoveredTargetId = target.assetId;
@@ -90,19 +132,6 @@ export class InteractionManager {
         break;
       }
 
-      case RESIZE: {
-        // If no visual has been selected, don't resize visual
-        if (!this.hoveredTargetId){
-          return;
-        }
-        
-        const targetIdOther = this.findTargetAt(coordinates[1]);
-        if (!targetIdOther || targetIdOther.assetId === this.gestureTargetId)
-          return;
-        // Use midpoint or first point if no second point is available
-        if (target) handleResize(target.assetId, point);
-        break;
-      }
     }
     this.gestureTargetId = target ? target.assetId : null;
     this.previousAction = action;
