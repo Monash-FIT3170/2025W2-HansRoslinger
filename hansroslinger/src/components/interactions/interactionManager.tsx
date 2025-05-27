@@ -50,45 +50,6 @@ export class InteractionManager {
     const isActionSameAsPrevious = this.previousAction === action;
 
     switch (action) {
-<<<<<<< HEAD
-      case RESIZE: {
-        const pointerA = coordinates[0];
-        const pointerB = coordinates[1];
-
-        const target =
-          this.findTargetAt(pointerA) || this.findTargetAt(pointerB);
-        if (!target) return;
-
-        const distance = Math.hypot(
-          pointerA.x - pointerB.x,
-          pointerA.y - pointerB.y,
-        );
-
-        if (
-          this.pinchStartDistance == null ||
-          this.pinchStartSize == null ||
-          this.gestureTargetId !== target.assetId
-        ) {
-          this.pinchStartDistance = distance;
-          this.pinchStartSize = { ...target.size };
-          this.gestureTargetId = target.assetId;
-          this.previousAction = action;
-          return;
-        }
-
-        handleResize(
-          target.assetId,
-          pointerA,
-          pointerB,
-          this.pinchStartDistance,
-          this.pinchStartSize,
-        );
-
-        this.gestureTargetId = target.assetId;
-        this.previousAction = action;
-        break;
-      }
-=======
       case HOVER:
         if (target){
           this.hoveredTargetId = target.assetId;
@@ -96,7 +57,6 @@ export class InteractionManager {
         }
         break;
 
->>>>>>> 3030df3 (Enforce hover (selection) before moving or resizing visuals)
       case MOVE: {
         // If no visual has been selected, don't move visual
         if (!this.hoveredTargetId){
@@ -130,11 +90,6 @@ export class InteractionManager {
         break;
       }
 
-<<<<<<< HEAD
-      case HOVER:
-        handleHover(target ? target.assetId : null, true);
-        break;
-=======
       case RESIZE: {
         // If no visual has been selected, don't resize visual
         if (!this.hoveredTargetId){
@@ -148,7 +103,6 @@ export class InteractionManager {
         if (target) handleResize(target.assetId, point);
         break;
       }
->>>>>>> 3030df3 (Enforce hover (selection) before moving or resizing visuals)
     }
     this.gestureTargetId = target ? target.assetId : null;
     this.previousAction = action;
