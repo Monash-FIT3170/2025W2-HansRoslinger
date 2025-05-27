@@ -59,7 +59,7 @@ export class InteractionManager {
 
         const distance = Math.hypot(
           pointerA.x - pointerB.x,
-          pointerA.y - pointerB.y
+          pointerA.y - pointerB.y,
         );
 
         if (
@@ -79,7 +79,7 @@ export class InteractionManager {
           pointerA,
           pointerB,
           this.pinchStartDistance,
-          this.pinchStartSize
+          this.pinchStartSize,
         );
 
         this.gestureTargetId = target.assetId;
@@ -180,7 +180,7 @@ export class InteractionManager {
           input.position,
           input.position,
           1, // mock pinchStartDistance
-          { ...target.size } // mock pinchStartSize
+          { ...target.size }, // mock pinchStartSize
         );
         break;
       }
