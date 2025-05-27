@@ -46,9 +46,14 @@ class OpenPalm extends Gesture {
     const middleBase = landmarks.landmarks[hand][9];
     const palmCenterY = canvas.height * ((wrist.y + middleBase.y) / 2);
     const palmCenterX = canvas.width - canvas.width * wrist.x;
+    const indexFingerTip = landmarks.landmarks[hand][8];
+    const indexFingerY = canvas.height * indexFingerTip.y;
+    const indexFingerX = canvas.width * indexFingerTip.x;
+
     return {
       name: this.name,
-      points: { palmCenter: { x: palmCenterX, y: palmCenterY } },
+      points: { indexFingerTip: { x: indexFingerX, y: indexFingerY },
+      palmCenter: { x: palmCenterX, y: palmCenterY } },
     };
   }
 }
