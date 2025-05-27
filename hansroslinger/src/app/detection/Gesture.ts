@@ -52,8 +52,10 @@ class OpenPalm extends Gesture {
 
     return {
       name: this.name,
-      points: { indexFingerTip: { x: indexFingerX, y: indexFingerY },
-      palmCenter: { x: palmCenterX, y: palmCenterY } },
+      points: {
+        indexFingerTip: { x: indexFingerX, y: indexFingerY },
+        palmCenter: { x: palmCenterX, y: palmCenterY },
+      },
     };
   }
 }
