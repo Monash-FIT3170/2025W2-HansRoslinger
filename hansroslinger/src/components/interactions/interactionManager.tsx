@@ -14,6 +14,7 @@ export class InteractionManager {
   private gestureTargetId: string | null = null;
   private dragOffset: { x: number; y: number } | null = null;
   private previousAction: ActionType | null = null;
+  private hoveredTargetId: string | null = null;
 
   /**
    * Clear threshold prevents flicker when pinch gestures are too fast.
@@ -49,6 +50,7 @@ export class InteractionManager {
     const isActionSameAsPrevious = this.previousAction === action;
 
     switch (action) {
+<<<<<<< HEAD
       case RESIZE: {
         const pointerA = coordinates[0];
         const pointerB = coordinates[1];
@@ -86,7 +88,21 @@ export class InteractionManager {
         this.previousAction = action;
         break;
       }
+=======
+      case HOVER:
+        if (target){
+          this.hoveredTargetId = target.assetId;
+          handleHover(target ? target.assetId : null, true);
+        }
+        break;
+
+>>>>>>> 3030df3 (Enforce hover (selection) before moving or resizing visuals)
       case MOVE: {
+        // If no visual has been selected, don't move visual
+        if (!this.hoveredTargetId){
+          return;
+        }
+        
         // if action is move and previous is also move, move the same target, don't find new ones
         if (isActionSameAsPrevious) {
           if (this.gestureTargetId) {
@@ -114,9 +130,25 @@ export class InteractionManager {
         break;
       }
 
+<<<<<<< HEAD
       case HOVER:
         handleHover(target ? target.assetId : null, true);
         break;
+=======
+      case RESIZE: {
+        // If no visual has been selected, don't resize visual
+        if (!this.hoveredTargetId){
+          return;
+        }
+        
+        const targetIdOther = this.findTargetAt(coordinates[1]);
+        if (!targetIdOther || targetIdOther.assetId === this.gestureTargetId)
+          return;
+        // Use midpoint or first point if no second point is available
+        if (target) handleResize(target.assetId, point);
+        break;
+      }
+>>>>>>> 3030df3 (Enforce hover (selection) before moving or resizing visuals)
     }
     this.gestureTargetId = target ? target.assetId : null;
     this.previousAction = action;
@@ -131,6 +163,7 @@ export class InteractionManager {
       handleHover(this.gestureTargetId, false);
       this.gestureTargetId = null;
       this.previousAction = null;
+      this.hoveredTargetId = null;
       return;
     }
     this.currentClearCount += 1;
