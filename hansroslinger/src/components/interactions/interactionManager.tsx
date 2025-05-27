@@ -52,10 +52,10 @@ export class InteractionManager {
     switch (action) {
       case RESIZE: {
         // If no visual has been selected, don't resize visual
-        if (!this.hoveredTargetId){
+        if (!this.hoveredTargetId) {
           return;
         }
-        
+
         const pointerA = coordinates[0];
         const pointerB = coordinates[1];
 
@@ -93,7 +93,7 @@ export class InteractionManager {
         break;
       }
       case HOVER:
-        if (target){
+        if (target) {
           this.hoveredTargetId = target.assetId;
           handleHover(target ? target.assetId : null, true);
         }
@@ -101,10 +101,10 @@ export class InteractionManager {
 
       case MOVE: {
         // If no visual has been selected, don't move visual
-        if (!this.hoveredTargetId){
+        if (!this.hoveredTargetId) {
           return;
         }
-        
+
         // if action is move and previous is also move, move the same target, don't find new ones
         if (isActionSameAsPrevious) {
           if (this.gestureTargetId) {
@@ -131,7 +131,6 @@ export class InteractionManager {
         }
         break;
       }
-
     }
     this.gestureTargetId = target ? target.assetId : null;
     this.previousAction = action;
