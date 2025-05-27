@@ -15,7 +15,7 @@ export const createGestureRecognizer = async () => {
     baseOptions: {
       modelAssetPath:
         "https://storage.googleapis.com/mediapipe-tasks/gesture_recognizer/gesture_recognizer.task",
-      delegate: "CPU",
+      delegate: "GPU",
     },
     runningMode: runningMode,
     numHands: 2,
