@@ -167,7 +167,11 @@ export class InteractionManager {
         position.y >= y &&
         position.y <= y + height;
 
-      if (withinBounds) return visual;
+      if (withinBounds) {
+      console.log('[Manager] Found target ${visual.assetId} under pointer at (${position.x}, ${position.y})'
+      );
+      return visual;
+    }
     }
     return null;
   }
