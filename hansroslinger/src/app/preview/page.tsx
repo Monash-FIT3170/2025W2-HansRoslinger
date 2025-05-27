@@ -18,11 +18,7 @@ export default function Preview() {
       // const x = 351;
       // const y = 262;
 
-      const positions = [
-        { x: 351, y: 262 },
-        { x: 500, y: 300 },
-        { x: 250, y: 200 },
-      ];
+      const positions = [{ x: 351, y: 262 }];
 
       const { x, y } = positions[Math.floor(Math.random() * positions.length)];
 
