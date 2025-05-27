@@ -14,6 +14,7 @@ export class InteractionManager {
   private gestureTargetId: string | null = null;
   private dragOffset: { x: number; y: number } | null = null;
   private previousAction: ActionType | null = null;
+  
 
   /**
    * Clear threshold prevents flicker when pinch gestures are too fast.
@@ -26,6 +27,9 @@ export class InteractionManager {
   private get visuals() {
     return useVisualStore.getState().visuals;
   }
+
+  private pinchStartDistance: number | null = null;
+  private pinchStartSize: { width: number; height: number } | null = null;
 
   /**
    * Primary handler for all gesture-to-action mappings.
@@ -46,6 +50,39 @@ export class InteractionManager {
     const isActionSameAsPrevious = this.previousAction === action;
 
     switch (action) {
+      case RESIZE: {
+        const pointerA = coordinates[0];
+        const pointerB = coordinates[1];
+
+        const target = this.findTargetAt(pointerA) || this.findTargetAt(pointerB);
+        if (!target) return;
+
+        const distance = Math.hypot(pointerA.x - pointerB.x, pointerA.y - pointerB.y);
+
+        if (
+          this.pinchStartDistance == null ||
+          this.pinchStartSize == null ||
+          this.gestureTargetId !== target.assetId
+        ) {
+          this.pinchStartDistance = distance;
+          this.pinchStartSize = { ...target.size };
+          this.gestureTargetId = target.assetId;
+          this.previousAction = action;
+          return;
+        }
+
+        handleResize(
+          target.assetId,
+          pointerA,
+          pointerB,
+          this.pinchStartDistance,
+          this.pinchStartSize
+        );
+
+        this.gestureTargetId = target.assetId;
+        this.previousAction = action;
+        break;
+      }
       case MOVE: {
         // if action is move and previous is also move, move the same target, don't find new ones
         if (isActionSameAsPrevious) {
@@ -77,15 +114,6 @@ export class InteractionManager {
       case HOVER:
         handleHover(target ? target.assetId : null, true);
         break;
-
-      case RESIZE: {
-        const targetIdOther = this.findTargetAt(coordinates[1]);
-        if (!targetIdOther || targetIdOther.assetId === this.gestureTargetId)
-          return;
-        // Use midpoint or first point if no second point is available
-        if (target) handleResize(target.assetId, point);
-        break;
-      }
     }
     this.gestureTargetId = target ? target.assetId : null;
     this.previousAction = action;
