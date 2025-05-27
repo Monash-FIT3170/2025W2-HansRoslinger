@@ -3,3 +3,4 @@
 - Joshua Cui
 - Stephanie Simangunsong
 - Maxwell Lay
+- Vedansh Malhan
