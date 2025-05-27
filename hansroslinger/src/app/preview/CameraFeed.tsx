@@ -25,10 +25,16 @@ const CameraFeed = () => {
           audio: true,
         });
 
-        if (videoRef.current && canvasRef.current) {
+         if (videoRef.current && canvasRef.current) {
           videoRef.current.srcObject = stream;
           setInterval(async () => {
             if (videoRef.current && canvasRef.current) {
+              if (
+                videoRef.current.videoWidth > 0 &&
+                videoRef.current.videoHeight > 0 &&
+                canvasRef.current.width > 0 &&
+                canvasRef.current.height > 0
+              ){
               const payload = await HandRecogniser(
                 videoRef.current,
                 canvasRef.current,
@@ -41,6 +47,7 @@ const CameraFeed = () => {
               );
               setGesturePayload(payload.payloads);
             }
+          }
           }, 100);
         }
       } catch (err) {
