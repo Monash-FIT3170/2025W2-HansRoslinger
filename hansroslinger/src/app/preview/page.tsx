@@ -15,12 +15,12 @@ export default function Preview() {
       /* --------------------------------------------------------
        * 1. Chart-relative coordinates you want to test
        * ------------------------------------------------------ */
-      // const x = 351;
-      // const y = 262;
+      const x = 351;
+      const y = 262;
 
-      const positions = [{ x: 351, y: 262 }];
+      // const positions = [{ x: 351, y: 262 }];
 
-      const { x, y } = positions[Math.floor(Math.random() * positions.length)];
+      // const { x, y } = positions[Math.floor(Math.random() * positions.length)];
 
       /* Tell your own app about the point interaction */
       manager.handleInput({ type: "point", position: { x, y } });
@@ -31,7 +31,7 @@ export default function Preview() {
       const canvas = document.querySelector(".vega-embed canvas");
       if (!canvas) {
         console.warn("Vega canvas not found");
-        return;
+
       }
 
       /* --------------------------------------------------------
