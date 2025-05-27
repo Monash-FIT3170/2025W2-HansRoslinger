@@ -10,7 +10,9 @@ import { persist } from "zustand/middleware";
 
 type VisualsState = {
   visuals: Visual[];
+  pointerPosition: { x: number; y: number } | null;
 
+  setPointerPosition: (position: { x: number; y: number } | null) => void;
   setVisual: (assetId: string, data: Visual) => void;
   addSelectedUpload: (assetId: string, uploadData: UploadProp) => void;
   removeVisual: (assetId: string) => void;
@@ -21,7 +23,7 @@ type VisualsState = {
   setVisualHover: (assetId: string, isHovered: boolean) => void;
   setUseOriginalSizeOnLoad: (
     assetId: string,
-    useOriginalSizeOnLoad: boolean,
+    useOriginalSizeOnLoad: boolean
   ) => void;
 };
 
@@ -29,18 +31,19 @@ export const useVisualStore = create<VisualsState>()(
   persist(
     (set, get) => ({
       visuals: [],
+      pointerPosition: null,
+
+      setPointerPosition: (position) => set({ pointerPosition: position }),
 
       setVisual: (assetId, data) =>
         set((state) => {
           const existingIndex = state.visuals.findIndex(
-            (existingVisual) => existingVisual.assetId === assetId,
+            (existingVisual) => existingVisual.assetId === assetId
           );
           const updated = [...state.visuals];
           if (existingIndex >= 0) {
-            // Update if visual already exists
             updated[existingIndex] = data;
           } else {
-            // Add if not
             updated.push(data);
           }
           return { visuals: updated };
@@ -48,9 +51,8 @@ export const useVisualStore = create<VisualsState>()(
 
       addSelectedUpload: (assetId, uploadData) =>
         set((state) => {
-          // Check if already exist, return original if true
           const alreadyExists = state.visuals.some(
-            (existingVisual) => existingVisual.assetId === assetId,
+            (existingVisual) => existingVisual.assetId === assetId
           );
           if (alreadyExists) return { visuals: state.visuals };
 
@@ -60,7 +62,6 @@ export const useVisualStore = create<VisualsState>()(
             position: { x: 0, y: 0 },
             size: { width: 300, height: 200 },
             isHovered: false,
-            // When selected, should default to original size
             useOriginalSizeOnLoad: true,
           };
           return { visuals: [...state.visuals, visual] };
@@ -76,45 +77,38 @@ export const useVisualStore = create<VisualsState>()(
       getVisual: (assetId) =>
         get().visuals.find((visual) => visual.assetId === assetId),
 
-      // Need to keep track of size and position since konva does not accept html component as its child
-      // set size
       setVisualSize: (assetId, size) =>
         set((state) => ({
           visuals: state.visuals.map((visual) =>
-            visual.assetId === assetId ? { ...visual, size } : visual,
+            visual.assetId === assetId ? { ...visual, size } : visual
           ),
         })),
 
-      // set position
       setVisualPosition: (assetId, position) =>
         set((state) => ({
           visuals: state.visuals.map((visual) =>
-            visual.assetId === assetId ? { ...visual, position } : visual,
-          ),
-        })),
-      // set hover
-      setVisualHover: (assetId, isHovered) =>
-        set((state) => ({
-          visuals: state.visuals.map((visual) =>
-            visual.assetId === assetId ? { ...visual, isHovered } : visual,
+            visual.assetId === assetId ? { ...visual, position } : visual
           ),
         })),
 
-      // To determine whether original size (obtained from image or json file) will be used for render or the stored size
+      setVisualHover: (assetId, isHovered) =>
+        set((state) => ({
+          visuals: state.visuals.map((visual) =>
+            visual.assetId === assetId ? { ...visual, isHovered } : visual
+          ),
+        })),
+
       setUseOriginalSizeOnLoad: (assetId, useOriginalSizeOnLoad) =>
         set((state) => ({
           visuals: state.visuals.map((visual) =>
             visual.assetId === assetId
               ? { ...visual, useOriginalSizeOnLoad }
-              : visual,
+              : visual
           ),
         })),
     }),
     {
-      // For persists
-      // zustand persists default to storing it in localstorage
-      // name is local storage key
       name: LOCAL_STORAGE_KEY_SELECTED_UPLOAD,
-    },
-  ),
+    }
+  )
 );
