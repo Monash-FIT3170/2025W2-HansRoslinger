@@ -93,10 +93,8 @@ export class InteractionManager {
         break;
       }
       case HOVER:
-        if (target) {
-          this.hoveredTargetId = target.assetId;
-          handleHover(target ? target.assetId : null, true);
-        }
+        this.hoveredTargetId = target ? target.assetId : null;
+        handleHover(target ? target.assetId : null, true);
         break;
 
       case MOVE: {
@@ -106,10 +104,8 @@ export class InteractionManager {
         }
 
         // if action is move and previous is also move, move the same target, don't find new ones
-        if (isActionSameAsPrevious) {
-          if (this.gestureTargetId) {
-            handleDrag(this.gestureTargetId, point, this.dragOffset!);
-          }
+        if (this.gestureTargetId && this.dragOffset && isActionSameAsPrevious) {
+          handleDrag(this.gestureTargetId, point, this.dragOffset);
           return;
         }
         // if from other action then to move action, use new target
@@ -146,6 +142,7 @@ export class InteractionManager {
       this.gestureTargetId = null;
       this.previousAction = null;
       this.hoveredTargetId = null;
+      this.dragOffset = null;
       return;
     }
     this.currentClearCount += 1;
