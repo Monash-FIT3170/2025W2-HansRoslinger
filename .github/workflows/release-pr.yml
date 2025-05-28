@@ -18,10 +18,8 @@ jobs:
 
       - name: Install apt
         run: |
-          sudo apt install -y npm
+          sudo apt install -y npm && cd hansroslinger && npm install
       - name: Lint
-        run: |
-          cd hansroslinger
         uses: wearerequired/lint-action@v2
         with:
           eslint: true
