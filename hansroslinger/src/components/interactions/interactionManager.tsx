@@ -68,6 +68,24 @@ export class InteractionManager {
           pointerA.y - pointerB.y,
         );
 
+        // if action is move and previous is also move, move the same target, don't find new ones
+        if (
+          this.hoveredTargetId &&
+          this.pinchStartDistance &&
+          this.pinchStartSize &&
+          isActionSameAsPrevious
+        ) {
+          handleResize(
+            this.hoveredTargetId,
+            pointerA,
+            pointerB,
+            this.pinchStartDistance,
+            this.pinchStartSize,
+          );
+
+          return;
+        }
+
         if (
           this.pinchStartDistance == null ||
           this.pinchStartSize == null ||
@@ -105,8 +123,8 @@ export class InteractionManager {
         }
 
         // if action is move and previous is also move, move the same target, don't find new ones
-        if (this.gestureTargetId && this.dragOffset && isActionSameAsPrevious) {
-          handleDrag(this.gestureTargetId, point, this.dragOffset);
+        if (this.hoveredTargetId && this.dragOffset && isActionSameAsPrevious) {
+          handleDrag(this.hoveredTargetId, point, this.dragOffset);
           return;
         }
         // if from other action then to move action, use new target
