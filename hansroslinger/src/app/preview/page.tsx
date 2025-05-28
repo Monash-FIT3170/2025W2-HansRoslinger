@@ -10,6 +10,6 @@ export default function Preview() {
       <KonvaOverlay />
     </div>
   );
-};
+}
 
 export default Preview;

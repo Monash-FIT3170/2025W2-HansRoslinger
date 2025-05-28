@@ -23,7 +23,7 @@ type VisualsState = {
   setVisualHover: (assetId: string, isHovered: boolean) => void;
   setUseOriginalSizeOnLoad: (
     assetId: string,
-    useOriginalSizeOnLoad: boolean
+    useOriginalSizeOnLoad: boolean,
   ) => void;
 };
 
@@ -38,7 +38,7 @@ export const useVisualStore = create<VisualsState>()(
       setVisual: (assetId, data) =>
         set((state) => {
           const existingIndex = state.visuals.findIndex(
-            (existingVisual) => existingVisual.assetId === assetId
+            (existingVisual) => existingVisual.assetId === assetId,
           );
           const updated = [...state.visuals];
           if (existingIndex >= 0) {
@@ -52,7 +52,7 @@ export const useVisualStore = create<VisualsState>()(
       addSelectedUpload: (assetId, uploadData) =>
         set((state) => {
           const alreadyExists = state.visuals.some(
-            (existingVisual) => existingVisual.assetId === assetId
+            (existingVisual) => existingVisual.assetId === assetId,
           );
           if (alreadyExists) return { visuals: state.visuals };
 
@@ -80,21 +80,21 @@ export const useVisualStore = create<VisualsState>()(
       setVisualSize: (assetId, size) =>
         set((state) => ({
           visuals: state.visuals.map((visual) =>
-            visual.assetId === assetId ? { ...visual, size } : visual
+            visual.assetId === assetId ? { ...visual, size } : visual,
           ),
         })),
 
       setVisualPosition: (assetId, position) =>
         set((state) => ({
           visuals: state.visuals.map((visual) =>
-            visual.assetId === assetId ? { ...visual, position } : visual
+            visual.assetId === assetId ? { ...visual, position } : visual,
           ),
         })),
 
       setVisualHover: (assetId, isHovered) =>
         set((state) => ({
           visuals: state.visuals.map((visual) =>
-            visual.assetId === assetId ? { ...visual, isHovered } : visual
+            visual.assetId === assetId ? { ...visual, isHovered } : visual,
           ),
         })),
 
@@ -103,12 +103,12 @@ export const useVisualStore = create<VisualsState>()(
           visuals: state.visuals.map((visual) =>
             visual.assetId === assetId
               ? { ...visual, useOriginalSizeOnLoad }
-              : visual
+              : visual,
           ),
         })),
     }),
     {
       name: LOCAL_STORAGE_KEY_SELECTED_UPLOAD,
-    }
-  )
+    },
+  ),
 );
