@@ -22,6 +22,8 @@ jobs:
       - name: Lint
         uses: wearerequired/lint-action@v2
         with:
+          eslint_dir: hansroslinger/
+          prettier_dir: hansroslinger/
           eslint: true
           prettier: true
           auto_fix: true
