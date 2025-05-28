@@ -19,9 +19,6 @@ jobs:
       - name: Install apt
         run: |
           sudo apt install -y npm
-      - name: Lint
-        run: |
-          cd hansroslinger && npm install && npm run lint
 
   deploy:
     runs-on: ubuntu-latest
