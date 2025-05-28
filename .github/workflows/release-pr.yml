@@ -19,6 +19,13 @@ jobs:
       - name: Install apt
         run: |
           sudo apt install -y npm
+      - name: Lint
+        run: |
+          cd hansroslinger
+        uses: wearerequired/lint-action@v2
+        with:
+          eslint: true
+          prettier: true
 
   deploy:
     runs-on: ubuntu-latest
