@@ -1,4 +1,5 @@
 ## Completion checklist
+
 - Dana McDonald
 - Joshua Cui
 - Stephanie Simangunsong
@@ -9,3 +10,4 @@
 - Rohan Jaggi
 - Albert Liesman
 - Harrison Fulton
+- Justin Thiha
