@@ -6,3 +6,4 @@
 - Joanne Li Wen Yew
 - Zachary Yeap
 - Maxwell Lay
+- Rohan Jaggi
