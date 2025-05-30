@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import TodoList from '@/components/TodoList';
-import AddTodo from '@/components/AddTodo';
+import { useState, useEffect } from "react";
+import TodoList from "./components/TodoList";
+import AddTodo from "./components/AddTodo";
 
 export default function Home() {
   const [todos, setTodos] = useState<string[]>([]);
@@ -10,7 +10,7 @@ export default function Home() {
 
   const fetchTodos = async () => {
     setLoading(true);
-    const res = await fetch('/api/todos');
+    const res = await fetch("/api/todos");
     const data = await res.json();
     setTodos(data.todos || []);
     setLoading(false);
@@ -21,18 +21,18 @@ export default function Home() {
   }, []);
 
   const addTodo = async (text: string) => {
-    await fetch('/api/todos', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    await fetch("/api/todos", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text }),
     });
     fetchTodos();
   };
 
   const deleteTodo = async (index: number) => {
-    await fetch('/api/todos', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
+    await fetch("/api/todos", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ index }),
     });
     fetchTodos();
