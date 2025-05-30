@@ -6,3 +6,4 @@
 - Vedansh Malhan
 - Joanne Li Wen Yew
 - Zachary Yeap
+- Rohan Jaggi
