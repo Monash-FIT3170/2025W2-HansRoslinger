@@ -4,3 +4,5 @@
 - Stephanie Simangunsong
 - Maxwell Lay
 - Vedansh Malhan
+- Joanne Li Wen Yew
+- Zachary Yeap
