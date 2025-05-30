@@ -4,3 +4,4 @@
 - Stephanie Simangunsong
 - Vedansh Malhan
 - Joanne Li Wen Yew
+- Zachary Yeap
