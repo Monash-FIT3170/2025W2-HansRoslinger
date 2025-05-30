@@ -7,3 +7,5 @@
 - Joanne Li Wen Yew
 - Zachary Yeap
 - Rohan Jaggi
+- Albert Liesman
+- Harrison Fulton
