@@ -2,9 +2,9 @@
 - Dana McDonald
 - Joshua Cui
 - Stephanie Simangunsong
-- Maxwell Lay
 - Vedansh Malhan
 - Joanne Li Wen Yew
 - Zachary Yeap
+- Maxwell Lay
 - Rohan Jaggi
->>>>>>> 7e8c547 (Implement todo app with backend API)
+- Albert Liesman
