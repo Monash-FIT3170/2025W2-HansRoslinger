@@ -11,3 +11,6 @@
 - Albert Liesman
 - Harrison Fulton
 - Justin Thiha
+
+- Joanne Li Wen Yew
+- Zachary Yeap
