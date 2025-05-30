@@ -6,4 +6,5 @@
 - Maxwell Lay
 =======
 - Vedansh Malhan
->>>>>>> ed34824 (Implement todo app with backend API)
+- Joanne Li Wen Yew
+- Zachary Yeap
