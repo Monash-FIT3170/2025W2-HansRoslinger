@@ -1,10 +1,10 @@
 ## Completion checklist
 - Dana McDonald
 - Joshua Cui
-<<<<<<< HEAD
 - Stephanie Simangunsong
 - Maxwell Lay
-=======
 - Vedansh Malhan
 - Joanne Li Wen Yew
 - Zachary Yeap
+- Rohan Jaggi
+>>>>>>> 7e8c547 (Implement todo app with backend API)

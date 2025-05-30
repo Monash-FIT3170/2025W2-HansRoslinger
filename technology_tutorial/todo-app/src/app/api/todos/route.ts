@@ -22,8 +22,4 @@ export async function DELETE(req: Request) {
   }
   todos.splice(index, 1);
   return NextResponse.json({ success: true, todos });
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> ed34824 (Implement todo app with backend API)
