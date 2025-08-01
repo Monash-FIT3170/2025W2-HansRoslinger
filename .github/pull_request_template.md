@@ -1,7 +1,7 @@
-## <type>(<scope>): <brief description>
+## <type>(<scope>): <brief description> ([Link](Paste Notion link here))
 
 <!--
-Example: feat(UI): Add gesture-based slide navigation
+Example: feat(UI): Add gesture-based slide navigation ([Link](https://www.notion.so/your-task-url))
 
 Type options:
 - feat: A new feature
