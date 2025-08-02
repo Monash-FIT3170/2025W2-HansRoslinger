@@ -2,6 +2,7 @@
 
 import React, { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { createUser } from '../../database/common/user/createUser';
 
 export default function SignUpPage() {
   const [email, setEmail] = useState<string>('');
@@ -10,7 +11,7 @@ export default function SignUpPage() {
   const [error, setError] = useState<string>('');
   const router = useRouter();
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!email || !password || !confirmPassword) {
@@ -25,8 +26,14 @@ export default function SignUpPage() {
 
     setError('');
     console.log('Signing up with:', { email, password });
-
-    // Example: redirect to login
+    //create user in database
+    try {
+      await createUser(email, password);
+    } catch (error) {
+      setError('Error creating user. Please try again. User may already exist.');
+      console.error('Error creating user:', error);
+      return;
+    }
     router.push('/login');
   };
 
