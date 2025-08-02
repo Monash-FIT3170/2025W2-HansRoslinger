@@ -2,6 +2,7 @@
 
 import React, { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { getUser } from '../../database/common/user/getUser';
 
 export default function LoginPage(): JSX.Element {
   const [email, setEmail] = useState<string>('');
@@ -9,7 +10,7 @@ export default function LoginPage(): JSX.Element {
   const [error, setError] = useState<string>('');
   const router = useRouter();
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!email || !password) {
@@ -19,8 +20,13 @@ export default function LoginPage(): JSX.Element {
 
     setError('');
     console.log('Logging in with:', { email, password });
-
-    // Example: redirect to dashboard
+    //fetch user from database
+    const user = await getUser(email);
+    if (!user || user.password !== password) {
+      setError('User not found or incorrect password.');
+      return;
+    }
+    //redirect to dashboard
     router.push('/dashboard');
   };
 
