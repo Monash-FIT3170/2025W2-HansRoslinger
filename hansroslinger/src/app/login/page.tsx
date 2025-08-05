@@ -2,7 +2,7 @@
 
 import React, { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { LoginResponse } from '../../api/login/route';
+import { LoginResponse } from '../api/login/route';
 
 export default function LoginPage() {
   const [email, setEmail] = useState<string>('');
@@ -21,7 +21,7 @@ export default function LoginPage() {
     setError('');
     console.log('Logging in with:', { email, password });
     // fetch user from database
-      const res = await fetch('/api/login', {
+      const res = await fetch('../../api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
