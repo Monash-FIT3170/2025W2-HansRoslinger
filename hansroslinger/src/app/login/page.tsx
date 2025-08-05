@@ -2,9 +2,9 @@
 
 import React, { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { getUser } from '../../database/common/user/getUser';
+import { LoginResponse } from '../../api/login/route';
 
-export default function LoginPage(): JSX.Element {
+export default function LoginPage() {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
@@ -20,12 +20,21 @@ export default function LoginPage(): JSX.Element {
 
     setError('');
     console.log('Logging in with:', { email, password });
-    //fetch user from database
-    const user = await getUser(email);
-    if (!user || user.password !== password) {
-      setError('User not found or incorrect password.');
-      return;
-    }
+    // fetch user from database
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data: LoginResponse = await res.json();
+
+      if (!data.success) {
+        setError(data.error || 'Login failed');
+        return;
+      }
     //redirect to dashboard
     router.push('/dashboard');
   };
