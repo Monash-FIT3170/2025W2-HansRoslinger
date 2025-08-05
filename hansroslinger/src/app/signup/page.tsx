@@ -2,7 +2,7 @@
 
 import React, { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createUser } from '../../database/common/user/createUser';
+import { SignupResponse } from 'app/api/signup/route';
 
 export default function SignUpPage() {
   const [email, setEmail] = useState<string>('');
@@ -28,7 +28,20 @@ export default function SignUpPage() {
     console.log('Signing up with:', { email, password });
     //create user in database
     try {
-      await createUser(email, password);
+      const res = await fetch('/api/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+      const data: SignupResponse = await res.json();
+      
+      if (!data.user) {
+        setError(data.error || 'Login failed');
+        return;
+      }
+      router.push('/login');
     } catch (error) {
       setError('Error creating user. Please try again. User may already exist.');
       console.error('Error creating user:', error);
