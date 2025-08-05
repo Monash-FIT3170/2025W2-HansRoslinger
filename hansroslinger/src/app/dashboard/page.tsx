@@ -1,17 +1,16 @@
-"use client";
 import Image from "next/image";
 import UploadsDisplay from "./UploadsDisplay";
 import { Uploads } from "types/application";
 import { hardcodedUploads } from "hardcodedData";
 import Preview from "@/components/Preview";
-// import { cookies } from 'next/headers';
+import { cookies } from "next/headers";
 
 const Dashboard = async () => {
   // Right now this is hard coded, once we have data base setup, we can fetch instead
   const uploads: Uploads = hardcodedUploads;
-  // const cookieStore = await cookies();
-  // const email = cookieStore.get('email')?.value;
-  // console.log("Email from cookies:", email);
+  const cookieStore = await cookies();
+  const email = decodeURIComponent(cookieStore.get('email')?.value ?? '');
+  console.log("Email from cookies:", email);
 
   const gestures = [
     {
