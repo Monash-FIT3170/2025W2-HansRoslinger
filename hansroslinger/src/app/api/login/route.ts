@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getUser } from '../../database/common/user/getUser';
+import { cookies } from 'next/headers';
+import { getUser } from '../../../database/common/user/getUser';
 
 export type LoginResponse = {
     success: boolean;
@@ -17,7 +18,14 @@ export async function POST(req: NextRequest): Promise<NextResponse<LoginResponse
       );
     }
 
-    // TODO: Set cookie
+  (await cookies()).set({
+    name: 'email',
+    value: email,
+    path: '/',
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+  });
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
     console.error('Login error:', error);
