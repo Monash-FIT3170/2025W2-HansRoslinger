@@ -27,6 +27,7 @@ jobs:
           eslint: true
           prettier: true
           auto_fix: false
+          reporter: "console"
 
   deploy:
     runs-on: ubuntu-latest
