@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { getUser } from '../../../database/common/user/getUser';
+const { createHash } = require('crypto');
 
 export type LoginResponse = {
     success: boolean;
@@ -10,8 +11,9 @@ export async function POST(req: NextRequest): Promise<NextResponse<LoginResponse
   try {
     const { email, password } = await req.json();
     const user = await getUser(email);
+    const hashedPassword = createHash('sha256').update(password).digest('hex');
 
-    if (!user || user.password !== password) {
+    if (!user || user.password !== hashedPassword) {
       return NextResponse.json(
         { success: false, error: 'Invalid credentials'},
         { status: 401 }
