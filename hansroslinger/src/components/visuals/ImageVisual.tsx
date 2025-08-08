@@ -13,7 +13,7 @@ const ImageVisual = ({ id, visual }: ImageVisualProp) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const setVisualSize = useVisualStore((state) => state.setVisualSize);
   const setUseOriginalSizeOnLoad = useVisualStore(
-    (state) => state.setUseOriginalSizeOnLoad,
+    (state) => state.setUseOriginalSizeOnLoad
   );
 
   useEffect(() => {
@@ -58,7 +58,9 @@ const ImageVisual = ({ id, visual }: ImageVisualProp) => {
     <div
       id={id}
       className={
-        visual?.isHovered ? "outline-5 outline-offset-0 outline-green-500" : ""
+        visual?.isHovered
+          ? "outline-2 outline-offset-0 outline-green-500 relative"
+          : ""
       }
       ref={containerRef}
       style={{
@@ -70,7 +72,16 @@ const ImageVisual = ({ id, visual }: ImageVisualProp) => {
         pointerEvents: "auto",
         zIndex: 10,
       }}
-    />
+    >
+      {visual?.isHovered && (
+        <>
+          <div className="w-5 h-5 border-2 border-green-500 absolute top-0 left-0 transform -translate-x-1/2 -translate-y-1/2" />
+          <div className="w-5 h-5 border-2 border-green-500 absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2" />
+          <div className="w-5 h-5 border-2 border-green-500 absolute bottom-0 left-0 transform -translate-x-1/2 translate-y-1/2" />
+          <div className="w-5 h-5 border-2 border-green-500 absolute bottom-0 right-0 transform translate-x-1/2 translate-y-1/2" />
+        </>
+      )}
+    </div>
   );
 };
 
