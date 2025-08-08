@@ -26,7 +26,7 @@ jobs:
           prettier_dir: hansroslinger/
           eslint: true
           prettier: true
-          auto_fix: true
+          auto_fix: false
 
   deploy:
     runs-on: ubuntu-latest
