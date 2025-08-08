@@ -1,4 +1,5 @@
 import prisma from "../client";
+const { createHash } = require('crypto');
 
 export async function createUser(
   email: string,
@@ -6,11 +7,12 @@ export async function createUser(
   s3BucketUrl: string
 ) {
   try {
+    const hashedPassword = createHash('sha256').update(password).digest('hex');
     const user = await prisma.user.create({
       data: {
         email,
         s3BucketUrl,
-        password,
+        password: hashedPassword,
       },
     });
     console.log("User created:", user);
