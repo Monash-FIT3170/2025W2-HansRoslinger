@@ -9,7 +9,7 @@ import {
 import { GestureType, HandIds } from "types/application";
 
 interface GesturePayload {
-  id: HandIds
+  id: HandIds;
   name: GestureType;
   points: {
     [name: string]: {
