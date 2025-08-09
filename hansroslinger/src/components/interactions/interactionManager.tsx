@@ -5,16 +5,43 @@ import { useVisualStore } from "store/visualsSlice";
 import {
   ActionPayload,
   ActionType,
+  HandIds,
   InteractionInput,
   Visual,
 } from "types/application";
 import { HOVER, MOVE, RESIZE } from "constants/application";
+
+type GestureTrack = {
+  visual: Visual | null,
+  clearCount: number,
+  dragOffset: { x: number; y: number } | null
+}
+
+type HandVisualMap = Record<HandIds, GestureTrack>
 
 export class InteractionManager {
   private gestureTargetId: string | null = null;
   private dragOffset: { x: number; y: number } | null = null;
   private previousAction: ActionType | null = null;
   private hoveredTargetId: string | null = null;
+
+  private handVisualMap: HandVisualMap = {
+    "left": {
+      visual: null,
+      clearCount: 0,
+      dragOffset: null
+    },
+    "right": {
+      visual: null,
+      clearCount: 0,
+      dragOffset: null
+    },
+    "left_right": {
+      visual: null,
+      clearCount: 0,
+      dragOffset: null
+    }
+  }
 
   /**
    * Clear threshold prevents flicker when pinch gestures are too fast.
@@ -106,7 +133,7 @@ export class InteractionManager {
           this.pinchStartDistance,
           this.pinchStartSize,
         );
-
+        
         this.gestureTargetId = target.assetId;
         this.previousAction = action;
         break;
@@ -129,18 +156,18 @@ export class InteractionManager {
         }
         // if from other action then to move action, use new target
         if (target) {
-          // Calculate drag offset only on new visual grab
-          // or if action is not the same as previous (say pinch --> open palm --> pinch
-          // (in different position but still within the bounds of the visual))
+        // Calculate drag offset only on new visual grab
+        // or if action is not the same as previous (say pinch --> open palm --> pinch
+        // (in different position but still within the bounds of the visual))
           if (
             this.gestureTargetId !== target.assetId ||
             !isActionSameAsPrevious
           ) {
             this.gestureTargetId = target.assetId;
             this.dragOffset = {
-              x: point.x - target.position.x,
-              y: point.y - target.position.y,
-            };
+            x: point.x - target.position.x,
+            y: point.y - target.position.y,
+          };
           }
           handleDrag(target.assetId, point, this.dragOffset!);
         }
