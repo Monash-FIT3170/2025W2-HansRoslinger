@@ -9,7 +9,7 @@ import {
   InteractionInput,
   Visual,
 } from "types/application";
-import { HOVER, MOVE, RESIZE } from "constants/application";
+import { HOVER, LEFT, MOVE, RESIZE, RIGHT } from "constants/application";
 
 type GestureTrack = {
   visual: Visual | null,
@@ -65,7 +65,11 @@ export class InteractionManager {
   handleAction(actionPayload: ActionPayload) {
     // reset count
     this.currentClearCount = 0;
+    this.handVisualMap[actionPayload.handId].clearCount = 0
+
     const { action, coordinates } = actionPayload;
+
+    const boundVisual = this.handVisualMap[actionPayload.handId].visual
 
     if (!coordinates || coordinates.length === 0) return;
 
@@ -139,7 +143,27 @@ export class InteractionManager {
         break;
       }
       case HOVER:
-        this.hoveredTargetId = target ? target.assetId : null;
+        // Find if the visual is on the other hand
+        const otherHandId = actionPayload.handId === LEFT ? RIGHT : LEFT
+        const otherHand = this.handVisualMap[otherHandId]
+        const otherVisual = otherHand?.visual
+
+        const isSharedVisual =
+          boundVisual && otherVisual &&
+          boundVisual.assetId === otherVisual.assetId
+        
+        // If visual is hovered by two hands, don't remove the hover on visual
+        // If target is different from bound visual (hovering to different visual)
+        // or if there is no visual on hover, remove hover (remove outline) from bound visual
+        if (
+          boundVisual &&
+          !isSharedVisual &&
+          ((target && boundVisual.assetId !== target.assetId) || !target)
+        ) {
+          handleHover(boundVisual.assetId, false)
+        }
+
+        this.handVisualMap[actionPayload.handId].visual = target
         handleHover(target ? target.assetId : null, true);
         break;
 
