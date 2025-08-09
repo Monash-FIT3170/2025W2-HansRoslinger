@@ -19,7 +19,7 @@ export const RESIZE = "resize";
 export const ACTIONS = [MOVE, HOVER, RESIZE];
 
 // handedness
-export const LEFT = "left" 
-export const RIGHT = "right"
-export const LEFT_RIGHT = "left_right"
-export const HAND_IDS = [LEFT, RIGHT, LEFT_RIGHT]
+export const LEFT = "left";
+export const RIGHT = "right";
+export const LEFT_RIGHT = "left_right";
+export const HAND_IDS = [LEFT, RIGHT, LEFT_RIGHT];
