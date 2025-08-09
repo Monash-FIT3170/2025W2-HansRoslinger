@@ -70,6 +70,7 @@ export class InteractionManager {
     const { action, coordinates } = actionPayload;
 
     const boundVisual = this.handVisualMap[actionPayload.handId].visual
+    let currentDragOffset = this.handVisualMap[actionPayload.handId].dragOffset
 
     if (!coordinates || coordinates.length === 0) return;
 
@@ -165,41 +166,43 @@ export class InteractionManager {
 
         this.handVisualMap[actionPayload.handId].visual = target
         handleHover(target ? target.assetId : null, true);
+
+        // Set drag offset to null when hovering. 
+        // This will reset drag, useful when user change at which point in the visual they are dragging
+        currentDragOffset = null
         break;
 
       case MOVE: {
         // If no visual has been selected, don't move visual
-        if (!this.hoveredTargetId) {
-          return;
+        if (!boundVisual || !boundVisual.isHovered){
+          return
         }
 
-        // if action is move and previous is also move, move the same target, don't find new ones
-        if (this.hoveredTargetId && this.dragOffset && isActionSameAsPrevious) {
-          handleDrag(this.hoveredTargetId, point, this.dragOffset);
-          return;
+        // If move and object is already selected and drag is already calculated
+        // This is an on going drag
+        if (boundVisual && currentDragOffset) {
+          handleDrag(boundVisual.assetId, point, currentDragOffset)
+          return
         }
-        // if from other action then to move action, use new target
-        if (target) {
-        // Calculate drag offset only on new visual grab
-        // or if action is not the same as previous (say pinch --> open palm --> pinch
-        // (in different position but still within the bounds of the visual))
-          if (
-            this.gestureTargetId !== target.assetId ||
-            !isActionSameAsPrevious
-          ) {
-            this.gestureTargetId = target.assetId;
-            this.dragOffset = {
+
+        // If there is a bounded object (already hovered), and current target is same as that object
+        // and drag offset have not been set, means this is a new drag, calculate offset then drag
+        if (boundVisual && target && boundVisual.assetId === target.assetId && !currentDragOffset){
+          currentDragOffset  = {
             x: point.x - target.position.x,
             y: point.y - target.position.y,
           };
-          }
-          handleDrag(target.assetId, point, this.dragOffset!);
+          
+          handleDrag(target.assetId, point, currentDragOffset!);
         }
         break;
       }
     }
     this.gestureTargetId = target ? target.assetId : null;
     this.previousAction = action;
+
+    // Update drag offset
+    this.handVisualMap[actionPayload.handId].dragOffset = currentDragOffset
   }
 
   /**
