@@ -47,6 +47,7 @@ export type GestureType = (typeof GESTURES)[number];
 export type HandIds = (typeof HAND_IDS)[number]
 
 export type ActionPayload = {
+  handId: HandIds
   action: ActionType;
   coordinates: VisualPosition[];
   resizeScale?: number;
