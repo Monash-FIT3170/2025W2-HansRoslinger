@@ -4,7 +4,6 @@ import { handleHover } from "./actions/handleHover";
 import { useVisualStore } from "store/visualsSlice";
 import {
   ActionPayload,
-  ActionType,
   HandIds,
   InteractionInput,
   Visual,
@@ -20,10 +19,6 @@ type GestureTrack = {
 type HandVisualMap = Record<HandIds, GestureTrack>
 
 export class InteractionManager {
-  private gestureTargetId: string | null = null;
-  private dragOffset: { x: number; y: number } | null = null;
-  private previousAction: ActionType | null = null;
-  private hoveredTargetId: string | null = null;
 
   // Clear count is added for each hand fue to flicker
   private handVisualMap: HandVisualMap = {
@@ -184,8 +179,6 @@ export class InteractionManager {
         break;
       }
     }
-    this.gestureTargetId = target ? target.assetId : null;
-    this.previousAction = action;
 
     // Update drag offset
     this.handVisualMap[actionPayload.handId].dragOffset = currentDragOffset
@@ -204,10 +197,6 @@ export class InteractionManager {
         handVisual.dragOffset = null
         handVisual.visual = null
       })
-      this.gestureTargetId = null;
-      this.previousAction = null;
-      this.hoveredTargetId = null;
-      this.dragOffset = null;
       return;
     }
     this.currentClearCount += 1;
