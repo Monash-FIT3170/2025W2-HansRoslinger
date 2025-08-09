@@ -9,7 +9,7 @@ import {
   InteractionInput,
   Visual,
 } from "types/application";
-import { HOVER, LEFT, MOVE, RESIZE, RIGHT } from "constants/application";
+import { HOVER, LEFT, LEFT_RIGHT, MOVE, RESIZE, RIGHT } from "constants/application";
 
 type GestureTrack = {
   visual: Visual | null,
@@ -25,6 +25,7 @@ export class InteractionManager {
   private previousAction: ActionType | null = null;
   private hoveredTargetId: string | null = null;
 
+  // Clear count is added for each hand fue to flicker
   private handVisualMap: HandVisualMap = {
     "left": {
       visual: null,
@@ -191,12 +192,18 @@ export class InteractionManager {
   }
 
   /**
-   * Clear target and previous action
+   * Clear target and reset all hands bound
    * Only clear if the clear threshold is reached
    */
   handleClear() {
     if (this.currentClearCount === this.CLEAR_THRESHOLD) {
-      handleHover(this.gestureTargetId, false);
+
+      // Clear hover and bound visual for each hand
+      Object.values(this.handVisualMap).forEach((handVisual) => {
+        handleHover(handVisual.visual ? handVisual.visual.assetId : null, false)
+        handVisual.dragOffset = null
+        handVisual.visual = null
+      })
       this.gestureTargetId = null;
       this.previousAction = null;
       this.hoveredTargetId = null;
@@ -204,6 +211,46 @@ export class InteractionManager {
       return;
     }
     this.currentClearCount += 1;
+  }
+
+  /**
+   * Clear the hover markup, bound visual and drag offset for a specific hand
+   * Only clear when reach threshold
+   * @param handId id of hand to be cleared
+   */
+  clearTargetForHand(handId: HandIds) {
+    const currentHand = this.handVisualMap[handId]
+
+    if (currentHand.clearCount === this.CLEAR_THRESHOLD) {
+
+      // Find current and other hand visual and the resize visual if any
+      const otherHandId = handId === LEFT ? RIGHT : LEFT
+      const otherHand = this.handVisualMap[otherHandId]
+      const currentVisual = currentHand.visual
+      const otherVisual = otherHand.visual
+      const resizeVisual = this.handVisualMap[LEFT_RIGHT].visual
+
+      // Only remove hover markup if:
+      //    - current and other hand have a visual bounded
+      //    - the other hand does not hold the same visual as the current. 
+      //       If it does don't remove as the other hand are still hovering on it
+      //    - there is no visual currently on resize. If there is a visual on resize, 
+      //       it won't show on either left or right but the markup shouldn't be removed
+      if (currentVisual && otherVisual && currentVisual.assetId !== otherVisual.assetId || !resizeVisual) {
+        handleHover(currentVisual ? currentVisual.assetId : null, false)
+      }
+
+      currentHand.visual = null
+      currentHand.dragOffset = null
+
+      // Reset resize calculation
+      if (handId === LEFT_RIGHT) {
+        this.pinchStartDistance = null
+        this.pinchStartSize = null
+      }
+    }
+
+    currentHand.clearCount += 1
   }
 
   /**
