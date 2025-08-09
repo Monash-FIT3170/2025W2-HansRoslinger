@@ -1,13 +1,15 @@
 import { GestureRecognizerResult } from "@mediapipe/tasks-vision";
 import {
   DOUBLE_PINCH,
+  LEFT_RIGHT,
   OPEN_PALM,
   PINCH,
   POINT_UP,
 } from "constants/application";
-import { GestureType } from "types/application";
+import { GestureType, HandIds } from "types/application";
 
 interface GesturePayload {
+  id: HandIds
   name: GestureType;
   points: {
     [name: string]: {
@@ -51,6 +53,7 @@ class OpenPalm extends Gesture {
     const indexFingerX = canvas.width - canvas.width * indexFingerTip.x;
 
     return {
+      id: landmarks.handedness[hand][0].displayName.toLocaleLowerCase(),
       name: this.name,
       points: {
         indexFingerTip: { x: indexFingerX, y: indexFingerY },
@@ -75,6 +78,7 @@ class PointUp extends Gesture {
     const indexFingerX = canvas.width * indexFingerTip.x;
 
     return {
+      id: landmarks.handedness[hand][0].displayName.toLocaleLowerCase(),
       name: this.name,
       points: { indexFingerTip: { x: indexFingerX, y: indexFingerY } },
     };
@@ -99,6 +103,7 @@ class Pinch extends Gesture {
     const pinchPointY = canvas.height * ((thumbTip.y + indexTip.y) / 2);
 
     return {
+      id: landmarks.handedness[hand][0].displayName.toLocaleLowerCase(),
       name: this.name,
       points: { pinchPoint: { x: pinchPointX, y: pinchPointY } },
     };
@@ -119,6 +124,7 @@ class DoublePinch extends Gesture {
     const pinch2 = new Pinch().payload(1, landmarks, canvas);
 
     return {
+      id: LEFT_RIGHT,
       name: this.name,
       points: {
         pinchPoint1: pinch1.points.pinchPoint,
