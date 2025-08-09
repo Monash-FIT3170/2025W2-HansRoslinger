@@ -30,13 +30,13 @@ export const useGestureListener = (interactionManager: InteractionManager) => {
     // For each hand that does not have a detected gesture
     // Clear target for that hand
     // This is done to reset the bound visual for that hand (remove hover, reset drag offset, etc.)
-    const receivedHands = new Set(gesturePayloads.map(gesture => gesture.id))
+    const receivedHands = new Set(gesturePayloads.map((gesture) => gesture.id));
 
     HAND_IDS.forEach((handId) => {
-      if (!receivedHands.has(handId)){
-        interactionManager.clearTargetForHand(handId)
+      if (!receivedHands.has(handId)) {
+        interactionManager.clearTargetForHand(handId);
       }
-    })
+    });
   }, [gesturePayloads, interactionManager]);
 
   return null;

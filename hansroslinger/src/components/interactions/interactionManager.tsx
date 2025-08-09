@@ -8,36 +8,42 @@ import {
   InteractionInput,
   Visual,
 } from "types/application";
-import { HOVER, LEFT, LEFT_RIGHT, MOVE, RESIZE, RIGHT } from "constants/application";
+import {
+  HOVER,
+  LEFT,
+  LEFT_RIGHT,
+  MOVE,
+  RESIZE,
+  RIGHT,
+} from "constants/application";
 
 type GestureTrack = {
-  visual: Visual | null,
-  clearCount: number,
-  dragOffset: { x: number; y: number } | null
-}
+  visual: Visual | null;
+  clearCount: number;
+  dragOffset: { x: number; y: number } | null;
+};
 
-type HandVisualMap = Record<HandIds, GestureTrack>
+type HandVisualMap = Record<HandIds, GestureTrack>;
 
 export class InteractionManager {
-
   // Clear count is added for each hand fue to flicker
   private handVisualMap: HandVisualMap = {
-    "left": {
+    left: {
       visual: null,
       clearCount: 0,
-      dragOffset: null
+      dragOffset: null,
     },
-    "right": {
+    right: {
       visual: null,
       clearCount: 0,
-      dragOffset: null
+      dragOffset: null,
     },
-    "left_right": {
+    left_right: {
       visual: null,
       clearCount: 0,
-      dragOffset: null
-    }
-  }
+      dragOffset: null,
+    },
+  };
 
   /**
    * Clear threshold prevents flicker when pinch gestures are too fast.
@@ -61,12 +67,12 @@ export class InteractionManager {
   handleAction(actionPayload: ActionPayload) {
     // reset count
     this.currentClearCount = 0;
-    this.handVisualMap[actionPayload.handId].clearCount = 0
+    this.handVisualMap[actionPayload.handId].clearCount = 0;
 
     const { action, coordinates } = actionPayload;
 
-    const boundVisual = this.handVisualMap[actionPayload.handId].visual
-    let currentDragOffset = this.handVisualMap[actionPayload.handId].dragOffset
+    const boundVisual = this.handVisualMap[actionPayload.handId].visual;
+    let currentDragOffset = this.handVisualMap[actionPayload.handId].dragOffset;
 
     if (!coordinates || coordinates.length === 0) return;
 
@@ -79,20 +85,20 @@ export class InteractionManager {
         // Point for each hand
         const pointerA = coordinates[0];
         const pointerB = coordinates[1];
-        let target
+        let target;
 
         // If there is no bound visual --> just starting to resize (first time resize is called on this visual)
         // Find target at both hands and check if they are the same visual
         // Only set the target if it is the same (both hands are at the same visual)
         if (!boundVisual) {
-          const targetA = this.findTargetAt(pointerA)
-          const targetB = this.findTargetAt(pointerB)
+          const targetA = this.findTargetAt(pointerA);
+          const targetB = this.findTargetAt(pointerB);
 
-          target = targetA?.assetId === targetB?.assetId ? targetA : null
-        
-        // If there is a bound visual --> an ongoing resize
+          target = targetA?.assetId === targetB?.assetId ? targetA : null;
+
+          // If there is a bound visual --> an ongoing resize
         } else {
-          target = boundVisual
+          target = boundVisual;
         }
 
         // CHeck if target exists and if is hovered
@@ -101,38 +107,49 @@ export class InteractionManager {
 
         // If start distance has been calculated and the visual has been bounded
         // This is an ongoing resize, don't calculate new start distance
-        if (this.pinchStartDistance && this.pinchStartSize && target){
-          handleResize(target.assetId, pointerA, pointerB, this.pinchStartDistance, this.pinchStartSize)
-          return
+        if (this.pinchStartDistance && this.pinchStartSize && target) {
+          handleResize(
+            target.assetId,
+            pointerA,
+            pointerB,
+            this.pinchStartDistance,
+            this.pinchStartSize,
+          );
+          return;
         }
 
         // if new visual resize, no calculation ahs been made and visual hasn't been bound yet
         // Calculate necessary calculation and update
         // Handle resize is not called here since this is the start of a resize (hand have not move)
         // Calculate the starting distance and size, and resize on next call
-        if (this.pinchStartDistance == null || this.pinchStartSize == null || !boundVisual) {
+        if (
+          this.pinchStartDistance == null ||
+          this.pinchStartSize == null ||
+          !boundVisual
+        ) {
           const distance = Math.hypot(
-          pointerA.x - pointerB.x,
-          pointerA.y - pointerB.y,
-        );
+            pointerA.x - pointerB.x,
+            pointerA.y - pointerB.y,
+          );
 
-          this.pinchStartDistance = distance
-          this.pinchStartSize = {... target.size}
+          this.pinchStartDistance = distance;
+          this.pinchStartSize = { ...target.size };
           // Bound the target
-          this.handVisualMap[actionPayload.handId].visual = target
+          this.handVisualMap[actionPayload.handId].visual = target;
         }
 
         break;
       }
       case HOVER:
         // Find if the visual is on the other hand
-        const otherHandId = actionPayload.handId === LEFT ? RIGHT : LEFT
-        const otherHand = this.handVisualMap[otherHandId]
-        const otherVisual = otherHand?.visual
+        const otherHandId = actionPayload.handId === LEFT ? RIGHT : LEFT;
+        const otherHand = this.handVisualMap[otherHandId];
+        const otherVisual = otherHand?.visual;
 
         const isSharedVisual =
-          boundVisual && otherVisual &&
-          boundVisual.assetId === otherVisual.assetId
+          boundVisual &&
+          otherVisual &&
+          boundVisual.assetId === otherVisual.assetId;
 
         // If visual is hovered by two hands, don't remove the hover on visual
         // If target is different from bound visual (hovering to different visual)
@@ -142,38 +159,43 @@ export class InteractionManager {
           !isSharedVisual &&
           ((target && boundVisual.assetId !== target.assetId) || !target)
         ) {
-          handleHover(boundVisual.assetId, false)
+          handleHover(boundVisual.assetId, false);
         }
 
-        this.handVisualMap[actionPayload.handId].visual = target
+        this.handVisualMap[actionPayload.handId].visual = target;
         handleHover(target ? target.assetId : null, true);
 
-        // Set drag offset to null when hovering. 
+        // Set drag offset to null when hovering.
         // This will reset drag, useful when user change at which point in the visual they are dragging
-        currentDragOffset = null
+        currentDragOffset = null;
         break;
 
       case MOVE: {
         // If no visual has been selected, don't move visual
-        if (!boundVisual || !boundVisual.isHovered){
-          return
+        if (!boundVisual || !boundVisual.isHovered) {
+          return;
         }
 
         // If move and object is already selected and drag is already calculated
         // This is an on going drag
         if (boundVisual && currentDragOffset) {
-          handleDrag(boundVisual.assetId, point, currentDragOffset)
-          return
+          handleDrag(boundVisual.assetId, point, currentDragOffset);
+          return;
         }
 
         // If there is a bounded object (already hovered), and current target is same as that object
         // and drag offset have not been set, means this is a new drag, calculate offset then drag
-        if (boundVisual && target && boundVisual.assetId === target.assetId && !currentDragOffset){
-          currentDragOffset  = {
+        if (
+          boundVisual &&
+          target &&
+          boundVisual.assetId === target.assetId &&
+          !currentDragOffset
+        ) {
+          currentDragOffset = {
             x: point.x - target.position.x,
             y: point.y - target.position.y,
           };
-          
+
           handleDrag(target.assetId, point, currentDragOffset!);
         }
         break;
@@ -181,7 +203,7 @@ export class InteractionManager {
     }
 
     // Update drag offset
-    this.handVisualMap[actionPayload.handId].dragOffset = currentDragOffset
+    this.handVisualMap[actionPayload.handId].dragOffset = currentDragOffset;
   }
 
   /**
@@ -190,13 +212,15 @@ export class InteractionManager {
    */
   handleClear() {
     if (this.currentClearCount === this.CLEAR_THRESHOLD) {
-
       // Clear hover and bound visual for each hand
       Object.values(this.handVisualMap).forEach((handVisual) => {
-        handleHover(handVisual.visual ? handVisual.visual.assetId : null, false)
-        handVisual.dragOffset = null
-        handVisual.visual = null
-      })
+        handleHover(
+          handVisual.visual ? handVisual.visual.assetId : null,
+          false,
+        );
+        handVisual.dragOffset = null;
+        handVisual.visual = null;
+      });
       return;
     }
     this.currentClearCount += 1;
@@ -208,38 +232,42 @@ export class InteractionManager {
    * @param handId id of hand to be cleared
    */
   clearTargetForHand(handId: HandIds) {
-    const currentHand = this.handVisualMap[handId]
+    const currentHand = this.handVisualMap[handId];
 
     if (currentHand.clearCount === this.CLEAR_THRESHOLD) {
-
       // Find current and other hand visual and the resize visual if any
-      const otherHandId = handId === LEFT ? RIGHT : LEFT
-      const otherHand = this.handVisualMap[otherHandId]
-      const currentVisual = currentHand.visual
-      const otherVisual = otherHand.visual
-      const resizeVisual = this.handVisualMap[LEFT_RIGHT].visual
+      const otherHandId = handId === LEFT ? RIGHT : LEFT;
+      const otherHand = this.handVisualMap[otherHandId];
+      const currentVisual = currentHand.visual;
+      const otherVisual = otherHand.visual;
+      const resizeVisual = this.handVisualMap[LEFT_RIGHT].visual;
 
       // Only remove hover markup if:
       //    - current and other hand have a visual bounded
-      //    - the other hand does not hold the same visual as the current. 
+      //    - the other hand does not hold the same visual as the current.
       //       If it does don't remove as the other hand are still hovering on it
-      //    - there is no visual currently on resize. If there is a visual on resize, 
+      //    - there is no visual currently on resize. If there is a visual on resize,
       //       it won't show on either left or right but the markup shouldn't be removed
-      if (currentVisual && otherVisual && currentVisual.assetId !== otherVisual.assetId || !resizeVisual) {
-        handleHover(currentVisual ? currentVisual.assetId : null, false)
+      if (
+        (currentVisual &&
+          otherVisual &&
+          currentVisual.assetId !== otherVisual.assetId) ||
+        !resizeVisual
+      ) {
+        handleHover(currentVisual ? currentVisual.assetId : null, false);
       }
 
-      currentHand.visual = null
-      currentHand.dragOffset = null
+      currentHand.visual = null;
+      currentHand.dragOffset = null;
 
       // Reset resize calculation
       if (handId === LEFT_RIGHT) {
-        this.pinchStartDistance = null
-        this.pinchStartSize = null
+        this.pinchStartDistance = null;
+        this.pinchStartSize = null;
       }
     }
 
-    currentHand.clearCount += 1
+    currentHand.clearCount += 1;
   }
 
   /**

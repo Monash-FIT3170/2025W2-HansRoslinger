@@ -9,5 +9,4 @@ export const handleHover = (id: string | null, isHovered: boolean) => {
       store.setVisualHover(id, isHovered);
     }
   }
-
 };
