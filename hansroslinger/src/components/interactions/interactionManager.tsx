@@ -78,69 +78,54 @@ export class InteractionManager {
     const point = coordinates[0];
     const target = this.findTargetAt(point);
 
-    // Flag for checking if action is same as previous action
-    const isActionSameAsPrevious = this.previousAction === action;
-
     switch (action) {
       case RESIZE: {
-        // If no visual has been selected, don't resize visual
-        if (!this.hoveredTargetId) {
-          return;
-        }
-
+        // Point for each hand
         const pointerA = coordinates[0];
         const pointerB = coordinates[1];
+        let target
 
-        const target =
-          this.findTargetAt(pointerA) || this.findTargetAt(pointerB);
-        if (!target) return;
+        // If there is no bound visual --> just starting to resize (first time resize is called on this visual)
+        // Find target at both hands and check if they are the same visual
+        // Only set the target if it is the same (both hands are at the same visual)
+        if (!boundVisual) {
+          const targetA = this.findTargetAt(pointerA)
+          const targetB = this.findTargetAt(pointerB)
 
-        const distance = Math.hypot(
+          target = targetA?.assetId === targetB?.assetId ? targetA : null
+        
+        // If there is a bound visual --> an ongoing resize
+        } else {
+          target = boundVisual
+        }
+
+        // CHeck if target exists and if is hovered
+        // If not hovered before resize, don't resize
+        if (!target || !target.isHovered) return;
+
+        // If start distance has been calculated and the visual has been bounded
+        // This is an ongoing resize, don't calculate new start distance
+        if (this.pinchStartDistance && this.pinchStartSize && target){
+          handleResize(target.assetId, pointerA, pointerB, this.pinchStartDistance, this.pinchStartSize)
+          return
+        }
+
+        // if new visual resize, no calculation ahs been made and visual hasn't been bound yet
+        // Calculate necessary calculation and update
+        // Handle resize is not called here since this is the start of a resize (hand have not move)
+        // Calculate the starting distance and size, and resize on next call
+        if (this.pinchStartDistance == null || this.pinchStartSize == null || !boundVisual) {
+          const distance = Math.hypot(
           pointerA.x - pointerB.x,
           pointerA.y - pointerB.y,
         );
 
-        // if action is move and previous is also move, move the same target, don't find new ones
-        if (
-          this.hoveredTargetId &&
-          this.pinchStartDistance &&
-          this.pinchStartSize &&
-          isActionSameAsPrevious
-        ) {
-          handleResize(
-            this.hoveredTargetId,
-            pointerA,
-            pointerB,
-            this.pinchStartDistance,
-            this.pinchStartSize,
-          );
-
-          return;
+          this.pinchStartDistance = distance
+          this.pinchStartSize = {... target.size}
+          // Bound the target
+          this.handVisualMap[actionPayload.handId].visual = target
         }
 
-        if (
-          this.pinchStartDistance == null ||
-          this.pinchStartSize == null ||
-          this.gestureTargetId !== target.assetId ||
-          !isActionSameAsPrevious
-        ) {
-          this.pinchStartDistance = distance;
-          this.pinchStartSize = { ...target.size };
-          this.gestureTargetId = target.assetId;
-          this.previousAction = action;
-          return;
-        }
-
-        handleResize(
-          target.assetId,
-          pointerA,
-          pointerB,
-          this.pinchStartDistance,
-          this.pinchStartSize,
-        );
-        
-        this.gestureTargetId = target.assetId;
-        this.previousAction = action;
         break;
       }
       case HOVER:
@@ -152,7 +137,7 @@ export class InteractionManager {
         const isSharedVisual =
           boundVisual && otherVisual &&
           boundVisual.assetId === otherVisual.assetId
-        
+
         // If visual is hovered by two hands, don't remove the hover on visual
         // If target is different from bound visual (hovering to different visual)
         // or if there is no visual on hover, remove hover (remove outline) from bound visual
