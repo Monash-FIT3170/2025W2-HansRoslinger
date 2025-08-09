@@ -19,6 +19,7 @@ export const useGestureListener = (interactionManager: InteractionManager) => {
       if (action) {
         // change this to handle action when implemented
         interactionManager.handleAction({
+          handId: payload.id,
           action: action,
           coordinates: Object.values(payload.points),
         });
