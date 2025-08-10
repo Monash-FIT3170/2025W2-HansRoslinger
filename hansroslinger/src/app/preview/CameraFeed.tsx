@@ -26,6 +26,39 @@
     const [strokeWidth, setStrokeWidth] = useState(4);
     const [strokeColor, setStrokeColor] = useState("#00ff88");
 
+    // --- sizing helper (HiDPI-safe) ---
+  const sizeCanvasesToVideo = () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const rect = video.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+
+    const apply = (c?: HTMLCanvasElement | null) => {
+      if (!c) return;
+      // CSS size to match rendered video
+      c.style.width = `${rect.width}px`;
+      c.style.height = `${rect.height}px`;
+      // Backing store scaled for HiDPI
+      c.width = Math.round(rect.width * dpr);
+      c.height = Math.round(rect.height * dpr);
+      const ctx = c.getContext("2d");
+      if (ctx) ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+
+    apply(canvasRef.current);
+    apply(annotationCanvasRef.current);
+  };
+
+  // --- annotation helpers ---
+  const clearAnnotations = () => {
+    const c = annotationCanvasRef.current;
+    const ctx = c?.getContext("2d");
+    if (c && ctx) ctx.clearRect(0, 0, c.width, c.height);
+  };
+
+  
+
     useEffect(() => {
       const startCamera = async () => {
         try {
