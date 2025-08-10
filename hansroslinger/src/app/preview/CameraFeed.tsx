@@ -1,35 +1,36 @@
-  "use client";
-  import { useEffect, useRef, useState } from "react";
-  import { HandRecogniser } from "app/detection/handRecognition";
-  import { canvasRenderer } from "app/detection/canvasRenderer";
-  import { useGestureStore } from "store/gestureSlice";
-  /**
-   * CameraFeed component handles accessing the user's camera and microphone.
-   * It shows a mirrored live video feed with an error handling message if access fails.
-   */
-  const CameraFeed = () => {
-    const videoRef = useRef<HTMLVideoElement>(null);
-    const canvasRef = useRef<HTMLCanvasElement>(null);
-    const [cameraError, setCameraError] = useState(false);
-    const setGesturePayload = useGestureStore(
-      (state) => state.setGesturePayloads,
-    );
-    console.log("CameraFeed component is rendering!");
+"use client";
 
-    // keep track of the interval so we can clear it on unmount
-    const intervalRef = useRef<number | null>(null);
+import { useEffect, useRef, useState } from "react";
+import { HandRecogniser } from "app/detection/handRecognition";
+import { canvasRenderer } from "app/detection/canvasRenderer";
+import { useGestureStore } from "store/gestureSlice";
 
-    // annotation refs and states
-    const annotationCanvasRef = useRef<HTMLCanvasElement>(null);
-    const isDrawingRef = useRef(false);
-    const lastPosRef = useRef<{ x: number; y: number } | null>(null);
+/**
+ * CameraFeed component handles accessing the user's camera and microphone.
+ * It shows a mirrored live video feed with an error handling message if access fails.
+ * Adds an annotation layer (draw/erase) on top of the camera feed.
+ */
+const CameraFeed = () => {
+  // video canvas refs/state 
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null); // existing overlay canvas for landmarks/visuals
+  const [cameraError, setCameraError] = useState(false);
+  const setGesturePayload = useGestureStore((state) => state.setGesturePayloads);
 
-    const [annotationOn, setAnnotationOn] = useState(false);
-    const [tool, setTool] = useState<"draw" | "erase">("draw");
-    const [strokeWidth, setStrokeWidth] = useState(4);
-    const [strokeColor, setStrokeColor] = useState("#00ff88");
+  // keep track of the interval so we can clear it on unmount
+  const intervalRef = useRef<number | null>(null);
 
-    // --- sizing helper (HiDPI-safe) ---
+  // annotation refs/state 
+  const annotationCanvasRef = useRef<HTMLCanvasElement>(null);
+  const isDrawingRef = useRef(false);
+  const lastPosRef = useRef<{ x: number; y: number } | null>(null);
+
+  const [annotationOn, setAnnotationOn] = useState(false);
+  const [tool, setTool] = useState<"draw" | "erase">("draw");
+  const [strokeWidth, setStrokeWidth] = useState(4);
+  const [strokeColor, setStrokeColor] = useState("#00ff88");
+
+  // sizing helper (HiDPI-safe) 
   const sizeCanvasesToVideo = () => {
     const video = videoRef.current;
     if (!video) return;
@@ -53,7 +54,7 @@
     apply(annotationCanvasRef.current);
   };
 
-  // --- annotation helpers ---
+  // annotation helpers 
   const clearAnnotations = () => {
     const c = annotationCanvasRef.current;
     const ctx = c?.getContext("2d");
@@ -107,92 +108,98 @@
     isDrawingRef.current = false;
     lastPosRef.current = null;
   };
-  
 
-    useEffect(() => {
-      const startCamera = async () => {
-        try {
-          console.log("camera");
-          const stream = await navigator.mediaDevices.getUserMedia({
-            video: true,
-            audio: true,
-          });
+  // camera detection loop 
+  useEffect(() => {
+    const startCamera = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: true,
+        });
 
-          if (videoRef.current && canvasRef.current) {
-            videoRef.current.srcObject = stream;
+        if (videoRef.current && canvasRef.current) {
+          videoRef.current.srcObject = stream;
 
-            // size canvases once the video lays out
-            requestAnimationFrame(sizeCanvasesToVideo);
-            // keep in sync on window resize
-            window.addEventListener("resize", sizeCanvasesToVideo);
-            
-            //original detection/render loop (100ms)
-            intervalRef.current = window.setInterval(async () => {
-              if (videoRef.current && canvasRef.current) {
-                if (
-                  videoRef.current.videoWidth > 0 &&
-                  videoRef.current.videoHeight > 0 &&
-                  canvasRef.current.width > 0 &&
-                  canvasRef.current.height > 0
-                ) {
-                  const payload = await HandRecogniser(
-                    videoRef.current,
-                    canvasRef.current,
-                  );
-                  console.log(payload);
-                  canvasRenderer(
-                    canvasRef.current,
-                    videoRef.current,
-                    payload.gestureRecognitionResult,
-                  );
-                  setGesturePayload(payload.payloads);
-                }
+          // size canvases once the video lays out
+          requestAnimationFrame(sizeCanvasesToVideo);
+          // keep in sync on window resize
+          window.addEventListener("resize", sizeCanvasesToVideo);
+
+          // detection/render loop (100ms)
+          intervalRef.current = window.setInterval(async () => {
+            if (videoRef.current && canvasRef.current) {
+              if (
+                videoRef.current.videoWidth > 0 &&
+                videoRef.current.videoHeight > 0 &&
+                canvasRef.current.width > 0 &&
+                canvasRef.current.height > 0
+              ) {
+                const payload = await HandRecogniser(
+                  videoRef.current,
+                  canvasRef.current
+                );
+                canvasRenderer(
+                  canvasRef.current,
+                  videoRef.current,
+                  payload.gestureRecognitionResult
+                );
+                setGesturePayload(payload.payloads);
               }
-            }, 100);
-          }
-        } catch (err) {
-          console.error("Error accessing camera:", err);
-          setCameraError(true);
+            }
+          }, 100);
         }
-      };
-      startCamera();
+      } catch (err) {
+        console.error("Error accessing camera:", err);
+        setCameraError(true);
+      }
+    };
 
-      const videoElement = videoRef.current;
+    startCamera();
 
-      return () => {
-        // remove resize listener
-        window.removeEventListener("resize", sizeCanvasesToVideo);
+    const videoElement = videoRef.current;
 
-        // clear detection interval
-        if (intervalRef.current != null) {
+    return () => {
+      // remove resize listener
+      window.removeEventListener("resize", sizeCanvasesToVideo);
+
+      // clear detection interval
+      if (intervalRef.current != null) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
-        }
+      }
 
-        // stop camera tracks
-        if (videoElement && videoElement.srcObject) {
-          const tracks = (videoElement.srcObject as MediaStream).getTracks();
-          tracks.forEach((track) => track.stop());
-        }
-      };
-    }, []);
+      // stop camera tracks
+      if (videoElement && videoElement.srcObject) {
+        const tracks = (videoElement.srcObject as MediaStream).getTracks();
+        tracks.forEach((track) => track.stop());
+      }
+    };
+    //comment code below will ignore the warning from eslint
+   // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    return (
-      <div className="relative w-full h-full">
-        {/* Show video if no error */}
-        {!cameraError && (
-          <video
-            id="cameraFeed"
-            ref={videoRef}
-            autoPlay
-            playsInline
-            muted
-            className="w-full h-full object-cover transform -scale-x-100"
-          />
-        )}
-        <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full" />
+  return (
+    <div className="relative w-full h-full">
+      {/* Show video if no error */}
+      {!cameraError && (
+        <video
+          id="cameraFeed"
+          ref={videoRef}
+          autoPlay
+          playsInline
+          muted
+          className="w-full h-full object-cover transform -scale-x-100 select-none"
+        />
+      )}
 
-        {/* Annotation canvas (on top). Pointer events only when enabled */}
+      {/* landmark overlay canvas visual */}
+      <canvas
+        ref={canvasRef}
+        className="absolute top-0 left-0 w-full h-full pointer-events-none"
+      />
+
+      {/* Annotation canvas (on top). Pointer events only when enabled */}
       <canvas
         ref={annotationCanvasRef}
         className={`absolute top-0 left-0 w-full h-full z-50 ${
@@ -276,17 +283,17 @@
         </div>
       </div>
 
-        {/* Show error message if camera is not available */}
-        {cameraError && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70">
-            <div className="text-center px-4 text-white text-lg font-semibold">
-              Camera and microphone is not detected. <br />
-              Please check your device settings.
-            </div>
+      {/* Show error message if camera is not available */}
+      {cameraError && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70">
+          <div className="text-center px-4 text-white text-lg font-semibold">
+            Camera and microphone is not detected. <br />
+            Please check your device settings.
           </div>
-        )}
-      </div>
-    );
-  };
+        </div>
+      )}
+    </div>
+  );
+};
 
-  export default CameraFeed;
+export default CameraFeed;
