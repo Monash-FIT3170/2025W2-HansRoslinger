@@ -16,6 +16,9 @@
     );
     console.log("CameraFeed component is rendering!");
 
+    // keep track of the interval so we can clear it on unmount
+    const intervalRef = useRef<number | null>(null);
+
     // annotation refs and states
     const annotationCanvasRef = useRef<HTMLCanvasElement>(null);
     const isDrawingRef = useRef(false);
@@ -117,7 +120,14 @@
 
           if (videoRef.current && canvasRef.current) {
             videoRef.current.srcObject = stream;
-            setInterval(async () => {
+
+            // size canvases once the video lays out
+            requestAnimationFrame(sizeCanvasesToVideo);
+            // keep in sync on window resize
+            window.addEventListener("resize", sizeCanvasesToVideo);
+            
+            //original detection/render loop (100ms)
+            intervalRef.current = window.setInterval(async () => {
               if (videoRef.current && canvasRef.current) {
                 if (
                   videoRef.current.videoWidth > 0 &&
@@ -150,6 +160,16 @@
       const videoElement = videoRef.current;
 
       return () => {
+        // remove resize listener
+        window.removeEventListener("resize", sizeCanvasesToVideo);
+
+        // clear detection interval
+        if (intervalRef.current != null) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+        }
+
+        // stop camera tracks
         if (videoElement && videoElement.srcObject) {
           const tracks = (videoElement.srcObject as MediaStream).getTracks();
           tracks.forEach((track) => track.stop());
@@ -171,6 +191,90 @@
           />
         )}
         <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full" />
+
+        {/* Annotation canvas (on top). Pointer events only when enabled */}
+      <canvas
+        ref={annotationCanvasRef}
+        className={`absolute top-0 left-0 w-full h-full z-50 ${
+          annotationOn ? "pointer-events-auto" : "pointer-events-none"
+        }`}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+      />
+
+      {/* Annotation toolbar */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-2 bg-black/60 text-white rounded-2xl px-3 py-2 backdrop-blur">
+        <button
+          onClick={() => setAnnotationOn((v) => !v)}
+          className={`px-3 py-1 rounded-xl ${
+            annotationOn ? "bg-white text-black" : "bg-white/10"
+          }`}
+          aria-pressed={annotationOn}
+          title="Toggle annotations"
+        >
+          {annotationOn ? "Annotation: On" : "Annotation: Off"}
+        </button>
+
+        <div
+          className={`flex items-center gap-2 ${
+            annotationOn ? "opacity-100" : "opacity-40 pointer-events-none"
+          }`}
+        >
+          <button
+            onClick={() => setTool("draw")}
+            className={`px-2 py-1 rounded ${
+              tool === "draw" ? "bg-white text-black" : "bg-white/10"
+            }`}
+            aria-pressed={tool === "draw"}
+            title="Draw"
+          >
+            ✏️
+          </button>
+          <button
+            onClick={() => setTool("erase")}
+            className={`px-2 py-1 rounded ${
+              tool === "erase" ? "bg-white text-black" : "bg-white/10"
+            }`}
+            aria-pressed={tool === "erase"}
+            title="Erase"
+          >
+            🧽
+          </button>
+
+          <label className="flex items-center gap-2 text-xs">
+            <span>Color</span>
+            <input
+              type="color"
+              value={strokeColor}
+              onChange={(e) => setStrokeColor(e.target.value)}
+              className="h-8 w-8 rounded overflow-hidden border border-white/20"
+            />
+          </label>
+
+          <label className="flex items-center gap-2 text-xs">
+            <span>Size</span>
+            <input
+              type="range"
+              min={2}
+              max={24}
+              step={1}
+              value={strokeWidth}
+              onChange={(e) => setStrokeWidth(Number(e.target.value))}
+              className="w-24"
+            />
+          </label>
+
+          <button
+            onClick={clearAnnotations}
+            className="px-2 py-1 rounded bg-white/10"
+            title="Clear"
+          >
+            Clear
+          </button>
+        </div>
+      </div>
 
         {/* Show error message if camera is not available */}
         {cameraError && (
