@@ -57,6 +57,53 @@
     if (c && ctx) ctx.clearRect(0, 0, c.width, c.height);
   };
 
+  const getRelativePos = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const canvas = annotationCanvasRef.current!;
+    const rect = canvas.getBoundingClientRect();
+    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+  };
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    if (!annotationOn) return;
+    const canvas = annotationCanvasRef.current!;
+    canvas.setPointerCapture(e.pointerId);
+    isDrawingRef.current = true;
+    lastPosRef.current = getRelativePos(e);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    if (!annotationOn || !isDrawingRef.current) return;
+
+    const canvas = annotationCanvasRef.current!;
+    const ctx = canvas.getContext("2d")!;
+    const pos = getRelativePos(e);
+    const last = lastPosRef.current!;
+
+    // pen pressure option support
+    const pressure = e.pressure && e.pressure > 0 ? e.pressure : 1;
+
+    ctx.lineJoin = "round";
+    ctx.lineCap = "round";
+    ctx.lineWidth = Math.max(1, strokeWidth * pressure);
+    ctx.globalCompositeOperation =
+      tool === "erase" ? "destination-out" : "source-over";
+    if (tool === "draw") ctx.strokeStyle = strokeColor;
+
+    ctx.beginPath();
+    ctx.moveTo(last.x, last.y);
+    ctx.lineTo(pos.x, pos.y);
+    ctx.stroke();
+
+    lastPosRef.current = pos;
+  };
+
+  const handlePointerUp = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    if (!annotationOn) return;
+    const canvas = annotationCanvasRef.current!;
+    canvas.releasePointerCapture(e.pointerId);
+    isDrawingRef.current = false;
+    lastPosRef.current = null;
+  };
   
 
     useEffect(() => {
