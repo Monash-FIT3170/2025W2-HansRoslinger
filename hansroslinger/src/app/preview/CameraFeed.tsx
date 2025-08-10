@@ -1,98 +1,108 @@
-"use client";
-import { useEffect, useRef, useState } from "react";
-import { HandRecogniser } from "app/detection/handRecognition";
-import { canvasRenderer } from "app/detection/canvasRenderer";
-import { useGestureStore } from "store/gestureSlice";
-/**
- * CameraFeed component handles accessing the user's camera and microphone.
- * It shows a mirrored live video feed with an error handling message if access fails.
- */
-const CameraFeed = () => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [cameraError, setCameraError] = useState(false);
-  const setGesturePayload = useGestureStore(
-    (state) => state.setGesturePayloads,
-  );
-  console.log("CameraFeed component is rendering!");
+  "use client";
+  import { useEffect, useRef, useState } from "react";
+  import { HandRecogniser } from "app/detection/handRecognition";
+  import { canvasRenderer } from "app/detection/canvasRenderer";
+  import { useGestureStore } from "store/gestureSlice";
+  /**
+   * CameraFeed component handles accessing the user's camera and microphone.
+   * It shows a mirrored live video feed with an error handling message if access fails.
+   */
+  const CameraFeed = () => {
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const [cameraError, setCameraError] = useState(false);
+    const setGesturePayload = useGestureStore(
+      (state) => state.setGesturePayloads,
+    );
+    console.log("CameraFeed component is rendering!");
 
-  useEffect(() => {
-    const startCamera = async () => {
-      try {
-        console.log("camera");
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-          audio: true,
-        });
+    // annotation refs and states
+    const annotationCanvasRef = useRef<HTMLCanvasElement>(null);
+    const isDrawingRef = useRef(false);
+    const lastPosRef = useRef<{ x: number; y: number } | null>(null);
 
-        if (videoRef.current && canvasRef.current) {
-          videoRef.current.srcObject = stream;
-          setInterval(async () => {
-            if (videoRef.current && canvasRef.current) {
-              if (
-                videoRef.current.videoWidth > 0 &&
-                videoRef.current.videoHeight > 0 &&
-                canvasRef.current.width > 0 &&
-                canvasRef.current.height > 0
-              ) {
-                const payload = await HandRecogniser(
-                  videoRef.current,
-                  canvasRef.current,
-                );
-                console.log(payload);
-                canvasRenderer(
-                  canvasRef.current,
-                  videoRef.current,
-                  payload.gestureRecognitionResult,
-                );
-                setGesturePayload(payload.payloads);
+    const [annotationOn, setAnnotationOn] = useState(false);
+    const [tool, setTool] = useState<"draw" | "erase">("draw");
+    const [strokeWidth, setStrokeWidth] = useState(4);
+    const [strokeColor, setStrokeColor] = useState("#00ff88");
+
+    useEffect(() => {
+      const startCamera = async () => {
+        try {
+          console.log("camera");
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: true,
+          });
+
+          if (videoRef.current && canvasRef.current) {
+            videoRef.current.srcObject = stream;
+            setInterval(async () => {
+              if (videoRef.current && canvasRef.current) {
+                if (
+                  videoRef.current.videoWidth > 0 &&
+                  videoRef.current.videoHeight > 0 &&
+                  canvasRef.current.width > 0 &&
+                  canvasRef.current.height > 0
+                ) {
+                  const payload = await HandRecogniser(
+                    videoRef.current,
+                    canvasRef.current,
+                  );
+                  console.log(payload);
+                  canvasRenderer(
+                    canvasRef.current,
+                    videoRef.current,
+                    payload.gestureRecognitionResult,
+                  );
+                  setGesturePayload(payload.payloads);
+                }
               }
-            }
-          }, 100);
+            }, 100);
+          }
+        } catch (err) {
+          console.error("Error accessing camera:", err);
+          setCameraError(true);
         }
-      } catch (err) {
-        console.error("Error accessing camera:", err);
-        setCameraError(true);
-      }
-    };
-    startCamera();
+      };
+      startCamera();
 
-    const videoElement = videoRef.current;
+      const videoElement = videoRef.current;
 
-    return () => {
-      if (videoElement && videoElement.srcObject) {
-        const tracks = (videoElement.srcObject as MediaStream).getTracks();
-        tracks.forEach((track) => track.stop());
-      }
-    };
-  }, []);
+      return () => {
+        if (videoElement && videoElement.srcObject) {
+          const tracks = (videoElement.srcObject as MediaStream).getTracks();
+          tracks.forEach((track) => track.stop());
+        }
+      };
+    }, []);
 
-  return (
-    <div className="relative w-full h-full">
-      {/* Show video if no error */}
-      {!cameraError && (
-        <video
-          id="cameraFeed"
-          ref={videoRef}
-          autoPlay
-          playsInline
-          muted
-          className="w-full h-full object-cover transform -scale-x-100"
-        />
-      )}
-      <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full" />
+    return (
+      <div className="relative w-full h-full">
+        {/* Show video if no error */}
+        {!cameraError && (
+          <video
+            id="cameraFeed"
+            ref={videoRef}
+            autoPlay
+            playsInline
+            muted
+            className="w-full h-full object-cover transform -scale-x-100"
+          />
+        )}
+        <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full" />
 
-      {/* Show error message if camera is not available */}
-      {cameraError && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70">
-          <div className="text-center px-4 text-white text-lg font-semibold">
-            Camera and microphone is not detected. <br />
-            Please check your device settings.
+        {/* Show error message if camera is not available */}
+        {cameraError && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70">
+            <div className="text-center px-4 text-white text-lg font-semibold">
+              Camera and microphone is not detected. <br />
+              Please check your device settings.
+            </div>
           </div>
-        </div>
-      )}
-    </div>
-  );
-};
+        )}
+      </div>
+    );
+  };
 
-export default CameraFeed;
+  export default CameraFeed;
