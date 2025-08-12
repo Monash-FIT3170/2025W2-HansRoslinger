@@ -19,6 +19,7 @@ export async function POST(req: NextRequest) {
         const user = await createUser(email, password, s3BucketUrl);
 
         return NextResponse.json({ user }, { status: 201 });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
         return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
     }
