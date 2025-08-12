@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { getUser } from '../../../database/common/user/getUser';
-const { createHash } = require('crypto');
+import * as crypto from "crypto";
 
 export type LoginResponse = {
     success: boolean;
@@ -11,7 +11,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<LoginResponse
   try {
     const { email, password } = await req.json();
     const user = await getUser(email);
-    const hashedPassword = createHash('sha256').update(password).digest('hex');
+    const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
 
     if (!user || user.password !== hashedPassword) {
       return NextResponse.json(
@@ -24,9 +24,6 @@ export async function POST(req: NextRequest): Promise<NextResponse<LoginResponse
     name: 'email',
     value: email,
     path: '/',
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
   });
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
