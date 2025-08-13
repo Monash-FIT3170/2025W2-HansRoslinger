@@ -2,6 +2,7 @@ import { handleDrag } from "./actions/handleDrag";
 import { handleResize } from "./actions/handleResize";
 import { handleHover } from "./actions/handleHover";
 import { useVisualStore } from "store/visualsSlice";
+import { useModeStore } from "store/modeSlice";
 import {
   ActionPayload,
   HandIds,
@@ -60,11 +61,31 @@ export class InteractionManager {
   private pinchStartDistance: number | null = null;
   private pinchStartSize: { width: number; height: number } | null = null;
 
+  // Call this after a mode switch to reset transient state
+  resetTransientState() {
+    // Clear hover on any currently bound visuals (for all hands)
+    (Object.keys(this.handVisualMap) as Array<HandIds>).forEach((handId) => {
+      const hand = this.handVisualMap[handId];
+      if (hand.visual) {
+        handleHover(hand.visual.assetId, false);
+      }
+      hand.visual = null;
+      hand.dragOffset = null;
+      hand.clearCount = 0;
+    });
+
+    // Reset shared resize / clear state
+    this.pinchStartDistance = null;
+    this.pinchStartSize = null;
+    this.currentClearCount = 0;
+  }
   /**
    * Primary handler for all gesture-to-action mappings.
    * Called by `useGestureListener` with mapped ActionPayloads.
    */
   handleAction(actionPayload: ActionPayload) {
+    // Freeze everything in paint mode
+    if (useModeStore.getState().mode === "paint") return;
     // reset count
     this.currentClearCount = 0;
     this.handVisualMap[actionPayload.handId].clearCount = 0;
@@ -295,6 +316,7 @@ export class InteractionManager {
 
   // ONLY USED FOR MOUSE MOCK
   handleInput(input: InteractionInput) {
+    if (useModeStore.getState().mode === "paint") return;
     const targetId =
       input.targetId ?? this.findTargetAt(input.position)?.assetId;
     console.log("[Manager] Input:", input.type, "Target:", targetId);
