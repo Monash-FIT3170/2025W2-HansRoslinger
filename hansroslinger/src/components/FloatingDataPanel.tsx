@@ -1,14 +1,38 @@
 "use client";
 
+import Image from "next/image";
 import { usePanelStore } from "store/panelSlice";
+import { useVisualStore } from "store/visualsSlice";
+import { FILE_TYPE_PNG } from "constants/application";
+import VegaLiteChartDisplay from "@/components/VegaLiteChartDisplay";
+import { hardcodedUploads } from "../hardcodedData";
 
 const FloatingDataPanel = () => {
   const isOpen = usePanelStore((state) => state.isOpen);
   const toggle = usePanelStore((state) => state.toggle);
 
+  const addSelectedUpload = useVisualStore((state) => state.addSelectedUpload);
+  const removeSelectedUpload = useVisualStore((state) => state.removeVisual);
+  const visuals = useVisualStore((state) => state.visuals);
+
+  const isVisualExist = (assetId: string) => {
+    return visuals.some((visual) => visual.assetId === assetId);
+  };
+
+  const handleClick = (assetId: string) => {
+    const uploadData = hardcodedUploads[assetId];
+    if (!uploadData) return;
+
+    if (isVisualExist(assetId)) {
+      removeSelectedUpload(assetId);
+    } else {
+      addSelectedUpload(assetId, uploadData);
+    }
+  };
+
   return (
     <div className="absolute top-1/2 -translate-y-1/2 left-4 z-[9999]">
-      {/* arrow button */}
+      {/* Arrow Button */}
       <button
         onClick={toggle}
         className="bg-white border px-4 py-2 text-2xl rounded shadow hover:bg-gray-100"
@@ -16,23 +40,40 @@ const FloatingDataPanel = () => {
         {isOpen ? "<" : ">"}
       </button>
 
-      {/* content */}
+      {/* Panel Content */}
       {isOpen && (
-        <div className="mt-2 w-64 max-h-[70vh] overflow-y-auto bg-white border rounded shadow p-3 space-y-2">
-          <h2 className="text-lg font-semibold mb-2 text-black">Uploaded Visuals</h2>
+        <div className="mt-2 w-64 max-h-[70vh] overflow-y-auto bg-white/70 border backdrop-blur rounded shadow p-3 space-y-2">
+          <h2 className="text-lg font-semibold mb-2 text-black">Uploads</h2>
 
-          {/* chart entry (draggable later) */}
-          <div
-            draggable
-            onDragStart={(e) =>
-              e.dataTransfer.setData("application/json", "bar-chart.json")
-            }
-            className="cursor-grab p-2 border rounded hover:bg-gray-100 active:cursor-grabbing text-black bg-gray-50"
-          >
-            example chart (assets will be here soon)
-          </div>
-
-          {/* More to be added below */}
+          {Object.entries(hardcodedUploads).length === 0 ? (
+            <div className="text-sm text-gray-500">No visuals uploaded.</div>
+          ) : (
+            Object.entries(hardcodedUploads).map(([assetId, uploadData]) => (
+              <div
+                key={assetId}
+                onClick={() => handleClick(assetId)}
+                className={`w-full cursor-pointer border rounded p-2 bg-white bg-opacity-90 hover:bg-gray-100 text-black ${
+                  isVisualExist(assetId) ? "border-green-500 border-2" : "border-gray-300"
+                }`}
+              >
+                <div className="w-full h-32 relative mb-2">
+                  {uploadData.type === FILE_TYPE_PNG ? (
+                    <Image
+                      src={uploadData.thumbnailSrc || "/uploads/default-thumbnail.png"}
+                      alt={uploadData.name}
+                      className="object-contain"
+                      fill
+                      sizes="100%"
+                    />
+                  ) : (
+                    <VegaLiteChartDisplay data={uploadData} />
+                  )}
+                </div>
+                <div className="font-medium text-sm truncate">{uploadData.name}</div>
+                <div className="text-xs text-gray-500">{uploadData.type}</div>
+              </div>
+            ))
+          )}
         </div>
       )}
     </div>
