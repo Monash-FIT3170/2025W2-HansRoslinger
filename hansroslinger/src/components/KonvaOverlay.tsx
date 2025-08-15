@@ -9,11 +9,13 @@ import VegaLiteVisual from "./visuals/VegaLiteChartVisual";
 import { InteractionManager } from "./interactions/interactionManager";
 import { useMouseMockStream } from "./interactions/useMouseMockStream";
 import { useGestureListener } from "./interactions/useGestureListener";
+import { FeedbackDisplay } from "./interactions/actions/handleFeedback";
 
 import ClearButton from "./ClearButton";
 
 const CanvasOverlay = () => {
   const visuals = useVisualStore((state) => state.visuals);
+  //const { gestureFeedbackId } = useVisualStore();
 
   const [dimensions, setDimensions] = useState<{
     width: number;
@@ -43,17 +45,28 @@ const CanvasOverlay = () => {
       {dimensions && (
         <div className="w-full h-full pointer-events-auto">
           {visuals.map((visual) => {
+            const isHovered = visual.isHovered;
             if (visual.uploadData.type === FILE_TYPE_JSON) {
               return (
-                <VegaLiteVisual key={visual.assetId} id={visual.assetId} />
+                  <div key={visual.assetId} className="relative">
+                    <VegaLiteVisual id={visual.assetId} />
+                    <div className="absolute top-2 right-2 z-20 bg-white bg-opacity-90 rounded-lg shadow-lg p-2">
+                      {isHovered && <FeedbackDisplay fileType={visual.uploadData.type} />}
+                    </div>
+                </div>
               );
             } else if (visual.uploadData.type == FILE_TYPE_PNG) {
               return (
-                <ImageVisual
-                  key={visual.assetId}
-                  id={visual.assetId}
-                  visual={visual}
-                />
+                <div key={visual.assetId} className="relative">
+                  <ImageVisual
+                    key={visual.assetId}
+                    id={visual.assetId}
+                    visual={visual}
+                  />
+                  <div className="absolute top-2 right-2 z-20 bg-white bg-opacity-90 rounded-lg shadow-lg p-2">
+                    {isHovered && <FeedbackDisplay fileType={visual.uploadData.type} />}
+                  </div>
+                </div>
               );
             }
             return null;
