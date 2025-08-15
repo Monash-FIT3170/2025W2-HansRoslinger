@@ -4,10 +4,13 @@ import * as crypto from "crypto";
 export async function createUser(
   email: string,
   password: string,
-  s3BucketUrl: string
+  s3BucketUrl: string,
 ) {
   try {
-    const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+    const hashedPassword = crypto
+      .createHash("sha256")
+      .update(password)
+      .digest("hex");
     const user = await prisma.user.create({
       data: {
         email,

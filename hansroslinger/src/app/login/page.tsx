@@ -1,42 +1,42 @@
-'use client';
+"use client";
 
-import React, { FormEvent, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { LoginResponse } from '../api/login/route';
+import React, { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
+import { LoginResponse } from "../api/login/route";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [error, setError] = useState<string>('');
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
   const router = useRouter();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!email || !password) {
-      setError('Please fill in both fields.');
+      setError("Please fill in both fields.");
       return;
     }
 
-    setError('');
-    console.log('Logging in with:', { email, password });
+    setError("");
+    console.log("Logging in with:", { email, password });
     // fetch user from database
-      const res = await fetch('../../api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
+    const res = await fetch("../../api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
 
-      const data: LoginResponse = await res.json();
+    const data: LoginResponse = await res.json();
 
-      if (!data.success) {
-        setError(data.error || 'Login failed');
-        return;
-      }
+    if (!data.success) {
+      setError(data.error || "Login failed");
+      return;
+    }
     //redirect to dashboard
-    router.push('/dashboard');
+    router.push("/dashboard");
   };
 
   return (
@@ -74,9 +74,9 @@ export default function LoginPage() {
         </form>
 
         <p className="text-center text-sm mt-4">
-          Don&apos;t have an account?{' '}
+          Don&apos;t have an account?{" "}
           <span
-            onClick={() => router.push('/signup')}
+            onClick={() => router.push("/signup")}
             className="text-blue-600 hover:underline cursor-pointer"
           >
             Sign up
