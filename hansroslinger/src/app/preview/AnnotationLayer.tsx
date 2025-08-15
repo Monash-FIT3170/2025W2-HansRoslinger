@@ -30,7 +30,7 @@ const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
   const [strokeWidth, setStrokeWidth] = useState(4);
   const [strokeColor, setStrokeColor] = useState("#00ff88");
 
-  // Size canvas to match target 
+  // Size canvas to match target
   const sizeToTarget = () => {
     const target = targetRef.current;
     const canvas = annotationCanvasRef.current;
@@ -83,7 +83,8 @@ const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
     ctx.lineWidth = Math.max(1, strokeWidth * pressure);
-    ctx.globalCompositeOperation = tool === "erase" ? "destination-out" : "source-over";
+    ctx.globalCompositeOperation =
+      tool === "erase" ? "destination-out" : "source-over";
     if (tool === "draw") ctx.strokeStyle = strokeColor;
 
     ctx.beginPath();
@@ -114,7 +115,7 @@ const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Re-size when the target element size changes 
+  // Re-size when the target element size changes
   useEffect(() => {
     if (!targetRef.current) return;
     const ro = new ResizeObserver(() => sizeToTarget());
@@ -154,7 +155,9 @@ const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
           {enabled ? "Annotation: On" : "Annotation: Off"}
         </button>
 
-        <div className={`flex items-center gap-2 ${enabled ? "opacity-100" : "opacity-40 pointer-events-none"}`}>
+        <div
+          className={`flex items-center gap-2 ${enabled ? "opacity-100" : "opacity-40 pointer-events-none"}`}
+        >
           <button
             onClick={() => setTool("draw")}
             className={`px-2 py-1 rounded ${tool === "draw" ? "bg-white text-black" : "bg-white/10"}`}
@@ -195,7 +198,11 @@ const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
             />
           </label>
 
-          <button onClick={clearAnnotations} className="px-2 py-1 rounded bg-white/10" title="Clear">
+          <button
+            onClick={clearAnnotations}
+            className="px-2 py-1 rounded bg-white/10"
+            title="Clear"
+          >
             Clear
           </button>
         </div>

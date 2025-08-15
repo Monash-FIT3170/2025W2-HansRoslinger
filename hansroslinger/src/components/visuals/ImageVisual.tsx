@@ -13,7 +13,7 @@ const ImageVisual = ({ id, visual }: ImageVisualProp) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const setVisualSize = useVisualStore((state) => state.setVisualSize);
   const setUseOriginalSizeOnLoad = useVisualStore(
-    (state) => state.setUseOriginalSizeOnLoad
+    (state) => state.setUseOriginalSizeOnLoad,
   );
 
   useEffect(() => {
