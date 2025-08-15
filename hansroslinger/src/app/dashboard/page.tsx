@@ -9,7 +9,7 @@ const Dashboard = async () => {
   // Right now this is hard coded, once we have data base setup, we can fetch instead
   const uploads: Uploads = hardcodedUploads;
   const cookieStore = await cookies();
-  const email = decodeURIComponent(cookieStore.get('email')?.value ?? '');
+  const email = decodeURIComponent(cookieStore.get("email")?.value ?? "");
   console.log("Email from cookies:", email);
 
   const gestures = [
