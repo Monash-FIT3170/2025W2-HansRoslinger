@@ -15,7 +15,9 @@ const CameraFeed = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [cameraError, setCameraError] = useState(false);
-  const setGesturePayload = useGestureStore((state) => state.setGesturePayloads);
+  const setGesturePayload = useGestureStore(
+    (state) => state.setGesturePayloads,
+  );
 
   // keep track of the interval so we can clear it on unmount
   const intervalRef = useRef<number | null>(null);
@@ -64,12 +66,12 @@ const CameraFeed = () => {
               ) {
                 const payload = await HandRecogniser(
                   videoRef.current,
-                  canvasRef.current
+                  canvasRef.current,
                 );
                 canvasRenderer(
                   canvasRef.current,
                   videoRef.current,
-                  payload.gestureRecognitionResult
+                  payload.gestureRecognitionResult,
                 );
                 setGesturePayload(payload.payloads);
               }
