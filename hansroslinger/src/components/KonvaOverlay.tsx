@@ -10,6 +10,8 @@ import { InteractionManager } from "./interactions/interactionManager";
 import { useMouseMockStream } from "./interactions/useMouseMockStream";
 import { useGestureListener } from "./interactions/useGestureListener";
 
+import ClearButton from "./ClearButton";
+
 const CanvasOverlay = () => {
   const visuals = useVisualStore((state) => state.visuals);
 
@@ -56,6 +58,8 @@ const CanvasOverlay = () => {
             }
             return null;
           })}
+
+          <ClearButton />
         </div>
       )}
     </div>
