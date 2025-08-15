@@ -1,4 +1,3 @@
-// src/components/FloatingDataPanel.tsx
 "use client";
 
 import Image from "next/image";
@@ -40,10 +39,11 @@ const FloatingDataPanel = () => {
         pointerEvents: "auto",
       }}
     >
-      {/* Panel Content */}
+      {/* Panel logic goes here */}
       <div className="w-64 max-h-[70vh] overflow-y-auto bg-white/70 border backdrop-blur rounded shadow p-3 space-y-2 text-black">
         <h2 className="text-lg font-semibold mb-2">Uploads</h2>
 
+        {/* Condition for no visuals uploaded */}
         {Object.entries(hardcodedUploads).length === 0 ? (
           <div className="text-sm text-gray-500">No visuals uploaded.</div>
         ) : (
