@@ -1,53 +1,55 @@
-'use client';
+"use client";
 
-import React, { FormEvent, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { SignupResponse } from 'app/api/signup/route';
+import React, { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
+import { SignupResponse } from "app/api/signup/route";
 
 export default function SignUpPage() {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [confirmPassword, setConfirmPassword] = useState<string>('');
-  const [error, setError] = useState<string>('');
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
   const router = useRouter();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!email || !password || !confirmPassword) {
-      setError('Please fill in all fields.');
+      setError("Please fill in all fields.");
       return;
     }
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match.');
+      setError("Passwords do not match.");
       return;
     }
 
-    setError('');
-    console.log('Signing up with:', { email, password });
+    setError("");
+    console.log("Signing up with:", { email, password });
     //create user in database
     try {
-      const res = await fetch('/api/signup', {
-        method: 'POST',
+      const res = await fetch("/api/signup", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
       });
       const data: SignupResponse = await res.json();
-      
+
       if (!data.user) {
-        setError(data.error || 'Login failed');
+        setError(data.error || "Login failed");
         return;
       }
-      router.push('/login');
+      router.push("/login");
     } catch (error) {
-      setError('Error creating user. Please try again. User may already exist.');
-      console.error('Error creating user:', error);
+      setError(
+        "Error creating user. Please try again. User may already exist.",
+      );
+      console.error("Error creating user:", error);
       return;
     }
-    router.push('/login');
+    router.push("/login");
   };
 
   return (
@@ -93,9 +95,9 @@ export default function SignUpPage() {
         </form>
 
         <p className="text-center text-sm mt-4">
-          Already have an account?{' '}
+          Already have an account?{" "}
           <span
-            onClick={() => router.push('/login')}
+            onClick={() => router.push("/login")}
             className="text-blue-600 hover:underline cursor-pointer"
           >
             Log in
