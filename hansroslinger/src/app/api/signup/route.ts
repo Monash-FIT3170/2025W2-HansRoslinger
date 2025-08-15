@@ -3,8 +3,8 @@ import { createUser } from "../../../database/common/user/createUser";
 import { createS3UserBucket } from "lib/http/createUserBucket";
 
 export type SignupResponse = {
-    user: { email: string; name: string };
-    error?: string;
+  user: { email: string; name: string };
+  error?: string;
 };
 
 export async function POST(req: NextRequest) {
