@@ -54,6 +54,10 @@ export class InteractionManager {
   private readonly CLEAR_THRESHOLD = 3;
   private currentClearCount = 0;
 
+  // Track last simulated pointer position and target to prevent spamming events
+  private lastSimulatedPosition: { x: number; y: number } | null = null;
+  private lastSimulatedTargetId: string | null = null;
+
   private get visuals() {
     return useVisualStore.getState().visuals;
   }
@@ -299,6 +303,8 @@ export class InteractionManager {
    * @returns first visual (with the highest index) that contains the pointer, or null if none match
    */
   private findTargetAt(position: { x: number; y: number }): Visual | null {
+    console.log("[Manager] Finding target at position:", position);
+
     for (const visual of [...this.visuals].reverse()) {
       const { x, y } = visual.position;
       const { width, height } = visual.size;
@@ -309,10 +315,101 @@ export class InteractionManager {
         position.y >= y &&
         position.y <= y + height;
 
-      if (withinBounds) return visual;
+      if (withinBounds) {
+        console.log(
+          `[Manager] Found target ${visual.assetId} under pointer at (${position.x}, ${position.y})`,
+        );
+
+        // Only simulate pointer events if position or target changed
+        if (
+          !this.lastSimulatedPosition ||
+          this.lastSimulatedPosition.x !== position.x ||
+          this.lastSimulatedPosition.y !== position.y ||
+          this.lastSimulatedTargetId !== visual.assetId
+        ) {
+          this.simulatePointerEvents(position);
+          this.lastSimulatedPosition = position;
+          this.lastSimulatedTargetId = visual.assetId;
+        }
+
+        return visual;
+      }
     }
+
+    console.log("[Manager] No target found at position:", position);
+
+    // Clear last simulated state if no target
+    this.lastSimulatedPosition = null;
+    this.lastSimulatedTargetId = null;
+
     return null;
   }
+
+  private simulatePointerEvents(position: { x: number; y: number }) {
+    if (!position) return;
+
+    // Find the visual under this position
+    const visual = this.visuals.find(v =>
+      position.x >= v.position.x &&
+      position.x <= v.position.x + v.size.width &&
+      position.y >= v.position.y &&
+      position.y <= v.position.y + v.size.height
+    );
+    if (!visual) {
+      console.warn("No visual found for pointer event simulation");
+      return;
+    }
+
+    // Target the Vega canvas with class 'marks'
+    const canvas = document.querySelector("canvas.marks") as HTMLCanvasElement;
+    if (!canvas) {
+      console.warn("Vega canvas with class 'marks' not found");
+      return;
+    }
+
+    const rect = canvas.getBoundingClientRect();
+
+    // Offset the pointer position by the visual's position
+    const localX = position.x - visual.position.x;
+    const localY = position.y - visual.position.y;
+
+    // Map to client coordinates
+    const clientX = rect.left + localX;
+    const clientY = rect.top + localY;
+
+    const target = document.elementFromPoint(clientX, clientY) ?? canvas;
+
+    [
+      "pointerenter",
+      "pointerover",
+      "pointermove",
+      "mouseenter",
+      "mouseover",
+      "mousemove",
+    ].forEach((type) =>
+      target.dispatchEvent(
+        new PointerEvent(type, {
+          bubbles: true,
+          cancelable: true,
+          pointerId: 1,
+          pointerType: "mouse",
+          isPrimary: true,
+          clientX,
+          clientY,
+        }),
+      ),
+    );
+
+    console.log("[InteractionManager] Dispatched pointer events", {
+      clientX,
+      clientY,
+      target,
+      localX,
+      localY,
+      visual,
+    });
+  }
+
 
   // ONLY USED FOR MOUSE MOCK
   handleInput(input: InteractionInput) {
