@@ -21,7 +21,7 @@ export default function ModeToggle() {
   return (
     <button
       onClick={toggle}
-      className="fixed bottom-4 right-4 z-[9999] rounded-2xl px-4 py-2 shadow bg-black/80 text-white"
+      className="z-[9999] rounded-2xl px-4 py-2 shadow bg-black/80 text-white"
       aria-pressed={mode === "paint"}
       aria-label={`Switch to ${mode === "paint" ? "Interact" : "Paint"} mode (P)`}
       title={`Press P — ${mode === "paint" ? "Interact" : "Paint"} mode`}
