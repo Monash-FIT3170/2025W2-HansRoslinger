@@ -12,5 +12,6 @@ type ModeState = {
 export const useModeStore = create<ModeState>((set, get) => ({
   mode: "interact",
   setMode: (m) => set({ mode: m }),
-  toggleMode: () => set({ mode: get().mode === "interact" ? "paint" : "interact" }),
+  toggleMode: () =>
+    set({ mode: get().mode === "interact" ? "paint" : "interact" }),
 }));
