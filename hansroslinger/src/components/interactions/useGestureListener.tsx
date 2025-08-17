@@ -3,7 +3,7 @@ import { gestureToActionMap } from "./gestureMappings";
 import { InteractionManager } from "./interactionManager";
 import { useGestureStore } from "store/gestureSlice";
 import { HAND_IDS } from "constants/application";
-import { useModeStore } from "store/modeSlice"; 
+import { useModeStore } from "store/modeSlice";
 
 export const useGestureListener = (interactionManager: InteractionManager) => {
   const gesturePayloads = useGestureStore((state) => state.gesturePayloads);
@@ -21,7 +21,7 @@ export const useGestureListener = (interactionManager: InteractionManager) => {
     // (Later we will route these to the paint pipeline instead.)
     if (mode === "paint") return;
 
-    // Interact mode: 
+    // Interact mode:
     gesturePayloads.forEach((payload) => {
       const action = gestureToActionMap[payload.name];
       if (action) {
