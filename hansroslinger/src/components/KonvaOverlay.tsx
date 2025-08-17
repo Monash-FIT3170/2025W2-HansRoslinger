@@ -49,11 +49,12 @@ const CanvasOverlay = () => {
                 <div key={visual.assetId} className="relative">
                   <VegaLiteVisual id={visual.assetId} />
                   {isHovered && (
-                    <div 
+                    <div
                       className="absolute z-20"
                       style={{
                         top: visual.position.y + visual.size?.height,
-                        left: visual.position.x + (visual.size?.width || 0) + 10, // 10px gap
+                        left:
+                          visual.position.x + (visual.size?.width || 0) + 10, // 10px gap
                       }}
                     >
                       <FeedbackDisplay fileType={visual.uploadData.type} />
@@ -61,20 +62,24 @@ const CanvasOverlay = () => {
                   )}
                 </div>
               );
-            }else if (visual.uploadData.type == FILE_TYPE_PNG) {
+            } else if (visual.uploadData.type == FILE_TYPE_PNG) {
               return (
-                <div key={visual.assetId} className="relative flex gap-4 items-start">
+                <div
+                  key={visual.assetId}
+                  className="relative flex gap-4 items-start"
+                >
                   <ImageVisual
                     key={visual.assetId}
                     id={visual.assetId}
                     visual={visual}
                   />
                   {isHovered && (
-                    <div 
+                    <div
                       className="absolute z-20"
                       style={{
                         top: visual.position.y + visual.size?.height,
-                        left: visual.position.x + (visual.size?.width || 0) + 10, // 10px gap
+                        left:
+                          visual.position.x + (visual.size?.width || 0) + 10, // 10px gap
                       }}
                     >
                       <FeedbackDisplay fileType={visual.uploadData.type} />
