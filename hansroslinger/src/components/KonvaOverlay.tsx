@@ -48,26 +48,38 @@ const CanvasOverlay = () => {
               return (
                 <div key={visual.assetId} className="relative">
                   <VegaLiteVisual id={visual.assetId} />
-                  <div className="absolute top-2 right-2 z-20 bg-white bg-opacity-90 rounded-lg shadow-lg p-2">
-                    {isHovered && (
+                  {isHovered && (
+                    <div 
+                      className="absolute z-20"
+                      style={{
+                        top: visual.position.y + visual.size?.height,
+                        left: visual.position.x + (visual.size?.width || 0) + 10, // 10px gap
+                      }}
+                    >
                       <FeedbackDisplay fileType={visual.uploadData.type} />
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
               );
-            } else if (visual.uploadData.type == FILE_TYPE_PNG) {
+            }else if (visual.uploadData.type == FILE_TYPE_PNG) {
               return (
-                <div key={visual.assetId} className="relative">
+                <div key={visual.assetId} className="relative flex gap-4 items-start">
                   <ImageVisual
                     key={visual.assetId}
                     id={visual.assetId}
                     visual={visual}
                   />
-                  <div className="absolute top-2 right-2 z-20 bg-white bg-opacity-90 rounded-lg shadow-lg p-2">
-                    {isHovered && (
+                  {isHovered && (
+                    <div 
+                      className="absolute z-20"
+                      style={{
+                        top: visual.position.y + visual.size?.height,
+                        left: visual.position.x + (visual.size?.width || 0) + 10, // 10px gap
+                      }}
+                    >
                       <FeedbackDisplay fileType={visual.uploadData.type} />
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
               );
             }
