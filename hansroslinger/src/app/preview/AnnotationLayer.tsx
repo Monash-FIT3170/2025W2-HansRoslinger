@@ -156,7 +156,9 @@ const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
           className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-black/60 text-white rounded-2xl px-3 py-2 backdrop-blur"
           style={{ zIndex: zIndex + 1 }}
         >
-          <div className={`flex items-center gap-2 ${enabled ? "opacity-100" : "opacity-40 pointer-events-none"}`}>
+          <div
+            className={`flex items-center gap-2 ${enabled ? "opacity-100" : "opacity-40 pointer-events-none"}`}
+          >
             <button
               onClick={() => setTool("draw")}
               className={`px-2 py-1 rounded ${tool === "draw" ? "bg-white text-black" : "bg-white/10"}`}
@@ -197,7 +199,11 @@ const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
               />
             </label>
 
-            <button onClick={clearAnnotations} className="px-2 py-1 rounded bg-white/10" title="Clear">
+            <button
+              onClick={clearAnnotations}
+              className="px-2 py-1 rounded bg-white/10"
+              title="Clear"
+            >
               Clear
             </button>
           </div>
