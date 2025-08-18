@@ -7,8 +7,6 @@ import ModeToggle from "@/components/ModeToggle";
 type AnnotationLayerProps = {
   /** Element to align/sync canvas size with video element. */
   targetRef: React.RefObject<HTMLElement | null>;
-  /** Start with annotation enabled. */
-  defaultEnabled?: boolean;
   /** className for the wrapper. */
   className?: string;
   /** z-index for the canvas/toolbar stack. */
@@ -17,7 +15,6 @@ type AnnotationLayerProps = {
 
 const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
   targetRef,
-  defaultEnabled = false,
   className = "",
   zIndex = 50,
 }) => {
