@@ -37,61 +37,66 @@ const FloatingDataPanel = () => {
     }
   };
 
-return (
+
+  return (
     <div
-      className={`absolute left-0 top-0 h-full z-40 flex transition-all duration-300 ${
+      className={`absolute left-0 top-[12.5%] h-[75%] z-40 flex transition-all duration-300 ${
         isOpen ? "translate-x-0" : "-translate-x-full"
       }`}
     >
       {/* Panel container */}
-      <div className="w-72 h-full overflow-y-auto bg-gray-300 border-r border-gray-400 rounded-r-lg shadow-lg p-4 flex flex-col text-black">
+      <div className="w-64 h-full overflow-y-auto bg-gray-400 border-r border-gray-500 shadow-lg p-3 flex flex-col text-black">
         {/* Heading */}
-        <h2 className="text-lg font-bold mb-4 text-center bg-white rounded p-2 shadow">
-          Uploaded Visuals
-        </h2>
+        <div className="bg-gray-300 text-black rounded p-3 mb-4 text-center">
+          <h2 className="text-base font-bold">Uploaded Visuals</h2>
+        </div>
 
-        {/* Grid of thumbnails */}
-        <div className="grid grid-cols-2 gap-4 flex-1">
-          {Object.entries(hardcodedUploads).map(([assetId, uploadData]) => (
-            <div
-              key={assetId}
-              onClick={() => handleClick(assetId)}
-              className={`cursor-pointer flex flex-col items-center`}
-            >
-              {/* Square thumbnail box */}
-              <div
-                className={`relative w-full aspect-square border rounded-md flex items-center justify-center bg-white overflow-hidden ${
-                  isVisualExist(assetId)
-                    ? "border-green-500 border-2"
-                    : "border-gray-400"
-                }`}
-              >
-                {uploadData.type === FILE_TYPE_PNG ? (
-                  <Image
-                    src={uploadData.thumbnailSrc || "/uploads/default-thumbnail.png"}
-                    alt={uploadData.name}
-                    className="max-w-[80%] max-h-[80%] object-contain"
-                    width={80}
-                    height={80}
-                  />
-                ) : (
-                  <VegaLiteChartDisplay data={uploadData} />
-                )}
-              </div>
+        {/* Scrollable thumbnails section */}
+        <div className="flex-1 py-4 border-t border-b border-gray-500">
+          <div className="overflow-x-auto">
+            <div className="grid grid-rows-2 grid-flow-col gap-4 w-max">
+              {Object.entries(hardcodedUploads).map(([assetId, uploadData]) => (
+                <div
+                  key={assetId}
+                  onClick={() => handleClick(assetId)}
+                  className={`cursor-pointer flex flex-col items-center w-28`}
+                >
+                  {/* Square thumbnail box */}
+                  <div
+                    className={`relative w-24 h-24 border-2 rounded flex items-center justify-center bg-white overflow-hidden ${
+                      isVisualExist(assetId)
+                        ? "border-green-400"
+                        : "border-gray-300"
+                    }`}
+                  >
+                    {uploadData.type === FILE_TYPE_PNG ? (
+                      <Image
+                        src={uploadData.thumbnailSrc || "/uploads/default-thumbnail.png"}
+                        alt={uploadData.name}
+                        className="max-w-[80%] max-h-[80%] object-contain"
+                        width={70}
+                        height={70}
+                      />
+                    ) : (
+                      <VegaLiteChartDisplay data={uploadData} />
+                    )}
+                  </div>
 
-              {/* Label + file type */}
-              <p className="mt-1 text-sm font-medium">{uploadData.name}</p>
-              <p className="text-xs text-gray-600">{uploadData.type}</p>
+                  {/* Label + file type */}
+                  <p className="mt-1 text-xs font-medium text-center leading-tight truncate w-full">{uploadData.name}</p>
+                  <p className="text-xs text-gray-500 uppercase">{uploadData.type}</p>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
 
         {/* Action buttons */}
-        <div className="mt-4 space-y-2">
-          <button className="w-full py-2 bg-orange-500 text-white rounded shadow hover:bg-orange-600 text-sm font-semibold">
+        <div className="mt-4 space-y-3">
+          <button className="w-full py-2.5 bg-orange-600 text-white rounded shadow hover:bg-orange-700 text-sm font-semibold">
             Adjust Background
           </button>
-          <button className="w-full py-2 bg-red-500 text-white rounded shadow hover:bg-red-600 text-sm font-semibold">
+          <button className="w-full py-2.5 bg-orange-600 text-white rounded shadow hover:bg-orange-700 text-sm font-semibold">
             Clear Canvas
           </button>
         </div>
@@ -100,7 +105,7 @@ return (
       {/* Toggle button */}
       <button
         onClick={toggle}
-        className="absolute top-1/2 left-full -translate-y-1/2 w-8 h-12 bg-gray-200 text-black border border-l-0 border-gray-400 rounded-r shadow hover:bg-gray-300 flex items-center justify-center"
+        className="absolute top-1/2 left-full -translate-y-1/2 w-6 h-16 bg-gray-400 text-black border border-l-0 border-gray-500 rounded-r shadow hover:bg-gray-300 flex items-center justify-center text-sm font-bold"
       >
         {isOpen ? "<" : ">"}
       </button>
