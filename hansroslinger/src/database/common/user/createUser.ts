@@ -15,14 +15,14 @@ export async function createUser(
 
     const user = await prisma.user.create({
       data: {
-        name,          // 新增 name
+        name,          
         email,
         s3BucketUrl,
         password: hashedPassword,
       },
       select: {
         email: true,
-        name: true,   // 返回时只取需要的字段
+        name: true,   
       },
     });
 
