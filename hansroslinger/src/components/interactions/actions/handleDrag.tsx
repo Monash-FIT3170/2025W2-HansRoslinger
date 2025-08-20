@@ -16,3 +16,11 @@ export const handleDrag = (
 
   store.setVisualPosition(id, newPosition);
 };
+
+export const handleDragStartEnd = (id: string, dragStart: boolean) => {
+  const store = useVisualStore.getState();
+  const visual = store.getVisual(id);
+  if (!visual) return;
+
+  store.setVisualDragging(id, dragStart);
+};
