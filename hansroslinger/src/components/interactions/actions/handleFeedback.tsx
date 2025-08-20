@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import { AcceptedFileType } from "types/application";
 
 export const getFeedback = () => {
   const gestures = {
@@ -33,7 +34,7 @@ export const getFeedback = () => {
 };
 
 interface FeedbackDisplayProps {
-  fileType: string;
+  fileType: AcceptedFileType;
 }
 
 export const FeedbackDisplay = ({ fileType }: FeedbackDisplayProps) => {
