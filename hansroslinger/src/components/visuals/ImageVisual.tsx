@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { Visual } from "types/application";
 import { useVisualStore } from "store/visualsSlice";
 
@@ -15,6 +15,15 @@ const ImageVisual = ({ id, visual }: ImageVisualProp) => {
   const setUseOriginalSizeOnLoad = useVisualStore(
     (state) => state.setUseOriginalSizeOnLoad,
   );
+
+  const borderColor = useMemo(() => {
+    if (visual.isDragging) {
+      return "border-red-500";
+    } else if (visual.isHovered) {
+      return "border-green-500";
+    }
+    return "";
+  }, [visual.isHovered, visual.isDragging]);
 
   useEffect(() => {
     // Create image component
@@ -59,7 +68,7 @@ const ImageVisual = ({ id, visual }: ImageVisualProp) => {
       id={id}
       className={
         visual?.isHovered
-          ? "outline-2 outline-offset-0 outline-green-500 relative"
+          ? `border-2 border-offset-0 relative ${borderColor}`
           : ""
       }
       ref={containerRef}
@@ -73,12 +82,20 @@ const ImageVisual = ({ id, visual }: ImageVisualProp) => {
         zIndex: 10,
       }}
     >
-      {visual?.isHovered && (
+      {(visual?.isHovered || visual?.isDragging) && (
         <>
-          <div className="w-5 h-5 border-2 border-green-500 absolute top-0 left-0 transform -translate-x-1/2 -translate-y-1/2" />
-          <div className="w-5 h-5 border-2 border-green-500 absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2" />
-          <div className="w-5 h-5 border-2 border-green-500 absolute bottom-0 left-0 transform -translate-x-1/2 translate-y-1/2" />
-          <div className="w-5 h-5 border-2 border-green-500 absolute bottom-0 right-0 transform translate-x-1/2 translate-y-1/2" />
+          <div
+            className={`w-5 h-5 border-2 ${borderColor} absolute top-0 left-0 transform -translate-x-1/2 -translate-y-1/2`}
+          />
+          <div
+            className={`w-5 h-5 border-2 ${borderColor} absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2`}
+          />
+          <div
+            className={`w-5 h-5 border-2 ${borderColor} absolute bottom-0 left-0 transform -translate-x-1/2 translate-y-1/2`}
+          />
+          <div
+            className={`w-5 h-5 border-2 ${borderColor} absolute bottom-0 right-0 transform translate-x-1/2 translate-y-1/2`}
+          />
         </>
       )}
     </div>
