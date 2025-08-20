@@ -221,13 +221,45 @@ export class InteractionManager {
         // Set drag offset to null when hovering.
         // This will reset drag, useful when user change at which point in the visual they are dragging
         currentDragOffset = null;
+
+        // Reset the hold timer when hovering
+        this.resetHold(actionPayload.handId);
         break;
 
       case MOVE: {
+        const handVisual = this.handVisualMap[actionPayload.handId];
+
         // If no visual has been selected, don't move visual
         if (!boundVisual || !boundVisual.isHovered) {
+          this.resetHold(actionPayload.handId);
           return;
         }
+
+        // Not armed
+        if (!handVisual.holdArmed) {
+          // First MOVE action (first pinch), get the start time
+          if (handVisual.holdStartAt == null) {
+            handVisual.holdStartAt = this.now();
+            return;
+          }
+
+          // If hand move out of bounded visual
+          if (!target || target.assetId !== boundVisual.assetId) {
+            this.clearTargetForHand(actionPayload.handId, true);
+            return;
+          }
+
+          // Still over same bounded visual
+          if (this.now() - handVisual.holdStartAt < this.HOLD_MS) {
+            return; // swallow MOVE until armed
+          }
+
+          // Armed
+          handVisual.holdArmed = true;
+          handVisual.holdStartAt = null;
+        }
+
+        // Can start dragging, hand is already armed
 
         // If move and object is already selected and drag is already calculated
         // This is an on going drag
@@ -244,6 +276,7 @@ export class InteractionManager {
           boundVisual.assetId === target.assetId &&
           !currentDragOffset
         ) {
+          handleDragStartEnd(target.assetId, true);
           currentDragOffset = {
             x: point.x - target.position.x,
             y: point.y - target.position.y,
@@ -265,6 +298,10 @@ export class InteractionManager {
    */
   handleClear() {
     if (this.currentClearCount === this.CLEAR_THRESHOLD) {
+      Object.keys(this.handVisualMap).forEach((h) =>
+        this.resetHold(h as HandIds),
+      );
+
       // Clear hover and bound visual for each hand
       Object.values(this.handVisualMap).forEach((handVisual) => {
         handleHover(
@@ -284,10 +321,11 @@ export class InteractionManager {
    * Only clear when reach threshold
    * @param handId id of hand to be cleared
    */
-  clearTargetForHand(handId: HandIds) {
+  clearTargetForHand(handId: HandIds, instantClear: boolean = false) {
+    this.resetHold(handId);
     const currentHand = this.handVisualMap[handId];
 
-    if (currentHand.clearCount === this.CLEAR_THRESHOLD) {
+    if (currentHand.clearCount === this.CLEAR_THRESHOLD || instantClear) {
       // Find current and other hand visual and the resize visual if any
       const otherHandId = handId === LEFT ? RIGHT : LEFT;
       const otherHand = this.handVisualMap[otherHandId];
