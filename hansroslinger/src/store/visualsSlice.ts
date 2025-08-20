@@ -19,6 +19,7 @@ type VisualsState = {
   setVisualSize: (assetId: string, size: VisualSize) => void;
   setVisualPosition: (assetId: string, position: VisualPosition) => void;
   setVisualHover: (assetId: string, isHovered: boolean) => void;
+  setVisualDragging: (assetId: string, isDragging: boolean) => void;
   setUseOriginalSizeOnLoad: (
     assetId: string,
     useOriginalSizeOnLoad: boolean,
@@ -60,6 +61,7 @@ export const useVisualStore = create<VisualsState>()(
             position: { x: 0, y: 0 },
             size: { width: 300, height: 200 },
             isHovered: false,
+            isDragging: false,
             // When selected, should default to original size
             useOriginalSizeOnLoad: true,
           };
@@ -97,6 +99,14 @@ export const useVisualStore = create<VisualsState>()(
         set((state) => ({
           visuals: state.visuals.map((visual) =>
             visual.assetId === assetId ? { ...visual, isHovered } : visual,
+          ),
+        })),
+
+      // set dragging
+      setVisualDragging: (assetId, isDragging) =>
+        set((state) => ({
+          visuals: state.visuals.map((visual) =>
+            visual.assetId === assetId ? { ...visual, isDragging } : visual,
           ),
         })),
 
