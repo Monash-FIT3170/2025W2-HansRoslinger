@@ -21,6 +21,7 @@ export async function createUser(
         password: hashedPassword,
       },
       select: {
+        id: true,
         email: true,
         name: true,   
       },
