@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { SignupResponse } from "app/api/signup/route";
 
 export default function SignUpPage() {
-  const [name, setName] = useState<string>("");   // 新增 name
+  const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
@@ -33,7 +33,7 @@ export default function SignUpPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name, email, password }), // 把 name 一起传给后端
+        body: JSON.stringify({ name, email, password }),
       });
       const data: SignupResponse = await res.json();
 
