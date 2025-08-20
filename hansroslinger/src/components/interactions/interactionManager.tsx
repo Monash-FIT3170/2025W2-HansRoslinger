@@ -1,4 +1,4 @@
-import { handleDrag } from "./actions/handleDrag";
+import { handleDrag, handleDragStartEnd } from "./actions/handleDrag";
 import { handleResize } from "./actions/handleResize";
 import { handleHover } from "./actions/handleHover";
 import { useVisualStore } from "store/visualsSlice";
@@ -22,6 +22,9 @@ type GestureTrack = {
   visual: Visual | null;
   clearCount: number;
   dragOffset: { x: number; y: number } | null;
+
+  holdStartAt: number | null; // ms timestamp
+  holdArmed: boolean; // true after HOLD_MS on same visual
 };
 
 type HandVisualMap = Record<HandIds, GestureTrack>;
@@ -33,16 +36,22 @@ export class InteractionManager {
       visual: null,
       clearCount: 0,
       dragOffset: null,
+      holdStartAt: null,
+      holdArmed: false,
     },
     right: {
       visual: null,
       clearCount: 0,
       dragOffset: null,
+      holdStartAt: null,
+      holdArmed: false,
     },
     left_right: {
       visual: null,
       clearCount: 0,
       dragOffset: null,
+      holdStartAt: null,
+      holdArmed: false,
     },
   };
 
@@ -60,6 +69,25 @@ export class InteractionManager {
 
   private get visuals() {
     return useVisualStore.getState().visuals;
+  }
+
+  // Time needed to pinch before start moving visual
+  private readonly HOLD_MS = 1000;
+
+  // Function for getting current time
+  private now() {
+    return performance.now();
+  }
+
+  // Method to rest the hold of a pinch
+  private resetHold(handId: HandIds) {
+    const currHand = this.handVisualMap[handId];
+
+    currHand.holdStartAt = null;
+    currHand.holdArmed = false;
+    if (currHand.visual) {
+      handleDragStartEnd(currHand.visual.assetId, false);
+    }
   }
 
   private pinchStartDistance: number | null = null;
