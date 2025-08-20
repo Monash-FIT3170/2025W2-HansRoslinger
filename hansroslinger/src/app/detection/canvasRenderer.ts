@@ -1,8 +1,4 @@
-import {
-  HandLandmarker,
-  DrawingUtils,
-  GestureRecognizerResult,
-} from "@mediapipe/tasks-vision";
+import { DrawingUtils, GestureRecognizerResult } from "@mediapipe/tasks-vision";
 
 export const canvasRenderer = async (
   canvas: HTMLCanvasElement,
@@ -21,11 +17,10 @@ export const canvasRenderer = async (
   canvasCtx!.clearRect(0, 0, canvas.width, canvas.height);
 
   handLandmarks.landmarks.forEach((landmarks) => {
-    drawingUtils.drawConnectors(landmarks, HandLandmarker.HAND_CONNECTIONS, {
-      color: "#00FF00",
-      lineWidth: 5,
-    });
-    drawingUtils.drawLandmarks(landmarks, {
+    // Only draw thumb and index finger tip
+    // Index 4: thumb tip
+    // Index 8: index finger tip
+    drawingUtils.drawLandmarks([landmarks[4], landmarks[8]], {
       color: "#FF0000",
       lineWidth: 2,
     });
