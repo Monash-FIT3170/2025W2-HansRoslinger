@@ -7,6 +7,11 @@ import { FILE_TYPE_PNG } from "constants/application";
 import VegaLiteChartDisplay from "@/components/VegaLiteChartDisplay";
 import { hardcodedUploads } from "../hardcodedData";
 
+// allow hardcoded uploads accessible
+if (typeof window !== "undefined") {
+  (window as any).hardcodedUploads = hardcodedUploads;
+}
+
 const FloatingDataPanel = () => {
   const isOpen = usePanelStore((state) => state.isOpen);
   const toggle = usePanelStore((state) => state.toggle);
@@ -30,7 +35,7 @@ const FloatingDataPanel = () => {
 
   return (
     <>
-      {/* Panel (no sliding, just appear/disappear) */}
+      {/* Panel */}
       {isOpen && (
         <div className="absolute top-0 left-0 bottom-0 z-40 w-[40rem] h-full overflow-y-auto bg-gray-400/70 border-r border-gray-500 shadow-lg p-4 flex flex-col text-black">
           {/* Header */}
@@ -38,7 +43,7 @@ const FloatingDataPanel = () => {
             <h2 className="text-lg font-bold">Uploaded Visuals</h2>
           </div>
 
-          {/* Visuals grid */}
+          {/* Visuals section */}
           <div className="flex-1 overflow-y-auto">
             <div className="grid grid-cols-2 gap-x-8 gap-y-10 px-4">
               {Object.entries(hardcodedUploads).map(([assetId, uploadData]) => {
@@ -89,7 +94,7 @@ const FloatingDataPanel = () => {
         </div>
       )}
 
-      {/* Fixed-position toggle button */}
+      {/* toggle button */}
       <button
         onClick={toggle}
         className="absolute top-1/2 left-0 -translate-y-1/2 z-50 w-6 h-16 bg-gray-400 text-black border border-l-0 border-gray-500 rounded-r shadow hover:bg-gray-300 flex items-center justify-center text-sm font-bold"
