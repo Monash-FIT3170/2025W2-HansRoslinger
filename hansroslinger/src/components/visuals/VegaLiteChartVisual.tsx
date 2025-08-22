@@ -66,8 +66,8 @@ const VegaLiteVisual = ({ id }: VegaLiteVisualProp) => {
   const { isDragging, isHovered } = visual ?? {};
 
   const borderColor = useMemo(() => {
-    if (isDragging) return "border-red-500";
-    if (isHovered) return "border-green-500";
+    if (isDragging) return "border-green-500";
+    if (isHovered) return "border-red-500";
     return "";
   }, [isDragging, isHovered]);
 
@@ -75,7 +75,7 @@ const VegaLiteVisual = ({ id }: VegaLiteVisualProp) => {
     <div
       id={id}
       className={
-        visual?.isHovered
+        visual?.isHovered || visual?.isDragging
           ? `border-2 border-offset-0 relative ${borderColor}`
           : ""
       }
