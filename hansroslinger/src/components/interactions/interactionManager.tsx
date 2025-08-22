@@ -138,7 +138,7 @@ export class InteractionManager {
             pointerA,
             pointerB,
             this.pinchStartDistance,
-            this.pinchStartSize,
+            this.pinchStartSize
           );
           return;
         }
@@ -154,7 +154,7 @@ export class InteractionManager {
         ) {
           const distance = Math.hypot(
             pointerA.x - pointerB.x,
-            pointerA.y - pointerB.y,
+            pointerA.y - pointerB.y
           );
 
           this.pinchStartDistance = distance;
@@ -241,7 +241,7 @@ export class InteractionManager {
       Object.values(this.handVisualMap).forEach((handVisual) => {
         handleHover(
           handVisual.visual ? handVisual.visual.assetId : null,
-          false,
+          false
         );
         handVisual.dragOffset = null;
         handVisual.visual = null;
@@ -317,7 +317,7 @@ export class InteractionManager {
 
       if (withinBounds) {
         console.log(
-          `[Manager] Found target ${visual.assetId} under pointer at (${position.x}, ${position.y})`,
+          `[Manager] Found target ${visual.assetId} under pointer at (${position.x}, ${position.y})`
         );
 
         // Only simulate pointer events if position or target changed
@@ -349,11 +349,12 @@ export class InteractionManager {
     if (!position) return;
 
     // Find the visual under this position
-    const visual = this.visuals.find(v =>
-      position.x >= v.position.x &&
-      position.x <= v.position.x + v.size.width &&
-      position.y >= v.position.y &&
-      position.y <= v.position.y + v.size.height
+    const visual = this.visuals.find(
+      (v) =>
+        position.x >= v.position.x &&
+        position.x <= v.position.x + v.size.width &&
+        position.y >= v.position.y &&
+        position.y <= v.position.y + v.size.height
     );
     if (!visual) {
       console.warn("No visual found for pointer event simulation");
@@ -377,7 +378,10 @@ export class InteractionManager {
     const clientX = rect.left + localX;
     const clientY = rect.top + localY;
 
-    const target = document.elementFromPoint(clientX, clientY) ?? canvas;
+    // Always dispatch events directly to the Vega canvas so the overlay
+    // doesn't intercept them. Using `elementFromPoint` here would return the
+    // overlay div, preventing Vega from receiving pointer events for tooltips.
+    const target = canvas;
 
     [
       "pointerenter",
@@ -396,8 +400,8 @@ export class InteractionManager {
           isPrimary: true,
           clientX,
           clientY,
-        }),
-      ),
+        })
+      )
     );
 
     console.log("[InteractionManager] Dispatched pointer events", {
@@ -409,7 +413,6 @@ export class InteractionManager {
       visual,
     });
   }
-
 
   // ONLY USED FOR MOUSE MOCK
   handleInput(input: InteractionInput) {
@@ -433,7 +436,7 @@ export class InteractionManager {
           input.position,
           input.position,
           1, // mock pinchStartDistance
-          { ...target.size }, // mock pinchStartSize
+          { ...target.size } // mock pinchStartSize
         );
         break;
       }
