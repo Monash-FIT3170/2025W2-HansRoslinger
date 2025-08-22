@@ -18,9 +18,9 @@ const ImageVisual = ({ id, visual }: ImageVisualProp) => {
 
   const borderColor = useMemo(() => {
     if (visual.isDragging) {
-      return "border-red-500";
-    } else if (visual.isHovered) {
       return "border-green-500";
+    } else if (visual.isHovered) {
+      return "border-red-500";
     }
     return "";
   }, [visual.isHovered, visual.isDragging]);
@@ -67,7 +67,7 @@ const ImageVisual = ({ id, visual }: ImageVisualProp) => {
     <div
       id={id}
       className={
-        visual?.isHovered
+        visual?.isHovered || visual.isDragging
           ? `border-2 border-offset-0 relative ${borderColor}`
           : ""
       }
