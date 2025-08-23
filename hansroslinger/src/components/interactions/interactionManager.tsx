@@ -247,7 +247,7 @@ export class InteractionManager {
         currentDragOffset = null;
 
         // Reset the hold timer when hovering
-        this.resetHold(actionPayload.handId);
+        if (isSharedVisual) this.resetHold(actionPayload.handId);
         break;
 
       case MOVE: {
