@@ -60,7 +60,7 @@ export class InteractionManager {
    * Without it: pinch → empty → empty → pinch. Will result in loss of target visual
    * With threshold: pinch → pinch. Does not clear target when the number of consecutive none is less then threshold
    */
-  private readonly CLEAR_THRESHOLD = 3;
+  private readonly CLEAR_THRESHOLD = 5;
   private currentClearCount = 0;
 
   // Track last simulated pointer position and target to prevent spamming events
@@ -83,10 +83,25 @@ export class InteractionManager {
   private resetHold(handId: HandIds) {
     const currHand = this.handVisualMap[handId];
 
-    currHand.holdStartAt = null;
-    currHand.holdArmed = false;
-    if (currHand.visual) {
-      handleDragStartEnd(currHand.visual.assetId, false);
+    const otherHandId = handId === LEFT ? RIGHT : LEFT;
+    const otherHand = this.handVisualMap[otherHandId];
+    const currentVisual = currHand.visual;
+    const otherVisual = otherHand.visual;
+    const resizeVisual = this.handVisualMap[LEFT_RIGHT].visual;
+
+    this.handVisualMap[handId].holdStartAt = null;
+    this.handVisualMap[handId].holdArmed = false;
+    this.handVisualMap[handId].dragOffset = null;
+
+    // Don't reset when the other hand is dragging the same visual
+    // or when there is a visual on resize
+    if (
+      (currentVisual &&
+        otherVisual &&
+        currentVisual.assetId !== otherVisual.assetId) ||
+      !resizeVisual
+    ) {
+      if (currentVisual) handleDragStartEnd(currentVisual.assetId, false);
     }
   }
 
@@ -166,7 +181,7 @@ export class InteractionManager {
             pointerA,
             pointerB,
             this.pinchStartDistance,
-            this.pinchStartSize
+            this.pinchStartSize,
           );
           return;
         }
@@ -182,7 +197,7 @@ export class InteractionManager {
         ) {
           const distance = Math.hypot(
             pointerA.x - pointerB.x,
-            pointerA.y - pointerB.y
+            pointerA.y - pointerB.y,
           );
 
           this.pinchStartDistance = distance;
@@ -214,8 +229,14 @@ export class InteractionManager {
         ) {
           handleHover(boundVisual.assetId, false);
         }
-
         this.handVisualMap[actionPayload.handId].visual = target;
+
+        // If the current target is the same as the other hand's visual
+        // Return, don't hover or reset the drag
+        if (target?.assetId === otherVisual?.assetId) {
+          return;
+        }
+
         handleHover(target ? target.assetId : null, true);
 
         // Set drag offset to null when hovering.
@@ -223,7 +244,7 @@ export class InteractionManager {
         currentDragOffset = null;
 
         // Reset the hold timer when hovering
-        this.resetHold(actionPayload.handId);
+        if (isSharedVisual) this.resetHold(actionPayload.handId);
         break;
 
       case MOVE: {
@@ -306,7 +327,7 @@ export class InteractionManager {
       Object.values(this.handVisualMap).forEach((handVisual) => {
         handleHover(
           handVisual.visual ? handVisual.visual.assetId : null,
-          false
+          false,
         );
         handVisual.dragOffset = null;
         handVisual.visual = null;
@@ -322,7 +343,6 @@ export class InteractionManager {
    * @param handId id of hand to be cleared
    */
   clearTargetForHand(handId: HandIds, instantClear: boolean = false) {
-    this.resetHold(handId);
     const currentHand = this.handVisualMap[handId];
 
     if (currentHand.clearCount === this.CLEAR_THRESHOLD || instantClear) {
@@ -348,17 +368,23 @@ export class InteractionManager {
         handleHover(currentVisual ? currentVisual.assetId : null, false);
       }
 
-      currentHand.visual = null;
-      currentHand.dragOffset = null;
+      // Only reset when it is not resize
+      if (!resizeVisual) {
+        this.resetHold(handId);
+      }
+
+      this.handVisualMap[handId].visual = null;
+      this.handVisualMap[handId].dragOffset = null;
 
       // Reset resize calculation
       if (handId === LEFT_RIGHT) {
         this.pinchStartDistance = null;
         this.pinchStartSize = null;
       }
+      return;
     }
 
-    currentHand.clearCount += 1;
+    this.handVisualMap[handId].clearCount += 1;
   }
 
   /**
@@ -369,7 +395,7 @@ export class InteractionManager {
    * @returns first visual (with the highest index) that contains the pointer, or null if none match
    */
   private findTargetAt(position: { x: number; y: number }): Visual | null {
-    console.log("[Manager] Finding target at position:", position);
+    // console.log("[Manager] Finding target at position:", position);
 
     for (const visual of [...this.visuals].reverse()) {
       const { x, y } = visual.position;
@@ -382,9 +408,9 @@ export class InteractionManager {
         position.y <= y + height;
 
       if (withinBounds) {
-        console.log(
-          `[Manager] Found target ${visual.assetId} under pointer at (${position.x}, ${position.y})`
-        );
+        // console.log(
+        //   `[Manager] Found target ${visual.assetId} under pointer at (${position.x}, ${position.y})`
+        // );
 
         // Only simulate pointer events if position or target changed
         if (
@@ -402,7 +428,7 @@ export class InteractionManager {
       }
     }
 
-    console.log("[Manager] No target found at position:", position);
+    // console.log("[Manager] No target found at position:", position);
 
     // Clear last simulated state if no target
     this.lastSimulatedPosition = null;
@@ -420,7 +446,7 @@ export class InteractionManager {
         position.x >= v.position.x &&
         position.x <= v.position.x + v.size.width &&
         position.y >= v.position.y &&
-        position.y <= v.position.y + v.size.height
+        position.y <= v.position.y + v.size.height,
     );
     if (!visual) {
       console.warn("No visual found for pointer event simulation");
@@ -466,18 +492,18 @@ export class InteractionManager {
           isPrimary: true,
           clientX,
           clientY,
-        })
-      )
+        }),
+      ),
     );
 
-    console.log("[InteractionManager] Dispatched pointer events", {
-      clientX,
-      clientY,
-      target,
-      localX,
-      localY,
-      visual,
-    });
+    // console.log("[InteractionManager] Dispatched pointer events", {
+    //   clientX,
+    //   clientY,
+    //   target,
+    //   localX,
+    //   localY,
+    //   visual,
+    // });
   }
 
   // ONLY USED FOR MOUSE MOCK
@@ -485,7 +511,7 @@ export class InteractionManager {
     if (useModeStore.getState().mode === "paint") return;
     const targetId =
       input.targetId ?? this.findTargetAt(input.position)?.assetId;
-    console.log("[Manager] Input:", input.type, "Target:", targetId);
+    // console.log("[Manager] Input:", input.type, "Target:", targetId);
 
     if (!targetId) return;
 
@@ -502,7 +528,7 @@ export class InteractionManager {
           input.position,
           input.position,
           1, // mock pinchStartDistance
-          { ...target.size } // mock pinchStartSize
+          { ...target.size }, // mock pinchStartSize
         );
         break;
       }
