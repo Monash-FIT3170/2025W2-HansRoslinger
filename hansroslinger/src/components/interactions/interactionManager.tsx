@@ -106,6 +106,7 @@ export class InteractionManager {
       !resizeVisual
     ) {
       if (currentVisual) handleDragStartEnd(currentVisual.assetId, false);
+      
     }
   }
 
@@ -249,7 +250,7 @@ export class InteractionManager {
         currentDragOffset = null;
 
         // Reset the hold timer when hovering
-        if (isSharedVisual) this.resetHold(actionPayload.handId);
+        this.resetHold(actionPayload.handId);
         break;
 
       case MOVE: {
