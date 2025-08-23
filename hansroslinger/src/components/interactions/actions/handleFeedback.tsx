@@ -38,7 +38,10 @@ interface FeedbackDisplayProps {
   isDragging?: boolean;
 }
 
-export const FeedbackDisplay = ({ fileType, isDragging=false }: FeedbackDisplayProps) => {
+export const FeedbackDisplay = ({
+  fileType,
+  isDragging = false,
+}: FeedbackDisplayProps) => {
   const allGestures = getFeedback();
   // Get the specific gesture list for the file type, with fallback to empty array
   const gestures = allGestures[fileType as keyof typeof allGestures] || [];
@@ -46,34 +49,35 @@ export const FeedbackDisplay = ({ fileType, isDragging=false }: FeedbackDisplayP
   console.log("Gestures for file type:", fileType, gestures);
   return (
     <div className="z-20 bg-white bg-opacity-90 rounded-lg shadow-lg p-1">
-      {isDragging? <div className="flex justify-center items-center gap-2">
-            
-              <Image
-                key="dragging"
-                src="/gestures/pinch-move.png"
-                alt="Dragging Gesture"
-                width={48}
-                height={48}
-              />
-            
-          </div>: (<div>
-{gestures.map((g, idx) => (
-        <div key={idx}>
-          <div className="flex justify-center items-center gap-2 mb-2">
-            {(Array.isArray(g.img) ? g.img : [g.img]).map((src, i) => (
-              <Image
-                key={i}
-                src={src}
-                alt={`${g.title} ${i + 1}`}
-                width={16}
-                height={16}
-              />
-            ))}
-          </div>
+      {isDragging ? (
+        <div className="flex justify-center items-center gap-2">
+          <Image
+            key="dragging"
+            src="/gestures/pinch-move.png"
+            alt="Dragging Gesture"
+            width={48}
+            height={48}
+          />
         </div>
-      ))}
-      </div>)}
-      
+      ) : (
+        <div>
+          {gestures.map((g, idx) => (
+            <div key={idx}>
+              <div className="flex justify-center items-center gap-2 mb-2">
+                {(Array.isArray(g.img) ? g.img : [g.img]).map((src, i) => (
+                  <Image
+                    key={i}
+                    src={src}
+                    alt={`${g.title} ${i + 1}`}
+                    width={16}
+                    height={16}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

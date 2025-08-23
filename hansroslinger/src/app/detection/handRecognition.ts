@@ -68,10 +68,7 @@ export const HandRecogniser = async (
     console.log(`Hand ${i + 1} history:`, [...history]);
 
     // only proceed once we’ve seen the same name three times in a row
-    if (
-      history.length < 3 ||
-      !history.every((n) => n === categoryName)
-    ) {
+    if (history.length < 3 || !history.every((n) => n === categoryName)) {
       console.log(
         `Hand ${i + 1}: waiting for stable "${categoryName}"…`,
         history,
@@ -85,11 +82,7 @@ export const HandRecogniser = async (
 
     const gesture = GestureFactory(categoryName);
     if (gesture) {
-      const payload = gesture.payload(
-        i,
-        gestureRecognitionResult,
-        canvas,
-      );
+      const payload = gesture.payload(i, gestureRecognitionResult, canvas);
       payloads.push(payload);
     }
   });
