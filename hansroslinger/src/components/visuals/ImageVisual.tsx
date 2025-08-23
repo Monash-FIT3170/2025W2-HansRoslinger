@@ -67,7 +67,7 @@ const ImageVisual = ({ id, visual }: ImageVisualProp) => {
     <div
       id={id}
       className={
-        visual?.isHovered || visual.isDragging
+        visual?.isHovered || visual?.isDragging
           ? `border-2 border-offset-0 relative ${borderColor}`
           : ""
       }

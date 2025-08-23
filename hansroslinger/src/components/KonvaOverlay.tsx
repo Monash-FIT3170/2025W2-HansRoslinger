@@ -59,7 +59,7 @@ const CanvasOverlay = () => {
                           visual.position.x + (visual.size?.width || 0) + 10, // 10px gap
                       }}
                     >
-                      <FeedbackDisplay fileType={visual.uploadData.type} />
+                      <FeedbackDisplay fileType={visual.uploadData.type} isDragging={visual.isDragging}/>
                     </div>
                   )}
                 </div>
@@ -84,7 +84,7 @@ const CanvasOverlay = () => {
                           visual.position.x + (visual.size?.width || 0) + 10, // 10px gap
                       }}
                     >
-                      <FeedbackDisplay fileType={visual.uploadData.type} />
+                      <FeedbackDisplay fileType={visual.uploadData.type} isDragging={visual.isDragging}/>
                     </div>
                   )}
                 </div>
