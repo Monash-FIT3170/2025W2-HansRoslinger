@@ -106,7 +106,6 @@ export class InteractionManager {
       !resizeVisual
     ) {
       if (currentVisual) handleDragStartEnd(currentVisual.assetId, false);
-      
     }
   }
 
