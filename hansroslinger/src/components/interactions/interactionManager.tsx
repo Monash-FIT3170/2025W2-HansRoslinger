@@ -81,12 +81,11 @@ export class InteractionManager {
 
   // Method to rest the hold of a pinch
   private resetHold(handId: HandIds) {
-this.handVisualMap[handId].holdStartAt = null;
+    this.handVisualMap[handId].holdStartAt = null;
     this.handVisualMap[handId].holdArmed = false;
-    this.handVisualMap[handId].dragOffset = null; 
+    this.handVisualMap[handId].dragOffset = null;
 
     const currHand = this.handVisualMap[handId];
-    
 
     const otherHandId = handId === LEFT ? RIGHT : LEFT;
     const otherHand = this.handVisualMap[otherHandId];
@@ -94,23 +93,19 @@ this.handVisualMap[handId].holdStartAt = null;
     const otherVisual = otherHand.visual;
     const resizeVisual = this.handVisualMap[LEFT_RIGHT].visual;
 
-    
-
     // Don't reset when the other hand is dragging the same visual
     // or when there is a visual on resize
     if (
       (currentVisual &&
         otherVisual &&
-        (
-      // different asset? → remove
-      currentVisual.assetId !== otherVisual.assetId ||
-      // same asset? remove only if the "other" is not dragging
-      (currentVisual.assetId === otherVisual.assetId && !otherHand.holdArmed)
-    )) ||
+        // different asset? → remove
+        (currentVisual.assetId !== otherVisual.assetId ||
+          // same asset? remove only if the "other" is not dragging
+          (currentVisual.assetId === otherVisual.assetId &&
+            !otherHand.holdArmed))) ||
       !resizeVisual
     ) {
       if (currentVisual) handleDragStartEnd(currentVisual.assetId, false);
-      
     }
   }
 
