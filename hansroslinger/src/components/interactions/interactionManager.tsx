@@ -81,7 +81,12 @@ export class InteractionManager {
 
   // Method to rest the hold of a pinch
   private resetHold(handId: HandIds) {
+this.handVisualMap[handId].holdStartAt = null;
+    this.handVisualMap[handId].holdArmed = false;
+    this.handVisualMap[handId].dragOffset = null; 
+
     const currHand = this.handVisualMap[handId];
+    
 
     const otherHandId = handId === LEFT ? RIGHT : LEFT;
     const otherHand = this.handVisualMap[otherHandId];
@@ -89,19 +94,23 @@ export class InteractionManager {
     const otherVisual = otherHand.visual;
     const resizeVisual = this.handVisualMap[LEFT_RIGHT].visual;
 
-    this.handVisualMap[handId].holdStartAt = null;
-    this.handVisualMap[handId].holdArmed = false;
-    this.handVisualMap[handId].dragOffset = null;
+    
 
     // Don't reset when the other hand is dragging the same visual
     // or when there is a visual on resize
     if (
       (currentVisual &&
         otherVisual &&
-        currentVisual.assetId !== otherVisual.assetId) ||
+        (
+      // different asset? → remove
+      currentVisual.assetId !== otherVisual.assetId ||
+      // same asset? remove only if the "other" is not dragging
+      (currentVisual.assetId === otherVisual.assetId && !otherHand.holdArmed)
+    )) ||
       !resizeVisual
     ) {
       if (currentVisual) handleDragStartEnd(currentVisual.assetId, false);
+      
     }
   }
 
@@ -204,6 +213,7 @@ export class InteractionManager {
           this.pinchStartSize = { ...target.size };
           // Bound the target
           this.handVisualMap[actionPayload.handId].visual = target;
+          handleDragStartEnd(target.assetId, true);
         }
 
         break;
@@ -244,7 +254,7 @@ export class InteractionManager {
         currentDragOffset = null;
 
         // Reset the hold timer when hovering
-        if (isSharedVisual) this.resetHold(actionPayload.handId);
+        this.resetHold(actionPayload.handId);
         break;
 
       case MOVE: {
