@@ -13,8 +13,8 @@ datasource db {
 
 model User {
   id    Int     @id @default(autoincrement())
-  email String  @unique
   name  String
+  email String  @unique
   s3BucketUrl String @unique
   password String
 }

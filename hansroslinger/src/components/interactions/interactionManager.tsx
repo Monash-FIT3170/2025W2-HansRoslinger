@@ -2,6 +2,7 @@ import { handleDrag } from "./actions/handleDrag";
 import { handleResize } from "./actions/handleResize";
 import { handleHover } from "./actions/handleHover";
 import { useVisualStore } from "store/visualsSlice";
+import { useModeStore } from "store/modeSlice";
 import {
   ActionPayload,
   HandIds,
@@ -53,6 +54,10 @@ export class InteractionManager {
   private readonly CLEAR_THRESHOLD = 3;
   private currentClearCount = 0;
 
+  // Track last simulated pointer position and target to prevent spamming events
+  private lastSimulatedPosition: { x: number; y: number } | null = null;
+  private lastSimulatedTargetId: string | null = null;
+
   private get visuals() {
     return useVisualStore.getState().visuals;
   }
@@ -60,11 +65,31 @@ export class InteractionManager {
   private pinchStartDistance: number | null = null;
   private pinchStartSize: { width: number; height: number } | null = null;
 
+  // Call this after a mode switch to reset transient state
+  resetTransientState() {
+    // Clear hover on any currently bound visuals (for all hands)
+    (Object.keys(this.handVisualMap) as Array<HandIds>).forEach((handId) => {
+      const hand = this.handVisualMap[handId];
+      if (hand.visual) {
+        handleHover(hand.visual.assetId, false);
+      }
+      hand.visual = null;
+      hand.dragOffset = null;
+      hand.clearCount = 0;
+    });
+
+    // Reset shared resize / clear state
+    this.pinchStartDistance = null;
+    this.pinchStartSize = null;
+    this.currentClearCount = 0;
+  }
   /**
    * Primary handler for all gesture-to-action mappings.
    * Called by `useGestureListener` with mapped ActionPayloads.
    */
   handleAction(actionPayload: ActionPayload) {
+    // Freeze everything in paint mode
+    if (useModeStore.getState().mode === "paint") return;
     // reset count
     this.currentClearCount = 0;
     this.handVisualMap[actionPayload.handId].clearCount = 0;
@@ -113,7 +138,7 @@ export class InteractionManager {
             pointerA,
             pointerB,
             this.pinchStartDistance,
-            this.pinchStartSize,
+            this.pinchStartSize
           );
           return;
         }
@@ -129,7 +154,7 @@ export class InteractionManager {
         ) {
           const distance = Math.hypot(
             pointerA.x - pointerB.x,
-            pointerA.y - pointerB.y,
+            pointerA.y - pointerB.y
           );
 
           this.pinchStartDistance = distance;
@@ -216,7 +241,7 @@ export class InteractionManager {
       Object.values(this.handVisualMap).forEach((handVisual) => {
         handleHover(
           handVisual.visual ? handVisual.visual.assetId : null,
-          false,
+          false
         );
         handVisual.dragOffset = null;
         handVisual.visual = null;
@@ -278,6 +303,8 @@ export class InteractionManager {
    * @returns first visual (with the highest index) that contains the pointer, or null if none match
    */
   private findTargetAt(position: { x: number; y: number }): Visual | null {
+    console.log("[Manager] Finding target at position:", position);
+
     for (const visual of [...this.visuals].reverse()) {
       const { x, y } = visual.position;
       const { width, height } = visual.size;
@@ -288,13 +315,108 @@ export class InteractionManager {
         position.y >= y &&
         position.y <= y + height;
 
-      if (withinBounds) return visual;
+      if (withinBounds) {
+        console.log(
+          `[Manager] Found target ${visual.assetId} under pointer at (${position.x}, ${position.y})`
+        );
+
+        // Only simulate pointer events if position or target changed
+        if (
+          !this.lastSimulatedPosition ||
+          this.lastSimulatedPosition.x !== position.x ||
+          this.lastSimulatedPosition.y !== position.y ||
+          this.lastSimulatedTargetId !== visual.assetId
+        ) {
+          this.simulatePointerEvents(position);
+          this.lastSimulatedPosition = position;
+          this.lastSimulatedTargetId = visual.assetId;
+        }
+
+        return visual;
+      }
     }
+
+    console.log("[Manager] No target found at position:", position);
+
+    // Clear last simulated state if no target
+    this.lastSimulatedPosition = null;
+    this.lastSimulatedTargetId = null;
+
     return null;
+  }
+
+  private simulatePointerEvents(position: { x: number; y: number }) {
+    if (!position) return;
+
+    // Find the visual under this position
+    const visual = this.visuals.find(
+      (v) =>
+        position.x >= v.position.x &&
+        position.x <= v.position.x + v.size.width &&
+        position.y >= v.position.y &&
+        position.y <= v.position.y + v.size.height
+    );
+    if (!visual) {
+      console.warn("No visual found for pointer event simulation");
+      return;
+    }
+
+    // Target the Vega canvas with class 'marks'
+    const canvas = document.querySelector("canvas.marks") as HTMLCanvasElement;
+    if (!canvas) {
+      console.warn("Vega canvas with class 'marks' not found");
+      return;
+    }
+
+    const rect = canvas.getBoundingClientRect();
+
+    // Offset the pointer position by the visual's position
+    const localX = position.x - visual.position.x;
+    const localY = position.y - visual.position.y;
+
+    // Map to client coordinates
+    const clientX = rect.left + localX;
+    const clientY = rect.top + localY;
+
+    // Always dispatch events directly to the Vega canvas so the overlay
+    // doesn't intercept them. Using `elementFromPoint` here would return the
+    // overlay div, preventing Vega from receiving pointer events for tooltips.
+    const target = canvas;
+
+    [
+      "pointerenter",
+      "pointerover",
+      "pointermove",
+      "mouseenter",
+      "mouseover",
+      "mousemove",
+    ].forEach((type) =>
+      target.dispatchEvent(
+        new PointerEvent(type, {
+          bubbles: true,
+          cancelable: true,
+          pointerId: 1,
+          pointerType: "mouse",
+          isPrimary: true,
+          clientX,
+          clientY,
+        })
+      )
+    );
+
+    console.log("[InteractionManager] Dispatched pointer events", {
+      clientX,
+      clientY,
+      target,
+      localX,
+      localY,
+      visual,
+    });
   }
 
   // ONLY USED FOR MOUSE MOCK
   handleInput(input: InteractionInput) {
+    if (useModeStore.getState().mode === "paint") return;
     const targetId =
       input.targetId ?? this.findTargetAt(input.position)?.assetId;
     console.log("[Manager] Input:", input.type, "Target:", targetId);
@@ -314,7 +436,7 @@ export class InteractionManager {
           input.position,
           input.position,
           1, // mock pinchStartDistance
-          { ...target.size }, // mock pinchStartSize
+          { ...target.size } // mock pinchStartSize
         );
         break;
       }

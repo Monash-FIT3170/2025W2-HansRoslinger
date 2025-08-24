@@ -14,7 +14,7 @@ const VegaLiteVisual = ({ id }: VegaLiteVisualProp) => {
   const position = visual ? visual.position : { x: 0, y: 0 };
   const setVisualSize = useVisualStore((state) => state.setVisualSize);
   const setUseOriginalSizeOnLoad = useVisualStore(
-    (state) => state.setUseOriginalSizeOnLoad
+    (state) => state.setUseOriginalSizeOnLoad,
   );
   const size = visual?.size;
 
