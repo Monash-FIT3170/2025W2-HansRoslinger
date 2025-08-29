@@ -27,8 +27,12 @@ export async function POST(
       );
     }
 
-    // Ensure the user has an S3 bucket/folder. If missing, create and persist it.
-    if (!user.s3BucketUrl || user.s3BucketUrl.trim() === "") {
+    // Ensure the user has an S3 bucket/folder and that the URL is normalized.
+    const bucketName = process.env.S3_BUCKET_NAME;
+    const expectedUrl = bucketName ? `s3://${bucketName}/${email}/` : undefined;
+    const needsCreate = !user.s3BucketUrl || user.s3BucketUrl.trim() === "";
+    const needsNormalize = expectedUrl && user.s3BucketUrl && user.s3BucketUrl !== expectedUrl;
+    if (needsCreate || needsNormalize) {
       try {
         const newS3BucketUrl = await createS3UserBucket(email);
         await updateS3BucketUrl(user.id, newS3BucketUrl);
