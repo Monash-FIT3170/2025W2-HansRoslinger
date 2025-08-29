@@ -2,12 +2,12 @@
  * Simple function that reads a JSON file and extracts a specific property
  * @param jsonFilePath - Path to the JSON file
  * @param targetProperty - The property to extract (supports dot notation like "user.profile.name")
- * @returns Promise that resolves to the extracted data
+ * @returns Promise that resolves to the extracted data or null if property doesn't exist
  */
 export async function GraphDesigner(
   jsonFilePath: string,
   targetProperty: string
-): Promise<any> {
+): Promise<any | null> {
   try {
     // Fetch the JSON file
     const response = await fetch(jsonFilePath);
@@ -24,7 +24,7 @@ export async function GraphDesigner(
     }, jsonData);
     
     if (extractedData === undefined) {
-      throw new Error(`Property '${targetProperty}' not found`);
+      return null; // Return null instead of throwing error
     }
 
     return extractedData;
@@ -45,8 +45,8 @@ export async function updateJsonProperty(
   targetProperty: string,
   newValue: any
 ): Promise<void> {
-  // Use the first function to get the current data and validate the property exists
-  await GraphDesigner(jsonFilePath, targetProperty);
+  // Use the first function to check if the property exists
+  const existingValue = await GraphDesigner(jsonFilePath, targetProperty);
   
   // Fetch the current JSON file
   const response = await fetch(jsonFilePath);
@@ -56,9 +56,12 @@ export async function updateJsonProperty(
   const keys = targetProperty.split('.');
   const lastKey = keys.pop()!;
   
-  // Navigate to the parent object
+  // Navigate to the parent object, create missing objects if property doesn't exist
   let current = jsonData;
   for (const key of keys) {
+    if (!(key in current) || typeof current[key] !== 'object') {
+      current[key] = {};
+    }
     current = current[key];
   }
   
