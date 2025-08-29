@@ -11,11 +11,10 @@ export async function uploadFile(
 ): Promise<UploadResult> {
   try {
     const bucketName = process.env.S3_BUCKET_NAME;
-    const s3BucketUrl = `s3://${bucketName}/${userEmail}/`;
     const fileContent = await fs.readFile(file.path);
 
     const fileName = path.basename(file.path);
-    const s3Key = `${s3BucketUrl}${fileName}`;
+    const s3Key = `${userEmail}/${fileName}`;
 
     const command = new PutObjectCommand({
       Bucket: bucketName,
@@ -35,7 +34,7 @@ export async function uploadFile(
     };
 
   } catch (error) {
-    console.error('Error retrieving user files:', error);
+    console.error('Error uploading user file:', error);
     throw error;
   }
 }
