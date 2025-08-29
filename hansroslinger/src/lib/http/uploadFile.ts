@@ -6,12 +6,12 @@ import { s3Client } from './S3Client';
 import type { FileUpload, UploadResult } from './fileInterfaces';
 
 export async function uploadFile(
-  userId: string, 
+  userEmail: string, 
   file: FileUpload, 
 ): Promise<UploadResult> {
   try {
     const bucketName = process.env.S3_BUCKET_NAME;
-    const s3BucketUrl = `s3://${bucketName}/${userId}/`;
+    const s3BucketUrl = `s3://${bucketName}/${userEmail}/`;
     const fileContent = await fs.readFile(file.path);
 
     const fileName = path.basename(file.path);
