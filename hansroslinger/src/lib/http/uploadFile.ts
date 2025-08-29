@@ -10,7 +10,7 @@ export async function uploadFile(
   file: FileUpload, 
 ): Promise<UploadResult> {
   try {
-    const bucketName = process.env.S3_BUCKET_NAME;
+    const bucketName = process.env.AWS_BUCKET_NAME;
     const fileContent = await fs.readFile(file.path);
 
     const fileName = path.basename(file.path);
