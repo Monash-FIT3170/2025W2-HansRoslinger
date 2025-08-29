@@ -2,14 +2,14 @@ import { ListObjectsV2Command } from '@aws-sdk/client-s3';
 import { s3Client } from './S3Client';
 import type { FileObject } from './fileInterfaces';
 
-export async function retrieveUserFiles(userId: string): Promise<FileObject[]> {
+export async function retrieveUserFiles(userEmail: string): Promise<FileObject[]> {
     
   try {
     const bucketName = process.env.S3_BUCKET_NAME;
 
     const command = new ListObjectsV2Command({
       Bucket: bucketName,
-      Prefix:  `${userId}/`,
+      Prefix:  `${userEmail}/`,
       MaxKeys: 1000,
     });
 
