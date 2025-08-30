@@ -18,6 +18,7 @@ import {
   RIGHT,
   VEGA_INTERACTION,
 } from "constants/application";
+import { handleVegaInteraction } from "./actions/handleVegaInteraction";
 
 type GestureTrack = {
   visual: Visual | null;
@@ -63,10 +64,6 @@ export class InteractionManager {
    */
   private readonly CLEAR_THRESHOLD = 5;
   private currentClearCount = 0;
-
-  // Track last simulated pointer position and target to prevent spamming events
-  private lastSimulatedPosition: { x: number; y: number } | null = null;
-  private lastSimulatedTargetId: string | null = null;
 
   private get visuals() {
     return useVisualStore.getState().visuals;
@@ -314,6 +311,9 @@ export class InteractionManager {
         break;
       }
       case VEGA_INTERACTION:
+        if (target) {
+          handleVegaInteraction(point, target);
+        }
         break;
     }
 
@@ -416,102 +416,10 @@ export class InteractionManager {
         position.y <= y + height;
 
       if (withinBounds) {
-        // console.log(
-        //   `[Manager] Found target ${visual.assetId} under pointer at (${position.x}, ${position.y})`
-        // );
-
-        // Only simulate pointer events if position or target changed
-        if (
-          !this.lastSimulatedPosition ||
-          this.lastSimulatedPosition.x !== position.x ||
-          this.lastSimulatedPosition.y !== position.y ||
-          this.lastSimulatedTargetId !== visual.assetId
-        ) {
-          this.simulatePointerEvents(position);
-          this.lastSimulatedPosition = position;
-          this.lastSimulatedTargetId = visual.assetId;
-        }
-
         return visual;
       }
     }
-
-    // console.log("[Manager] No target found at position:", position);
-
-    // Clear last simulated state if no target
-    this.lastSimulatedPosition = null;
-    this.lastSimulatedTargetId = null;
-
     return null;
-  }
-
-  private simulatePointerEvents(position: { x: number; y: number }) {
-    if (!position) return;
-
-    // Find the visual under this position
-    const visual = this.visuals.find(
-      (v) =>
-        position.x >= v.position.x &&
-        position.x <= v.position.x + v.size.width &&
-        position.y >= v.position.y &&
-        position.y <= v.position.y + v.size.height
-    );
-    if (!visual) {
-      console.warn("No visual found for pointer event simulation");
-      return;
-    }
-
-    // Target the Vega canvas with class 'marks'
-    const canvas = document.querySelector("canvas.marks") as HTMLCanvasElement;
-    if (!canvas) {
-      console.warn("Vega canvas with class 'marks' not found");
-      return;
-    }
-
-    const rect = canvas.getBoundingClientRect();
-
-    // Offset the pointer position by the visual's position
-    const localX = position.x - visual.position.x;
-    const localY = position.y - visual.position.y;
-
-    // Map to client coordinates
-    const clientX = rect.left + localX;
-    const clientY = rect.top + localY;
-
-    // Always dispatch events directly to the Vega canvas so the overlay
-    // doesn't intercept them. Using `elementFromPoint` here would return the
-    // overlay div, preventing Vega from receiving pointer events for tooltips.
-    const target = canvas;
-
-    [
-      "pointerenter",
-      "pointerover",
-      "pointermove",
-      "mouseenter",
-      "mouseover",
-      "mousemove",
-    ].forEach((type) =>
-      target.dispatchEvent(
-        new PointerEvent(type, {
-          bubbles: true,
-          cancelable: true,
-          pointerId: 1,
-          pointerType: "mouse",
-          isPrimary: true,
-          clientX,
-          clientY,
-        })
-      )
-    );
-
-    // console.log("[InteractionManager] Dispatched pointer events", {
-    //   clientX,
-    //   clientY,
-    //   target,
-    //   localX,
-    //   localY,
-    //   visual,
-    // });
   }
 
   // ONLY USED FOR MOUSE MOCK
