@@ -14,5 +14,5 @@ export const gestureToActionMap: Record<GestureType, ActionType> = {
   [PINCH]: MOVE,
   [DOUBLE_PINCH]: RESIZE,
   [OPEN_PALM]: HOVER,
-  [POINT_UP]: VEGA_INTERACTION
+  [POINT_UP]: VEGA_INTERACTION,
 };
