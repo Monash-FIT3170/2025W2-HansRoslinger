@@ -9,7 +9,7 @@ let lastClientXY: { x: number; y: number } | null = null;
 
 export const handleVegaInteraction = (
   position: { x: number; y: number } | null,
-  visual: Visual | null
+  visual: Visual | null,
 ) => {
   // console.log("[Manager] Finding target at position:", position);
   if (!visual || !position) {
@@ -46,7 +46,7 @@ export const handleVegaInteraction = (
 
 const simulatePointerEvents = (
   position: { x: number; y: number },
-  visual: Visual
+  visual: Visual,
 ) => {
   if (!position) return;
 
@@ -94,8 +94,8 @@ const simulatePointerEvents = (
         isPrimary: true,
         clientX: clientX,
         clientY: clientY,
-      })
-    )
+      }),
+    ),
   );
 
   lastTargetElement = target;
@@ -104,7 +104,7 @@ const simulatePointerEvents = (
 
 const simulateExitEvents = (
   target: HTMLCanvasElement,
-  clientXY: { x: number; y: number }
+  clientXY: { x: number; y: number },
 ) => {
   const { x: clientX, y: clientY } = clientXY;
 
@@ -128,7 +128,7 @@ const simulateExitEvents = (
         isPrimary: true,
         clientX,
         clientY,
-      })
+      }),
     );
   });
 
