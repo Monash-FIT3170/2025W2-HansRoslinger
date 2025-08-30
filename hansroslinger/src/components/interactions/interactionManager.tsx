@@ -16,6 +16,7 @@ import {
   MOVE,
   RESIZE,
   RIGHT,
+  VEGA_INTERACTION,
 } from "constants/application";
 
 type GestureTrack = {
@@ -185,7 +186,7 @@ export class InteractionManager {
             pointerA,
             pointerB,
             this.pinchStartDistance,
-            this.pinchStartSize,
+            this.pinchStartSize
           );
           return;
         }
@@ -201,7 +202,7 @@ export class InteractionManager {
         ) {
           const distance = Math.hypot(
             pointerA.x - pointerB.x,
-            pointerA.y - pointerB.y,
+            pointerA.y - pointerB.y
           );
 
           this.pinchStartDistance = distance;
@@ -312,6 +313,8 @@ export class InteractionManager {
         }
         break;
       }
+      case VEGA_INTERACTION:
+        break;
     }
 
     // Update drag offset
@@ -325,14 +328,14 @@ export class InteractionManager {
   handleClear() {
     if (this.currentClearCount === this.CLEAR_THRESHOLD) {
       Object.keys(this.handVisualMap).forEach((h) =>
-        this.resetHold(h as HandIds),
+        this.resetHold(h as HandIds)
       );
 
       // Clear hover and bound visual for each hand
       Object.values(this.handVisualMap).forEach((handVisual) => {
         handleHover(
           handVisual.visual ? handVisual.visual.assetId : null,
-          false,
+          false
         );
         handVisual.dragOffset = null;
         handVisual.visual = null;
@@ -451,7 +454,7 @@ export class InteractionManager {
         position.x >= v.position.x &&
         position.x <= v.position.x + v.size.width &&
         position.y >= v.position.y &&
-        position.y <= v.position.y + v.size.height,
+        position.y <= v.position.y + v.size.height
     );
     if (!visual) {
       console.warn("No visual found for pointer event simulation");
@@ -497,8 +500,8 @@ export class InteractionManager {
           isPrimary: true,
           clientX,
           clientY,
-        }),
-      ),
+        })
+      )
     );
 
     // console.log("[InteractionManager] Dispatched pointer events", {
@@ -533,7 +536,7 @@ export class InteractionManager {
           input.position,
           input.position,
           1, // mock pinchStartDistance
-          { ...target.size }, // mock pinchStartSize
+          { ...target.size } // mock pinchStartSize
         );
         break;
       }
