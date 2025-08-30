@@ -183,7 +183,7 @@ export class InteractionManager {
             pointerA,
             pointerB,
             this.pinchStartDistance,
-            this.pinchStartSize
+            this.pinchStartSize,
           );
           return;
         }
@@ -199,7 +199,7 @@ export class InteractionManager {
         ) {
           const distance = Math.hypot(
             pointerA.x - pointerB.x,
-            pointerA.y - pointerB.y
+            pointerA.y - pointerB.y,
           );
 
           this.pinchStartDistance = distance;
@@ -326,18 +326,18 @@ export class InteractionManager {
   handleClear() {
     if (this.currentClearCount === this.CLEAR_THRESHOLD) {
       Object.keys(this.handVisualMap).forEach((h) =>
-        this.resetHold(h as HandIds)
+        this.resetHold(h as HandIds),
       );
 
       // Clear hover and bound visual for each hand
       Object.values(this.handVisualMap).forEach((handVisual) => {
         handleHover(
           handVisual.visual ? handVisual.visual.assetId : null,
-          false
+          false,
         );
         handleVegaInteraction(
           null,
-          handVisual.visual ? handVisual.visual : null
+          handVisual.visual ? handVisual.visual : null,
         );
         handVisual.dragOffset = null;
         handVisual.visual = null;
@@ -446,7 +446,7 @@ export class InteractionManager {
           input.position,
           input.position,
           1, // mock pinchStartDistance
-          { ...target.size } // mock pinchStartSize
+          { ...target.size }, // mock pinchStartSize
         );
         break;
       }

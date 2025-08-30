@@ -16,7 +16,7 @@ export const GESTURES = [PINCH, DOUBLE_PINCH, OPEN_PALM, POINT_UP];
 export const MOVE = "move";
 export const HOVER = "hover";
 export const RESIZE = "resize";
-export const VEGA_INTERACTION = "vega_interaction"
+export const VEGA_INTERACTION = "vega_interaction";
 export const ACTIONS = [MOVE, HOVER, RESIZE, VEGA_INTERACTION];
 
 // handedness
