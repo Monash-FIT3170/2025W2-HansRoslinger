@@ -8,7 +8,7 @@ export function GestureFactory(name: string) {
       return new Pinch();
     case "DoublePinch":
       return new DoublePinch();
-    case "Pointing_up":
+    case "Pointing_Up":
       return new PointUp();
   }
 }
