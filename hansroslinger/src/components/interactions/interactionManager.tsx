@@ -311,9 +311,7 @@ export class InteractionManager {
         break;
       }
       case VEGA_INTERACTION:
-        if (target) {
-          handleVegaInteraction(point, target);
-        }
+        handleVegaInteraction(point, target);
         break;
     }
 
@@ -336,6 +334,10 @@ export class InteractionManager {
         handleHover(
           handVisual.visual ? handVisual.visual.assetId : null,
           false
+        );
+        handleVegaInteraction(
+          null,
+          handVisual.visual ? handVisual.visual : null
         );
         handVisual.dragOffset = null;
         handVisual.visual = null;
