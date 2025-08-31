@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { SignupResponse } from "app/api/signup/route";
 
 export default function SignUpPage() {
+  const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
@@ -14,7 +15,7 @@ export default function SignUpPage() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!email || !password || !confirmPassword) {
+    if (!name || !email || !password || !confirmPassword) {
       setError("Please fill in all fields.");
       return;
     }
@@ -25,15 +26,14 @@ export default function SignUpPage() {
     }
 
     setError("");
-    console.log("Signing up with:", { email, password });
-    //create user in database
+    console.log("Signing up with:", { name, email, password });
     try {
       const res = await fetch("/api/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ name, email, password }),
       });
       const data: SignupResponse = await res.json();
 
@@ -62,6 +62,14 @@ export default function SignUpPage() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="text"
+            placeholder="Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+
           <input
             type="email"
             placeholder="Email"

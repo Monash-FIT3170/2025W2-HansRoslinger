@@ -9,9 +9,13 @@ import VegaLiteVisual from "./visuals/VegaLiteChartVisual";
 import { InteractionManager } from "./interactions/interactionManager";
 import { useMouseMockStream } from "./interactions/useMouseMockStream";
 import { useGestureListener } from "./interactions/useGestureListener";
+import { FeedbackDisplay } from "./interactions/actions/handleFeedback";
+
+import ClearButton from "./ClearButton";
 
 const CanvasOverlay = () => {
   const visuals = useVisualStore((state) => state.visuals);
+  //const { gestureFeedbackId } = useVisualStore();
 
   const [dimensions, setDimensions] = useState<{
     width: number;
@@ -41,21 +45,61 @@ const CanvasOverlay = () => {
       {dimensions && (
         <div className="w-full h-full pointer-events-auto">
           {visuals.map((visual) => {
+            const isHovered = visual.isHovered;
             if (visual.uploadData.type === FILE_TYPE_JSON) {
               return (
-                <VegaLiteVisual key={visual.assetId} id={visual.assetId} />
+                <div key={visual.assetId} className="relative">
+                  <VegaLiteVisual id={visual.assetId} />
+                  {isHovered && (
+                    <div
+                      className="absolute z-20"
+                      style={{
+                        top: visual.position.y + visual.size?.height,
+                        left:
+                          visual.position.x + (visual.size?.width || 0) + 10, // 10px gap
+                      }}
+                    >
+                      <FeedbackDisplay
+                        fileType={visual.uploadData.type}
+                        isDragging={visual.isDragging}
+                      />
+                    </div>
+                  )}
+                </div>
               );
             } else if (visual.uploadData.type == FILE_TYPE_PNG) {
               return (
-                <ImageVisual
+                <div
                   key={visual.assetId}
-                  id={visual.assetId}
-                  visual={visual}
-                />
+                  className="relative flex gap-4 items-start"
+                >
+                  <ImageVisual
+                    key={visual.assetId}
+                    id={visual.assetId}
+                    visual={visual}
+                  />
+                  {isHovered && (
+                    <div
+                      className="absolute z-20"
+                      style={{
+                        top: visual.position.y + visual.size?.height,
+                        left:
+                          visual.position.x + (visual.size?.width || 0) + 10, // 10px gap
+                      }}
+                    >
+                      <FeedbackDisplay
+                        fileType={visual.uploadData.type}
+                        isDragging={visual.isDragging}
+                      />
+                    </div>
+                  )}
+                </div>
               );
             }
             return null;
           })}
+
+          <ClearButton />
         </div>
       )}
     </div>
