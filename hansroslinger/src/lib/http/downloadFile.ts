@@ -13,7 +13,7 @@ export async function downloadFile(
 ): Promise<string> {
   const { body, s3Key } = await getObject(userEmail, keyOrFileName);
 
-  if (!(body instanceof Readable) {
+  if (!(body instanceof Readable)) {
     throw new Error(`Unexpected Body type for key: ${s3Key}`);
   }
 
