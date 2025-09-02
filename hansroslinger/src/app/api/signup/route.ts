@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Code for assigning a unique S3 bucket URL is not included here
-    const s3BucketUrl: string = await createUserFolder(email);
+    const s3BucketUrl: string = await createS3UserBucket(email);
 
     const user = await createUser(email, password, s3BucketUrl);
 
