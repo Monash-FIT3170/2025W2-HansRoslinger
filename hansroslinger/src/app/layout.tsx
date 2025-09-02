@@ -22,6 +22,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                 alt="Yubi Logo"
                 width={65}
                 height={65}
+                style={{ height: "auto" }}
               />
               <span className="text-4xl font-bold text-[#1e1e1e]">Yubi</span>
             </Link>
