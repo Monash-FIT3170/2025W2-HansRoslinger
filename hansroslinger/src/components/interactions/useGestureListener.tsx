@@ -34,15 +34,6 @@ export const useGestureListener = (interactionManager: InteractionManager) => {
           case "pinch":
             paintManager.handlePinch(payload);
             break;
-          case "open_palm":
-            paintManager.handleOpenPalm(payload);
-            break;
-          case "double_pinch":
-            paintManager.handleDoublePinch(payload);
-            break;
-          case "point_up":
-            paintManager.handlePointUp(payload);
-            break;
           default:
             console.log(
               `[GestureListener] Paint mode: unhandled gesture ${payload.name}`,
