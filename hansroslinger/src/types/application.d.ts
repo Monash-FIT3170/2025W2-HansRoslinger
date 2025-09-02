@@ -20,6 +20,15 @@ export type Uploads = {
   [assetId: string]: UploadProp;
 };
 
+export type Collection = {
+  name: string;
+  assetIds: string[];
+};
+
+export type Collections = {
+  [collectionName: string]: Collection;
+};
+
 export type VisualSize = {
   height: number;
   width: number;
