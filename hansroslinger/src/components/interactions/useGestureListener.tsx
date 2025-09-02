@@ -26,8 +26,10 @@ export const useGestureListener = (interactionManager: InteractionManager) => {
     if (mode === "paint") {
       // Paint mode: route gestures to paintManager
       gesturePayloads.forEach((payload) => {
-        console.log(`[GestureListener] Paint mode: routing ${payload.name} to paintManager`);
-        
+        console.log(
+          `[GestureListener] Paint mode: routing ${payload.name} to paintManager`,
+        );
+
         switch (payload.name) {
           case "pinch":
             paintManager.handlePinch(payload);
@@ -42,7 +44,9 @@ export const useGestureListener = (interactionManager: InteractionManager) => {
             paintManager.handlePointUp(payload);
             break;
           default:
-            console.log(`[GestureListener] Paint mode: unhandled gesture ${payload.name}`);
+            console.log(
+              `[GestureListener] Paint mode: unhandled gesture ${payload.name}`,
+            );
         }
       });
     } else {

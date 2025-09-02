@@ -1,5 +1,10 @@
 import { GesturePayload } from "app/detection/Gesture";
-import { paintStart, paintMove, paintEnd, isPainting } from "./actions/handlePaint";
+import {
+  paintStart,
+  paintMove,
+  paintEnd,
+  isPainting,
+} from "./actions/handlePaint";
 
 // Track drawing state for paint mode
 let isDrawing = false;
@@ -76,4 +81,3 @@ export class PaintManager {
 
 // Export singleton instance
 export const paintManager = new PaintManager();
-
