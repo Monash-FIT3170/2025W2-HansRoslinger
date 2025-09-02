@@ -3,6 +3,7 @@ import UploadsDisplay from "./UploadsDisplay";
 import { Uploads } from "types/application";
 import { hardcodedUploads } from "hardcodedData";
 import Preview from "@/components/Preview";
+import CollectionsLauncher from "@/components/CollectionsLauncher";
 import { cookies } from "next/headers";
 
 const Dashboard = async () => {
@@ -39,9 +40,10 @@ const Dashboard = async () => {
     <main className="flex-1 overflow-y-auto scroll-auto scroll-smooth lg:overflow-hidden">
       <UploadsDisplay uploads={uploads ? uploads : {}} />
 
-      {/* Section 2: Preview Button */}
-      <section className="flex items-center justify-center mb-8 mt-8">
+      {/* Section 2: Preview and Collections */}
+      <section className="flex items-center justify-center gap-4 mb-8 mt-8">
         <Preview></Preview>
+        <CollectionsLauncher uploads={uploads ? uploads : {}} />
       </section>
 
       {/* Section 3: Gestures */}
