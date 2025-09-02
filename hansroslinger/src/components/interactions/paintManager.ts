@@ -1,14 +1,5 @@
 import { GesturePayload } from "app/detection/Gesture";
-import {
-  paintStart,
-  paintMove,
-  paintEnd,
-  isPainting,
-} from "./actions/handlePaint";
-
-// Track drawing state for paint mode
-let isDrawing = false;
-let lastDrawPosition: { x: number; y: number } | null = null;
+import { paintStart, paintMove, paintEnd, isPainting } from "./actions/handlePaint";
 
 /**
  * Paint Manager - handles all paint mode gesture interactions
@@ -32,14 +23,14 @@ export class PaintManager {
   /**
    * Handle open palm gesture (could be used for erasing or changing tools)
    */
-  handleOpenPalm(payload: GesturePayload) {
+  handleOpenPalm(_payload: GesturePayload) {
     console.log("[PaintManager] Open palm gesture detected");
   }
 
   /**
    * Handle double pinch gesture (could be used for changing brush size)
    */
-  handleDoublePinch(payload: GesturePayload) {
+  handleDoublePinch(_payload: GesturePayload) {
     console.log("[PaintManager] Double pinch gesture detected");
     // TODO: Implement brush size changing
   }
@@ -47,15 +38,10 @@ export class PaintManager {
   /**
    * Handle point up gesture (could be used for color selection)
    */
-  handlePointUp(payload: GesturePayload) {
+  handlePointUp(_payload: GesturePayload) {
     console.log("[PaintManager] Point up gesture detected");
     // TODO: Implement color selection
   }
-
-  /**
-   * Draw at the specified position
-   */
-  private drawAtPosition(position: { x: number; y: number }) {}
 
   /**
    * Stop drawing
