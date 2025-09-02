@@ -21,29 +21,6 @@ export class PaintManager {
   }
 
   /**
-   * Handle open palm gesture (could be used for erasing or changing tools)
-   */
-  handleOpenPalm(_payload: GesturePayload) {
-    console.log("[PaintManager] Open palm gesture detected");
-  }
-
-  /**
-   * Handle double pinch gesture (could be used for changing brush size)
-   */
-  handleDoublePinch(_payload: GesturePayload) {
-    console.log("[PaintManager] Double pinch gesture detected");
-    // TODO: Implement brush size changing
-  }
-
-  /**
-   * Handle point up gesture (could be used for color selection)
-   */
-  handlePointUp(_payload: GesturePayload) {
-    console.log("[PaintManager] Point up gesture detected");
-    // TODO: Implement color selection
-  }
-
-  /**
    * Stop drawing
    */
   stopDrawing() {
