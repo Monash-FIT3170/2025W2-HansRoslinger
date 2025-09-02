@@ -19,9 +19,11 @@ if (!AWS_REGION || !AWS_ACCESS_KEY_ID || !AWS_SECRET_ACCESS_KEY) {
 
 console.log("ENV DEBUG:", {
   AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID || "Missing",
-  AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY ? "Present" : "Missing",
+  AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY
+    ? "Present"
+    : "Missing",
   AWS_REGION: process.env.AWS_REGION || "Missing",
-  isAWSConfigured
+  isAWSConfigured,
 });
 
 // Only create S3Client if credentials are available
