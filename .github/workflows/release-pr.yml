@@ -10,7 +10,26 @@ on:
     branches:
       - develop
 jobs:
-  Deploy-Preview:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (GitHub)
+        uses: actions/checkout@v3
+
+      - name: Install apt
+        run: |
+          cd hansroslinger && npm install
+      - name: Lint
+        uses: wearerequired/lint-action@v2
+        with:
+          eslint_dir: hansroslinger/
+          prettier_dir: hansroslinger/
+          eslint: true
+          prettier: true
+          auto_fix: false
+          continue_on_error: true
+
+  deploy:
     runs-on: ubuntu-latest
     if: github.repository == 'Monash-FIT3170/2025W2-HansRoslinger'
     steps:
