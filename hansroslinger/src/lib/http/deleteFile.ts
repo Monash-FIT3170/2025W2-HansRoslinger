@@ -1,5 +1,5 @@
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
-import { s3Client } from "./s3Client";
+import { s3Client } from "./S3Client";
 
 export async function deleteFile(
   userEmail: string,
