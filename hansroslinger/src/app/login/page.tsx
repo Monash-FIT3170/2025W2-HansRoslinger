@@ -21,7 +21,7 @@ export default function LoginPage() {
     setError("");
     console.log("Logging in with:", { email, password });
     // fetch user from database
-    const res = await fetch("../../api/login", {
+    const res = await fetch("/api/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
