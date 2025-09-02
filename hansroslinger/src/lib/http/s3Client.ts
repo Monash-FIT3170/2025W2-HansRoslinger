@@ -26,6 +26,7 @@ console.log("ENV DEBUG:", {
   isAWSConfigured,
 });
 
+
 // Only create S3Client if credentials are available
 export const s3Client = isAWSConfigured
   ? new S3Client({
