@@ -4,7 +4,9 @@ let isDrawing = false;
 let lastPoint: Point | null = null;
 
 const getCanvas = (): HTMLCanvasElement | null => {
-  return document.getElementById("annotation-canvas") as HTMLCanvasElement | null;
+  return document.getElementById(
+    "annotation-canvas",
+  ) as HTMLCanvasElement | null;
 };
 
 const getCtx = (): CanvasRenderingContext2D | null => {
@@ -24,7 +26,8 @@ const applyStyleFromCanvas = (ctx: CanvasRenderingContext2D) => {
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
   ctx.lineWidth = Math.max(1, strokeWidth);
-  ctx.globalCompositeOperation = tool === "erase" ? "destination-out" : "source-over";
+  ctx.globalCompositeOperation =
+    tool === "erase" ? "destination-out" : "source-over";
   if (tool === "draw") ctx.strokeStyle = strokeColor;
 };
 
@@ -55,5 +58,3 @@ export const paintEnd = () => {
 };
 
 export const isPainting = () => isDrawing;
-
-
