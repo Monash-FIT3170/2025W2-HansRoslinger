@@ -129,12 +129,16 @@ const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
       {/* Annotation canvas */}
       <canvas
         ref={annotationCanvasRef}
+        id="annotation-canvas"
         className={`absolute inset-0 ${className}`}
         style={{
           zIndex,
           pointerEvents: enabled ? "auto" : "none",
           touchAction: "none",
         }}
+        data-tool={tool}
+        data-stroke-width={strokeWidth}
+        data-stroke-color={strokeColor}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
