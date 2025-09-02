@@ -4,6 +4,7 @@ export const FILE_TYPE_JSON = "json";
 export const ACCEPTED_FILE_TYPES = [FILE_TYPE_PNG, FILE_TYPE_JSON];
 
 export const LOCAL_STORAGE_KEY_SELECTED_UPLOAD = "selectedUploadKey";
+export const LOCAL_STORAGE_KEY_COLLECTIONS = "collectionsKey";
 
 // Gestures constant
 export const PINCH = "pinch";
