@@ -12,6 +12,7 @@ on:
 jobs:
   Deploy-Preview:
     runs-on: ubuntu-latest
+    if: github.repository == 'Monash-FIT3170/2025W2-HansRoslinger'
     steps:
       - name: Checkout (GitHub)
         uses: actions/checkout@v3
