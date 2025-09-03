@@ -1,3 +1,5 @@
+const { readFileSync, writeFileSync } = require('fs');
+
 /**
  * Simple function that reads a JSON file and extracts a specific property
  * @param jsonFilePath - Path to the JSON file
@@ -5,24 +7,15 @@
  * @returns Promise that resolves to the extracted data or null if property doesn't exist
  */
 export async function GraphDesigner(
-  jsonFilePath: string,
+  jsonData: object,
   targetProperty: string
 ): Promise<any | null> {
   try {
-    // Fetch the JSON file
-    const response = await fetch(jsonFilePath);
-    
-    if (!response.ok) {
-      throw new Error(`Failed to fetch JSON file: ${response.status}`);
-    }
-
-    const jsonData = await response.json();
-    
     // Extract the target property using dot notation
     const extractedData = targetProperty.split('.').reduce((obj, key) => {
-      return obj && obj[key];
+      return obj && obj[key as keyof object];
     }, jsonData);
-    
+
     if (extractedData === undefined) {
       return null; // Return null instead of throwing error
     }
@@ -45,35 +38,51 @@ export async function updateJsonProperty(
   targetProperty: string,
   newValue: any
 ): Promise<void> {
-  // Use the first function to check if the property exists
-  const existingValue = await GraphDesigner(jsonFilePath, targetProperty);
-  
+
   // Fetch the current JSON file
-  const response = await fetch(jsonFilePath);
-  const jsonData = await response.json();
-  
-  // Split the property path
+  // const response = await fetch(jsonFilePath);
+  // const jsonData = await response.json();
+  const jsonData = JSON.parse(readFileSync(jsonFilePath, 'utf8'));
+
+  // Use the first function to check if the property exists
+  const existingValue = await GraphDesigner(jsonData, targetProperty);
+
+  // Split the property path once
   const keys = targetProperty.split('.');
   const lastKey = keys.pop()!;
-  
-  // Navigate to the parent object, create missing objects if property doesn't exist
+
+  // Start from the root JSON data
   let current = jsonData;
-  for (const key of keys) {
-    if (!(key in current) || typeof current[key] !== 'object') {
-      current[key] = {};
+
+  if (existingValue !== null) {
+    // Property exists - just update it directly
+    for (const key of keys) {
+      current = current[key];
     }
-    current = current[key];
+    current[lastKey] = newValue;
+  } else {
+    // Property doesn't exist - create the path
+    for (const key of keys) {
+      if (!(key in current) || typeof current[key] !== 'object') {
+        current[key] = {};
+      }
+      current = current[key];
+    }
+    current[lastKey] = newValue;
   }
-  
-  // Update the property
-  current[lastKey] = newValue;
-  
+
   // Write the updated data back to the file
-  await fetch(jsonFilePath, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(jsonData),
-  });
+  // await fetch(jsonFilePath, {
+  //   method: 'PUT',
+  //   headers: { 'Content-Type': 'application/json' },
+  //   body: JSON.stringify(jsonData),
+  // });
+
+  writeFileSync(jsonFilePath, JSON.stringify(jsonData, null, 2));
 }
 
-export default GraphDesigner;
+// export default GraphDesigner;
+(async () => {
+  await updateJsonProperty("test.json", "encoding.color.scale.range", ["#4A90E2", "#F5A623", "#7ED321", "#D0021B", "#9013FE", "#50E3C2"]);
+  console.log("Update completed!");
+})();
