@@ -16,9 +16,10 @@ jobs:
       - name: Checkout (GitHub)
         uses: actions/checkout@v3
 
-      - name: Install apt
+      - name: Install dependencies
         run: |
           cd hansroslinger && npm install
+
       - name: Lint
         uses: wearerequired/lint-action@v2
         with:
