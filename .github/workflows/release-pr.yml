@@ -44,7 +44,7 @@ jobs:
         run: npm install --global vercel@latest
 
       - name: Pull Vercel Environment Info
-        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }} --project='hans-roslinger'
 
       - name: Build on CI
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
