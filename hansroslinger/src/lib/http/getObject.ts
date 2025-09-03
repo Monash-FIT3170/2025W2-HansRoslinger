@@ -1,5 +1,5 @@
 import { GetObjectCommand } from "@aws-sdk/client-s3";
-import { s3Client } from "./S3Client";
+import { s3Client } from "./s3Client";
 
 export async function getObject(userEmail: string, keyOrFileName: string) {
   try {
