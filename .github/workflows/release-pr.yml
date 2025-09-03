@@ -1,13 +1,14 @@
 name: "Deploy develop"
-on: # rebuild any PRs and main branch changes
+on:
   pull_request:
     branches:
       - develop
   push:
     branches:
       - develop
+
 permissions:
-  pull-requests: write # Add PR comments
+  pull-requests: write
 
 jobs:
   test:
@@ -16,9 +17,10 @@ jobs:
       - name: Checkout (GitHub)
         uses: actions/checkout@v3
 
-      - name: Install apt
+      - name: Install dependencies
         run: |
           cd hansroslinger && npm install
+
       - name: Lint
         uses: wearerequired/lint-action@v2
         with:
@@ -38,9 +40,30 @@ jobs:
       - name: Checkout (GitHub)
         uses: actions/checkout@v3
 
-      - uses: amondnet/vercel-action@v25 #deploy
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Pull Vercel Environment Info
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build on CI
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy and Capture Preview URL
+        id: deploy
+        run: |
+          vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} | tee vercel-deploy.log
+          echo "url=$(tail -n 1 vercel-deploy.log)" >> $GITHUB_OUTPUT
+
+      - name: Comment PR with Preview URL
+        uses: actions/github-script@v6
         with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }} # Required
-          github-token: ${{ secrets.GITHUB_TOKEN }} #Optional
-          vercel-org-id: ${{ secrets.ORG_ID}} #Required
-          vercel-project-id: ${{ secrets.PROJECT_ID}} #Required
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const url = '${{ steps.deploy.outputs.url }}';
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `🚀 Preview deployment ready: ${url}`
+            })
