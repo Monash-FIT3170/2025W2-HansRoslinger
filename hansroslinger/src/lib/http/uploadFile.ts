@@ -1,7 +1,7 @@
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import fs from "fs/promises";
 import path from "path";
-import { s3Client } from "./S3Client";
+import { s3Client } from "./s3Client";
 
 import type { FileUpload, UploadResult } from "./fileInterfaces";
 
