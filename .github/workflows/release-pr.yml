@@ -1,4 +1,8 @@
 name: "Deploy develop"
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
 on:
   pull_request:
     branches:
@@ -44,7 +48,7 @@ jobs:
         run: npm install --global vercel@latest
 
       - name: Pull Vercel Environment Info
-        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }} --project='hans-roslinger'
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Build on CI
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
