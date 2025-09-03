@@ -1,14 +1,13 @@
 "use client";
 
 import React, { FormEvent, useState } from "react";
-import { useRouter } from "next/navigation";
 import { LoginResponse } from "../api/login/route";
+import { redirect } from "next/navigation";
 
 export default function LoginPage() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
-  const router = useRouter();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -19,7 +18,6 @@ export default function LoginPage() {
     }
 
     setError("");
-    console.log("Logging in with:", { email, password });
     // fetch user from database
     const res = await fetch("/api/login", {
       method: "POST",
@@ -36,7 +34,7 @@ export default function LoginPage() {
       return;
     }
     //redirect to dashboard
-    router.push("/dashboard");
+    redirect("/dashboard");
   };
 
   return (
@@ -76,7 +74,7 @@ export default function LoginPage() {
         <p className="text-center text-sm mt-4">
           Don&apos;t have an account?{" "}
           <span
-            onClick={() => router.push("/signup")}
+            onClick={() => redirect("/signup")}
             className="text-blue-600 hover:underline cursor-pointer"
           >
             Sign up
