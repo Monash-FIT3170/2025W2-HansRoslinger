@@ -46,7 +46,7 @@ export default function SignUpPage() {
         }
         return;
       }
-      router.push("/login");
+      redirect("/login");
     } catch (error) {
       setError(
         "Error creating user. Please try again. If the problem persists, contact support.",
@@ -102,7 +102,7 @@ export default function SignUpPage() {
         <p className="text-center text-sm mt-4">
           Already have an account?{" "}
           <span
-            onClick={() => router.push("/login")}
+            onClick={() => redirect("/login")}
             className="text-blue-600 hover:underline cursor-pointer"
           >
             Log in

@@ -74,7 +74,7 @@ export default function LoginPage() {
         <p className="text-center text-sm mt-4">
           Don&apos;t have an account?{" "}
           <span
-            onClick={() => router.push("/signup")}
+            onClick={() => redirect("/signup")}
             className="text-blue-600 hover:underline cursor-pointer"
           >
             Sign up
