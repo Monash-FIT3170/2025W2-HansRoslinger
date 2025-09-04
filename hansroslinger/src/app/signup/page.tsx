@@ -2,10 +2,11 @@
 
 import React, { FormEvent, useState } from "react";
 import { SignupResponse } from "app/api/signup/route";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 
 export default function SignUpPage() {
+  const router = useRouter();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
@@ -45,7 +46,7 @@ export default function SignUpPage() {
         }
         return;
       }
-      redirect("/login");
+      router.push("/login");
     } catch (error) {
       setError(
         "Error creating user. Please try again. If the problem persists, contact support.",
@@ -101,7 +102,7 @@ export default function SignUpPage() {
         <p className="text-center text-sm mt-4">
           Already have an account?{" "}
           <span
-            onClick={() => redirect("/login")}
+            onClick={() => router.push("/login")}
             className="text-blue-600 hover:underline cursor-pointer"
           >
             Log in
