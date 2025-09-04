@@ -9,7 +9,7 @@
 export async function GraphDesigner(
   jsonData: object,
   targetProperty: string
-): Promise<string | null> {
+): Promise<object | null> {
   try {
     // Extract the target property using dot notation
     const extractedData = targetProperty.split('.').reduce((obj, key) => {
@@ -37,7 +37,7 @@ export async function updateJsonProperty(
   userEmail: string,
   fileName: string,
   targetProperty: string,
-  newValue: any
+  newValue: string
 ): Promise<void> {
 
   // Get the JSON file from S3 via API endpoint
