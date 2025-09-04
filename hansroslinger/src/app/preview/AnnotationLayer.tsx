@@ -17,7 +17,7 @@ type AnnotationLayerProps = {
 const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
   targetRef,
   className = "",
-  zIndex = 50,
+  zIndex = 30,
 }) => {
   // Canvas & drawing refs
   const annotationCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -131,7 +131,7 @@ const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
       <canvas
         ref={annotationCanvasRef}
         id="annotation-canvas"
-        className={`absolute inset-0 ${className}`}
+        className={`absolute inset-0 pointer-events-none ${enabled ? 'pointer-events-auto' : ''} ${className}`}
         style={{
           zIndex,
           pointerEvents: enabled ? "auto" : "none",
@@ -147,7 +147,7 @@ const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
       />
       {/* Paint mode button */}
       <div
-        className="absolute top-3 left-3 pointer-events-auto"
+        className="absolute bottom-4 right-4 pointer-events-auto"
         style={{ zIndex: zIndex + 2 }}
       >
         <ModeToggle />
