@@ -1,10 +1,10 @@
 import Image from "next/image";
-import UploadsDisplay from "./UploadsDisplay";
 import { Uploads } from "types/application";
 import { hardcodedUploads } from "hardcodedData";
 import Preview from "@/components/Preview";
 import Upload from "@/components/Upload";
 import { cookies } from "next/headers";
+import UserUploads from "./UserUploads";
 
 const Dashboard = async () => {
   // Right now this is hard coded, once we have data base setup, we can fetch instead
@@ -39,7 +39,7 @@ const Dashboard = async () => {
 
   return (
     <main className="flex-1 overflow-y-auto scroll-auto scroll-smooth lg:overflow-hidden">
-      <UploadsDisplay uploads={uploads ? uploads : {}} />
+      <UserUploads initialUploads={uploads} />
 
       {/* Section 2: Preview Button */}
       <section className="flex items-center justify-center mb-8 mt-8 gap-4">
