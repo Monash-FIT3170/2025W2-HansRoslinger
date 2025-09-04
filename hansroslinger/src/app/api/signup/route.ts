@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createUser } from "../../../database/common/user/createUser";
-import { createS3UserBucket } from "../../../lib/http/createUserBucket";
+import { createUserFolder } from "../../../lib/http/createUserFolder";
 
 export type SignupResponse = {
   user: { email: string};
@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Code for assigning a unique S3 bucket URL is not included here
-    const s3BucketUrl: string = await createS3UserBucket(email);
+    const s3BucketUrl: string = await createUserFolder(email);
 
     const user = await createUser(email, password, s3BucketUrl);
 
