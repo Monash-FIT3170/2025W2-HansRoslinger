@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@aws-sdk/s3-request-presigner": "^3.879.0",
     "next": "^15.5.0"
   }
 }
