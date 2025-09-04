@@ -1,5 +1,3 @@
-const { getObject } = require('../lib/http/getObject');
-
 /**
  * Simple function that reads a JSON file and extracts a specific property
  * @param jsonFilePath - Path to the JSON file
@@ -40,9 +38,15 @@ export async function updateJsonProperty(
   newValue: any
 ): Promise<void> {
 
-  // Get the JSON file from S3
-  const response = await getObject(userEmail, fileName);
-  const jsonData = JSON.parse(await response.body?.transformToString() || '{}');
+  // Get the JSON file from S3 via API endpoint
+  const apiResponse = await fetch(`/api/aws-get?email=${encodeURIComponent(userEmail)}&key=${encodeURIComponent(fileName)}`);
+  
+  if (!apiResponse.ok) {
+    throw new Error(`Failed to fetch file: ${apiResponse.status} ${apiResponse.statusText}`);
+  }
+  
+  const fileContent = await apiResponse.text();
+  const jsonData = JSON.parse(fileContent);
 
   // Use the first function to check if the property exists
   const existingValue = await GraphDesigner(jsonData, targetProperty);
@@ -73,9 +77,3 @@ export async function updateJsonProperty(
 
   console.log('Updated JSON data:', JSON.stringify(jsonData, null, 2));
 }
-
-// export default GraphDesigner;
-(async () => {
-  await updateJsonProperty("user@example.com", "test.json", "encoding.color.scale.range", ["#4A90E2", "#F5A623", "#7ED321", "#D0021B", "#9013FE", "#50E3C2"]);
-  console.log("Update completed!");
-})();
