@@ -4,7 +4,6 @@ import React, { FormEvent, useState } from "react";
 import { SignupResponse } from "app/api/signup/route";
 import { useRouter } from "next/navigation";
 
-
 export default function SignUpPage() {
   const router = useRouter();
   const [email, setEmail] = useState<string>("");
@@ -26,7 +25,7 @@ export default function SignUpPage() {
     }
 
     setError("");
-    console.log("Signing up with:", {email, password });
+    console.log("Signing up with:", { email, password });
     try {
       const res = await fetch("/api/signup", {
         method: "POST",
@@ -39,7 +38,10 @@ export default function SignUpPage() {
 
       if (!data.user) {
         console.log(data.error);
-        if (data.error == "\nInvalid `prisma.user.create()` invocation:\n\n\nUnique constraint failed on the fields: (`email`)") {
+        if (
+          data.error ==
+          "\nInvalid `prisma.user.create()` invocation:\n\n\nUnique constraint failed on the fields: (`email`)"
+        ) {
           setError("User already exists with this email.");
         } else {
           setError(data.error || "Signup failed");
@@ -66,7 +68,6 @@ export default function SignUpPage() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-
           <input
             type="email"
             placeholder="Email"

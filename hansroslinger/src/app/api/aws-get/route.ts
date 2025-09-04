@@ -8,13 +8,15 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   const key = searchParams.get("key");
 
   if (!email || !key) {
-    return NextResponse.json({ error: "Missing email or key" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Missing email or key" },
+      { status: 400 },
+    );
   }
 
   try {
     const { body, contentType, contentLength } = await getObject(email, key);
 
-    
     if (!(body instanceof Readable)) {
       return NextResponse.json({ error: "Invalid file body" }, { status: 500 });
     }
@@ -38,6 +40,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     });
   } catch (error) {
     console.error("S3 fetch error:", error);
-    return NextResponse.json({ error: "Failed to fetch file" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch file" },
+      { status: 500 },
+    );
   }
 }
