@@ -9,7 +9,7 @@
 export async function GraphDesigner(
   jsonData: object,
   targetProperty: string
-): Promise<any | null> {
+): Promise<string | null> {
   try {
     // Extract the target property using dot notation
     const extractedData = targetProperty.split('.').reduce((obj, key) => {
