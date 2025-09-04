@@ -27,12 +27,23 @@ const UploadsDisplay = ({ uploads }: UploadsDisplayProps) => {
     addSelectedUpload(assetId, uploadData);
   };
 
+  const hasUploads = Object.keys(uploads).length > 0;
+
   return (
     <section className="w-full mb-8 mt-8">
       <h2 className="text-3xl font-bold text-center mb-5">Uploads</h2>
       <div className="overflow-x-auto w-full pb-3">
-        <div className="flex justify-center gap-x-6 p-4 min-w-max">
-          {Object.entries(uploads).map(([assetId, data]) => (
+        {!hasUploads && (
+          <div className="text-center p-8 bg-gray-50 rounded-lg">
+            <p className="text-gray-500 mb-2">No uploads found.</p>
+            <p className="text-gray-400 text-sm">
+              Click the Upload button below to add your files.
+            </p>
+          </div>
+        )}
+        {hasUploads && (
+          <div className="flex justify-center gap-x-6 p-4 min-w-max">
+            {Object.entries(uploads).map(([assetId, data]) => (
             <div
               key={assetId}
               className={`min-w-[180px] h-52 bg-white shadow-md 
@@ -64,7 +75,8 @@ const UploadsDisplay = ({ uploads }: UploadsDisplayProps) => {
               <div className="text-sm text-gray-500">{data.type}</div>
             </div>
           ))}
-        </div>
+          </div>
+        )}
       </div>
     </section>
   );
