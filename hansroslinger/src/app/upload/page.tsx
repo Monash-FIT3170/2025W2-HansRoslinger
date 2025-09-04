@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { FILE_TYPE_JSON, FILE_TYPE_PNG } from "../../constants/application";
-import Image from "next/image";
 import ReturnToDashboard from "@/components/ReturnToDashboard";
 import { useRouter } from "next/navigation";
 
