@@ -5,7 +5,6 @@ import { updateUserEmail } from "./user/updateEmail";
 async function main() {
   const user = await createUser(
     "alice@example.com",
-    "Alice",
     "https://s3.bucket/alice",
     "password",
   );

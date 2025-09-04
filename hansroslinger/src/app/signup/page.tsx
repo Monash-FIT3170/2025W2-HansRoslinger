@@ -1,21 +1,20 @@
 "use client";
 
 import React, { FormEvent, useState } from "react";
-import { useRouter } from "next/navigation";
 import { SignupResponse } from "app/api/signup/route";
+import { redirect } from "next/navigation";
+
 
 export default function SignUpPage() {
-  const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
-  const router = useRouter();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!name || !email || !password || !confirmPassword) {
+    if (!email || !password || !confirmPassword) {
       setError("Please fill in all fields.");
       return;
     }
@@ -26,14 +25,14 @@ export default function SignUpPage() {
     }
 
     setError("");
-    console.log("Signing up with:", { name, email, password });
+    console.log("Signing up with:", {email, password });
     try {
       const res = await fetch("/api/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ email, password }),
       });
       const data: SignupResponse = await res.json();
 
@@ -41,7 +40,7 @@ export default function SignUpPage() {
         setError(data.error || "Login failed");
         return;
       }
-      router.push("/login");
+      redirect("/login");
     } catch (error) {
       setError(
         "Error creating user. Please try again. User may already exist.",
@@ -49,7 +48,7 @@ export default function SignUpPage() {
       console.error("Error creating user:", error);
       return;
     }
-    router.push("/login");
+    redirect("/login");
   };
 
   return (
@@ -62,13 +61,6 @@ export default function SignUpPage() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="text"
-            placeholder="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
 
           <input
             type="email"
@@ -105,7 +97,7 @@ export default function SignUpPage() {
         <p className="text-center text-sm mt-4">
           Already have an account?{" "}
           <span
-            onClick={() => router.push("/login")}
+            onClick={() => redirect("/login")}
             className="text-blue-600 hover:underline cursor-pointer"
           >
             Log in

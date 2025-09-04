@@ -1,17 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createUser } from "../../../database/common/user/createUser";
+import { createS3UserBucket } from "../../../lib/http/createUserBucket";
 
 export type SignupResponse = {
-  user: { email: string; name: string };
+  user: { email: string};
   error?: string;
 };
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { name, email, password } = body;
+    const { email, password } = body;
 
-    if (!name || !email || !password) {
+    if ( !email || !password) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 },
@@ -19,12 +20,12 @@ export async function POST(req: NextRequest) {
     }
 
     // Code for assigning a unique S3 bucket URL is not included here
-    const s3BucketUrl = `https://s3.amazonaws.com/${email}-bucket`; // Placeholder logic
+    const s3BucketUrl: string = await createS3UserBucket(email);
 
-    const user = await createUser(name, email, password, s3BucketUrl);
+    const user = await createUser(email, password, s3BucketUrl);
 
     return NextResponse.json(
-      { user: { email: user.email, name: user.name } },
+      { user: { email: user.email } },
       { status: 201 },
     );
   } catch (error: unknown) {

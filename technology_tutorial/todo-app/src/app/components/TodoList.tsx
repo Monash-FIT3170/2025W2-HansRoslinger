@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 interface TodoListProps {
   todos: string[];
@@ -20,7 +20,7 @@ export default function TodoList({ todos, onDelete }: TodoListProps) {
         <li
           key={index}
           className="flex items-center justify-between p-4 bg-white rounded-lg shadow"
-        >
+          >
           <span className="flex-1">{todo}</span>
           <button
             onClick={() => onDelete(index)}
