@@ -34,6 +34,8 @@ type HandVisualMap = Record<HandIds, GestureTrack>;
 
 export class InteractionManager {
   private gestureTargetId: string | null = null;
+  private visualCooldownMap: Record<string, number> = {};
+  private readonly HOVER_COOLDOWN_MS = 3000; // 3 seconds
   private dragOffset: { x: number; y: number } | null = null;
   private previousAction: ActionType | null = null;
   private hoveredTargetId: string | null = null;
@@ -424,6 +426,18 @@ export class InteractionManager {
       }
     }
     return null;
+  }
+
+  /**
+   * Checks if the pointer is hovering over a visual inside the sidebar
+   * Returns the assetId if so, else null
+   */
+  private findSidebarTargetAt(position: { x: number; y: number }): string | null {
+    const element = document.elementFromPoint(position.x, position.y);
+    if (!element) return null;
+
+    const visualContainer = element.closest("[data-asset-id]");
+    return visualContainer?.getAttribute("data-asset-id") ?? null;
   }
 
   // ONLY USED FOR MOUSE MOCK
