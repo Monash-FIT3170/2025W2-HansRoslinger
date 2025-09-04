@@ -1,3 +1,5 @@
+"use client"
+
 /**
  * Simple function that reads a JSON file and extracts a specific property
  * @param jsonFilePath - Path to the JSON file
