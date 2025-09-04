@@ -41,14 +41,14 @@ const CanvasOverlay = () => {
   }, []);
 
   return (
-    <div className="absolute inset-0 z-10">
+    <div className="absolute inset-0 z-10 pointer-events-none">
       {dimensions && (
-        <div className="w-full h-full pointer-events-auto">
+        <div className="w-full h-full">
           {visuals.map((visual) => {
             const isHovered = visual.isHovered;
             if (visual.uploadData.type === FILE_TYPE_JSON) {
               return (
-                <div key={visual.assetId} className="relative">
+                <div key={visual.assetId} className="relative pointer-events-auto">
                   <VegaLiteVisual id={visual.assetId} />
                   {isHovered && (
                     <div
@@ -71,7 +71,7 @@ const CanvasOverlay = () => {
               return (
                 <div
                   key={visual.assetId}
-                  className="relative flex gap-4 items-start"
+                  className="relative flex gap-4 items-start pointer-events-auto"
                 >
                   <ImageVisual
                     key={visual.assetId}
@@ -99,7 +99,7 @@ const CanvasOverlay = () => {
             return null;
           })}
 
-          <ClearButton />
+          <ClearButton className="pointer-events-auto" />
         </div>
       )}
     </div>
