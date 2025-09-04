@@ -11,6 +11,7 @@ const Dashboard = async () => {
   const cookieStore = await cookies();
   const email = decodeURIComponent(cookieStore.get("email")?.value ?? "");
   console.log("Email from cookies:", email);
+;
 
   const gestures = [
     {
