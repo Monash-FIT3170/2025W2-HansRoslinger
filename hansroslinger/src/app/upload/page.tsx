@@ -69,6 +69,8 @@ export default function UploadPage() {
         formData.append("file", file);
       });
 
+      console.log("Uploading files...", files.map(f => f.name));
+
       const response = await fetch("/api/upload", {
         method: "POST",
         body: formData,
@@ -77,10 +79,13 @@ export default function UploadPage() {
       });
 
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Upload response not OK:", response.status, errorText);
         throw new Error(`Upload failed: ${response.statusText}`);
       }
 
       const result = await response.json();
+      console.log("Upload result:", result);
       
       if (result.success) {
         setUploadStatus({
