@@ -2,9 +2,10 @@
 
 import React, { FormEvent, useState } from "react";
 import { LoginResponse } from "../api/login/route";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
@@ -33,8 +34,7 @@ export default function LoginPage() {
       setError(data.error || "Login failed");
       return;
     }
-    //redirect to dashboard
-    redirect("/dashboard");
+    router.push("/dashboard");
   };
 
   return (
@@ -74,7 +74,7 @@ export default function LoginPage() {
         <p className="text-center text-sm mt-4">
           Don&apos;t have an account?{" "}
           <span
-            onClick={() => redirect("/signup")}
+            onClick={() => router.push("/signup")}
             className="text-blue-600 hover:underline cursor-pointer"
           >
             Sign up
