@@ -31,11 +31,37 @@ Welcome to the **HansRoslinger** repository! This project is dedicated to design
 
 ## Project Setup
 
+Using Visual Studio Code (VS Code) with the Dev Containers extension is recommended for this project. If you choose not to use it, you may skip the steps for [Docker Desktop](#docker-desktop-if-using-dev-container) and [Dev Container](#dev-container-vs-code) setups.
+
 ### Clone Git Repository
+
+- Open a terminal in your desired directory.
+- Clone the repository.
+
+```bash
+git clone https://github.com/Monash-FIT3170/2025W2-HansRoslinger.git
+```
 
 ### Docker Desktop (If using Dev Container)
 
+- Download and install Docker Desktop based on your OS [here](https://docs.docker.com/desktop/).
+- Please refer to the official installation guide to install docker desktop
+- Start docker desktop.
+- Verify the installation.
+
+```bash
+docker --version
+```
+
 ### Dev Container (VS Code)
+
+- Install VS Code if you haven’t already. Install based on your operating system and follow the instructions on the official website
+  - [Windows](https://code.visualstudio.com/docs/setup/windows)
+  - [macOS](https://code.visualstudio.com/docs/setup/mac)
+  - [Linux](https://code.visualstudio.com/docs/setup/linux)
+- Open VS Code
+- Got to Extensions (`Ctrl+Shift+X` / `Cmd+Shift+X`)
+- Search for `Dev Container` and install
 
 ### Vercel
 
