@@ -2,7 +2,6 @@ import prisma from "../client";
 import * as crypto from "crypto";
 
 export async function createUser(
-  name: string,
   email: string,
   password: string,
   s3BucketUrl: string,
