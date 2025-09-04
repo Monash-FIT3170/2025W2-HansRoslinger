@@ -25,7 +25,7 @@ export default function SignUpPage() {
     }
 
     setError("");
-    console.log("Signing up with:", {email, password });
+    console.log("Signing up with:", { email, password });
     try {
       const res = await fetch("/api/signup", {
         method: "POST",
@@ -34,21 +34,21 @@ export default function SignUpPage() {
         },
         body: JSON.stringify({ email, password }),
       });
+      if (!res.ok) {
+        setError("Error creating user. Please try again. User may already exist.");
+        return;
+      }
       const data: SignupResponse = await res.json();
-
       if (!data.user) {
-        setError(data.error || "Login failed");
+        setError(data.error || "Signup failed");
         return;
       }
       redirect("/login");
     } catch (error) {
-      setError(
-        "Error creating user. Please try again. User may already exist.",
-      );
+      setError("Network error. Please try again later.");
       console.error("Error creating user:", error);
       return;
     }
-    redirect("/login");
   };
 
   return (
