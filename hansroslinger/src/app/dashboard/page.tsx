@@ -3,6 +3,7 @@ import UploadsDisplay from "./UploadsDisplay";
 import { Uploads } from "types/application";
 import { hardcodedUploads } from "hardcodedData";
 import Preview from "@/components/Preview";
+import Upload from "@/components/Upload";
 import { cookies } from "next/headers";
 
 const Dashboard = async () => {
@@ -41,7 +42,8 @@ const Dashboard = async () => {
       <UploadsDisplay uploads={uploads ? uploads : {}} />
 
       {/* Section 2: Preview Button */}
-      <section className="flex items-center justify-center mb-8 mt-8">
+      <section className="flex items-center justify-center mb-8 mt-8 gap-4">
+        <Upload></Upload>
         <Preview></Preview>
       </section>
 
