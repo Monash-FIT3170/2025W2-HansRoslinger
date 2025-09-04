@@ -1,6 +1,55 @@
 # 2025W2-HansRoslinger 🚀
 
-Welcome to the **HansRoslinger** repository! This project is dedicated to designing and implementing scalable AI systems, ensuring seamless integration and deployment. 
+Welcome to the **HansRoslinger** repository! This project is dedicated to designing and implementing scalable AI systems, ensuring seamless integration and deployment.
+
+## Table of Content
+
+- [Project Requirements](#project-requirements)
+  - [Hardware](#hardware)
+  - [Software](#software)
+- [Project Setup](#project-setup)
+  - [Clone Git Repository](#clone-git-repository)
+  - [Docker Desktop (If using Dev Container)](#docker-desktop-if-using-dev-container)
+  - [Dev Container (VS Code)](#dev-container-vs-code)
+  - [Vercel](#vercel)
+  - [Prisma](#prisma)
+- [Running the App](#running-the-app)
+  - [Running with a Dev Container (Recommended)](#running-with-a-dev-container-recommended)
+  - [Running Outside a Dev Container](#running-outside-a-dev-container)
+- [Deployment](#deployment)
+- [Common Issues](#common-issues)
+- [Project Team](#project-team)
+  - [Systems Architects](#️-systems-architects)
+  - [Project Managers](#️-project-managers)
+  - [Release Train Engineers](#-release-train-engineers)
+
+## Project Requirements
+
+### Hardware
+
+### Software
+
+## Project Setup
+
+### Clone Git Repository
+
+### Docker Desktop (If using Dev Container)
+
+### Dev Container (VS Code)
+
+### Vercel
+
+### Prisma
+
+## Running the App
+
+### Running with a Dev Container (Recommended)
+
+### Running Outside a Dev Container
+
+## Deployment
+
+## Common Issues
 
 ## Project Team
 
