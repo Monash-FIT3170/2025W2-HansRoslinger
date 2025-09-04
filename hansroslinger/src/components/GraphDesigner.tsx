@@ -1,4 +1,4 @@
-const { readFileSync, writeFileSync } = require('fs');
+const { getObject } = require('../lib/http/getObject');
 
 /**
  * Simple function that reads a JSON file and extracts a specific property
@@ -34,15 +34,15 @@ export async function GraphDesigner(
  * @returns Promise that resolves when the update is complete
  */
 export async function updateJsonProperty(
-  jsonFilePath: string,
+  userEmail: string,
+  fileName: string,
   targetProperty: string,
   newValue: any
 ): Promise<void> {
 
-  // Fetch the current JSON file
-  // const response = await fetch(jsonFilePath);
-  // const jsonData = await response.json();
-  const jsonData = JSON.parse(readFileSync(jsonFilePath, 'utf8'));
+  // Get the JSON file from S3
+  const response = await getObject(userEmail, fileName);
+  const jsonData = JSON.parse(await response.body?.transformToString() || '{}');
 
   // Use the first function to check if the property exists
   const existingValue = await GraphDesigner(jsonData, targetProperty);
@@ -71,18 +71,11 @@ export async function updateJsonProperty(
     current[lastKey] = newValue;
   }
 
-  // Write the updated data back to the file
-  // await fetch(jsonFilePath, {
-  //   method: 'PUT',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify(jsonData),
-  // });
-
-  writeFileSync(jsonFilePath, JSON.stringify(jsonData, null, 2));
+  console.log('Updated JSON data:', JSON.stringify(jsonData, null, 2));
 }
 
 // export default GraphDesigner;
 (async () => {
-  await updateJsonProperty("test.json", "encoding.color.scale.range", ["#4A90E2", "#F5A623", "#7ED321", "#D0021B", "#9013FE", "#50E3C2"]);
+  await updateJsonProperty("user@example.com", "test.json", "encoding.color.scale.range", ["#4A90E2", "#F5A623", "#7ED321", "#D0021B", "#9013FE", "#50E3C2"]);
   console.log("Update completed!");
 })();
