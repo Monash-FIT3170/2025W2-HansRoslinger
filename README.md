@@ -13,6 +13,7 @@ Welcome to the **HansRoslinger** repository! This project is dedicated to design
   - [Dev Container (VS Code)](#dev-container-vs-code)
   - [Vercel](#vercel)
   - [Prisma](#prisma)
+  - [AWS S3](#aws-s3)
 - [Running the App](#running-the-app)
   - [Running with a Dev Container (Recommended)](#running-with-a-dev-container-recommended)
   - [Running Outside a Dev Container](#running-outside-a-dev-container)
@@ -27,7 +28,23 @@ Welcome to the **HansRoslinger** repository! This project is dedicated to design
 
 ### Hardware
 
+The project is a client-side heavy application, so most hardware requirements apply to the client side. The requirements include:
+
+- A working webcam
+- A modern CPU
+- At least 8 GB of RAM
+- A GPU (not required, but recommended for improved performance)
+
 ### Software
+
+- Node.js version 18 or later
+- Git for version control
+- Docker Desktop (not required, but recommended)
+- Visual Studio Code with the Dev Containers extension (not required, but recommended)
+- Google Chrome for testing and debugging (any browser can be used, but Chrome is recommended)
+- Vercel for deployment
+- Prisma for database management
+- AWS S3 for storing user files
 
 ## Project Setup
 
@@ -42,7 +59,7 @@ Using Visual Studio Code (VS Code) with the Dev Containers extension is recommen
 git clone https://github.com/Monash-FIT3170/2025W2-HansRoslinger.git
 ```
 
-### Docker Desktop (If using Dev Container)
+### Docker Desktop (if using Dev Container)
 
 - Download and install Docker Desktop based on your OS [here](https://docs.docker.com/desktop/).
 - Please refer to the official installation guide to install docker desktop
@@ -65,17 +82,237 @@ docker --version
 
 ### Vercel
 
+Vercel is used to deploy the project as a web application. If you wish to deploy the project, please set up vercel:
+
+- Create an account or login to Vercel [here](https://vercel.com/signup)
+- Install Vercel CLI if not already installed
+
+```bash
+npm install -g vercel
+```
+
+- Authenticate with Vercel
+
+```bash
+vercel login
+```
+
+- Set Vercel Token
+  - Get your token [here](https://vercel.com/account/settings/tokens?utm_source=chatgpt.com)
+  - Add it to your .env file
+
+```bash
+VERCEL_TOKEN=your_token_here
+```
+
+- To deploy the project, follow the steps in the [Deployment](https://vercel.com/account/settings/tokens?utm_source=chatgpt.com) section.
+
 ### Prisma
+
+If you plan to replicate this project, you may need to set up a database. The exact steps will depend on your hosting platform. For those using Vercel (as in our setup), follow these instructions:
+
+- Open your project in Vercel and navigate to the Storage section.
+- Select Prisma Postgres and click Continue.
+- Choose the recommended region and proceed.
+- Enter a name for your database.
+- Wait for the provisioning process to complete.
+- Once finished, connect to your new database. Once connected, your Prisma Postgres database will be ready for use.
+- Link your project to Vercel. This associates your local project with the corresponding project in your Vercel team.
+
+```bash
+vercel link
+```
+
+- Pull environment variables from Vercel. This will download the environment variables (including your Prisma Postgres connection string) and save them into a local `.env` file.
+
+```bash
+vercel env pull .env
+```
+
+- Run your initial Prisma migration.This creates the database schema in your Prisma Postgres instance and gets your database ready for use.
+
+```bash
+npx prisma migrate dev --name init
+```
+
+### AWS S3
+
+**S3 is used to store the uploaded files.**
+
+- Search `s3` in the aws search box and navigate to the s3 dashboard.
+- Click on the region on the top right and select `sydney`.
+- Click on `create "Bucket"`.
+- On the general configuration page enter the details for the bucket such as name and region (sydney).
+- Scroll down and click `create bucket`.
+
+**Create s3 access policy**
+
+- Search `IAM` in the aws search box and navigate to the IAM dashboard
+- Click on `Policies` then click `create policy`
+- On the policy creation page click on `json` and paste the following access policy:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "dth",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:PutObject",
+        "s3:ListBucket",
+        "s3:PutObjectAcl",
+        "s3:AbortMultipartUpload",
+        "s3:ListBucketMultipartUploads",
+        "s3:ListMultipartUploadParts",
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::yubi-assets/",
+        "arn:aws:s3:::yubi-assets",
+        "arn:aws:s3:::yubi-assets//",
+        "arn:aws:s3:::yubi-assets///"
+      ]
+    }
+  ]
+}
+```
+
+- Click next then click save changes
+
+**Create s3 user + access key**
+
+- On the `IAM` dashboard click on user
+- Click `create user`
+- On the user creation page enter username that you want and click next
+- Select attach policy and then select the policy you made before
+- Then click create user
+- Navigate to the user you just created and click "create access key"
+- Then select `3rd party service` and click next
+- Finally click create key and save your access key credentials
+
+**Adding s3 cred to vercel**
+
+Add the following variables as a env variable in vercel:
+
+- Aws region
+- Bucket name
+- Access key
+- Secret key
 
 ## Running the App
 
+The project can either be run inside a Dev Container (using the VS Code extension) or directly on your machine **without** using Docker.
+
 ### Running with a Dev Container (Recommended)
+
+- Open the project folder in VS Code.
+- Reopen folder in a Dev Container:
+  - Press `F1` to access the command palette
+  - Select `Dev Container: Reopen in Container`
+- Once built, open a terminal inside the Dev Container.
+- Navigate to the project directory.
+
+```bash
+cd hansroslinger
+```
+
+- Install the dependencies and start the app:
+
+```bash
+npm install
+npm run dev
+```
+
+- Access the app in your browser at: http://localhost:3000
 
 ### Running Outside a Dev Container
 
+Docker is not required to run the project outside of Dev Container.
+
+#### Prerequisites
+
+To run outside of dev container, install Node.js LTS (recommended) [here](https://nodejs.org/en/download).
+
+Once installed, verify the installation.
+
+```bash
+node --version
+npm --version
+```
+
+#### Running the app
+
+- From the root directory, navigate inside the project directory and install packages.
+
+```bash
+cd hansroslinger
+npm install
+```
+
+- Start the Next.js dev server.
+
+```bash
+npm run dev
+```
+
+- Access the app in your browser at: http://localhost:3000
+
 ## Deployment
 
+These steps assume that this is the first time you are using vercel to deploy.
+
+- Make sure vercel cli is installed and token is added to environment variables.
+- Open the project in a code editor.
+- Navigate to the project directory
+
+```bash
+cd hansroslinger
+```
+
+- Run deployment command in the terminal.
+
+```bash
+vercel
+```
+
+- Select the following option to successfully deploy the project on Vercel:
+
+```txt
+Set up and deploy “/workspaces/2025W2-HansRoslinger/hansroslinger” yes
+Which scope should contain your project? [Select your Vercel team or personal account]
+Link to existing project? no
+What’s your project’s name? hansroslinger
+In which directory is your code located? ./
+Want to modify these settings? no
+Want to use the default Deployment Protection settings? yes
+```
+
+Example:
+
+![Vercel options](./hansroslinger/public/readme/image.png)
+
 ## Common Issues
+
+### Hot Reload
+
+When running the project inside a Dev Container, you might encounter an issue where the website does not hot reload. This means that after saving a file, the app does not automatically reload to reflect the changes. In this case, you have to manually stop (`Ctrl+C`) and restart the dev server, which is inconvenient.
+
+To resolve this issue, clone the project in a container volume:
+
+- Start docker desktop.
+- Open VS Code and ensure Dev Container extension is .
+- Press `F1` to access the command palette.
+- Type and select `Dev Containers: Clone Repository in Container Volume...`
+- Paste the repository url: https://github.com/Monash-FIT3170/2025W2-HansRoslinger.git
+- Wait until dev container is built
+- Once built, navigate into the project directory:
+
+```bash
+cd hansroslinger
+```
 
 ## Project Team
 
@@ -103,7 +340,7 @@ Oversee the **planning, execution, and coordination** of the project, ensuring m
 
 Facilitate **Agile development**, ensuring smooth collaboration across teams and delivering value efficiently.
 
-- Stephanie Sisilia SImangunsong: ssim0033@student.monash.edu
+- Stephanie Sisilia Simangunsong: ssim0033@student.monash.edu
 - Zachary Yeap: zyea0002@student.monash.edu
 - Rohan Jaggi: rjag0003@student.monash.edu
 - Joanne Li Wen Yew: jyew0004@student.monash.edu
