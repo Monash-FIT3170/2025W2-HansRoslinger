@@ -12,15 +12,12 @@ if (typeof window !== "undefined") {
   (window as any).hardcodedUploads = hardcodedUploads;
 }
 
-// Panel store state
 const FloatingDataPanel = () => {
-  const isOpen = usePanelStore((state) => state.isOpen); //whether panel open or not
-  const toggle = usePanelStore((state) => state.toggle); //to toggle panel open and close 
-
-   // Visuals store state
-  const addSelectedUpload = useVisualStore((state) => state.addSelectedUpload); //add visual to selection
-  const removeSelectedUpload = useVisualStore((state) => state.removeVisual); //remove visual from selection
-  const visuals = useVisualStore((state) => state.visuals); //currently selected visuals
+  const isOpen = usePanelStore((state) => state.isOpen);
+  const toggle = usePanelStore((state) => state.toggle);
+  const addSelectedUpload = useVisualStore((state) => state.addSelectedUpload);
+  const removeSelectedUpload = useVisualStore((state) => state.removeVisual);
+  const visuals = useVisualStore((state) => state.visuals);
 
   const isVisualExist = (assetId: string) => {
     return visuals.some((visual) => visual.assetId === assetId);
