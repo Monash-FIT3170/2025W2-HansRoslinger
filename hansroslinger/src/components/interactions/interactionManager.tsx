@@ -40,8 +40,6 @@ export class InteractionManager {
   private previousAction: ActionType | null = null;
   private hoveredTargetId: string | null = null;
 
-  private readonly INTERACTION_RADIUS = 20;
-
   // Clear count is added for each hand fue to flicker
   private handVisualMap: HandVisualMap = {
     left: {
@@ -154,21 +152,11 @@ export class InteractionManager {
     const boundVisual = this.handVisualMap[actionPayload.handId].visual;
     let currentDragOffset = this.handVisualMap[actionPayload.handId].dragOffset;
 
-    // Only respond to index finger
-    const indexPoint = coordinates?.[1];
-    if (!indexPoint) return;
+    if (!coordinates || coordinates.length === 0) return;
 
-
-    let target: Visual | null = this.findTargetAt(indexPoint);
-    let point = indexPoint;
-
-
-    if (!target) {
-    const sidebarAssetId = this.findSidebarTargetAt(indexPoint);
-    if (sidebarAssetId) {
-    point = indexPoint;
-    }
-    }
+    // Use the first gesture point as the targeting reference
+    const point = coordinates[0];
+    const target = this.findTargetAt(point);
 
     switch (action) {
       case RESIZE: {
@@ -231,40 +219,28 @@ export class InteractionManager {
 
         break;
       }
-      case HOVER: {
-        const indexPoint = coordinates[1];
-        if (!indexPoint) return; // skip if index not detected
-
+      case HOVER:
+        // Find if the visual is on the other hand
         const otherHandId = actionPayload.handId === LEFT ? RIGHT : LEFT;
         const otherHand = this.handVisualMap[otherHandId];
         const otherVisual = otherHand?.visual;
 
-        const visuals = useVisualStore.getState().visuals;
-        const addSelectedUpload = useVisualStore.getState().addSelectedUpload;
-        const removeVisual = useVisualStore.getState().removeVisual;
-        const panelToggle = usePanelStore.getState().toggle;
-        const now = Date.now();
+        const isSharedVisual =
+          boundVisual &&
+          otherVisual &&
+          boundVisual.assetId === otherVisual.assetId;
 
-        const visualTarget = this.findTargetAt(indexPoint);
-        const sidebarAssetId = this.findSidebarTargetAt(indexPoint);
-
-        // --- Visual Hover ---
-        if (visualTarget) {
-          const boundVisual = this.handVisualMap[actionPayload.handId].visual;
-          const isSharedVisual =
-            boundVisual &&
-            otherVisual &&
-            boundVisual.assetId === otherVisual.assetId;
-
-          if (
-            boundVisual &&
-            !isSharedVisual &&
-            boundVisual.assetId !== visualTarget.assetId
-          ) {
-            handleHover(boundVisual.assetId, false);
-          }
-
-          this.handVisualMap[actionPayload.handId].visual = visualTarget;
+        // If visual is hovered by two hands, don't remove the hover on visual
+        // If target is different from bound visual (hovering to different visual)
+        // or if there is no visual on hover, remove hover (remove outline) from bound visual
+        if (
+          boundVisual &&
+          !isSharedVisual &&
+          ((target && boundVisual.assetId !== target.assetId) || !target)
+        ) {
+          handleHover(boundVisual.assetId, false);
+        }
+        this.handVisualMap[actionPayload.handId].visual = target;
 
         // If the current target is the same as the other hand's visual
         // Return, don't hover or reset the drag
@@ -277,7 +253,6 @@ export class InteractionManager {
         // Reset the hold timer when hovering
         this.resetHold(actionPayload.handId);
         break;
-      }
 
       case MOVE: {
         const handVisual = this.handVisualMap[actionPayload.handId];
@@ -441,10 +416,10 @@ export class InteractionManager {
       const { width, height } = visual.size;
 
       const withinBounds =
-        position.x >= x - this.INTERACTION_RADIUS &&
-        position.x <= x + width + this.INTERACTION_RADIUS &&
-        position.y >= y - this.INTERACTION_RADIUS &&
-        position.y <= y + height + this.INTERACTION_RADIUS;
+        position.x >= x &&
+        position.x <= x + width &&
+        position.y >= y &&
+        position.y <= y + height;
 
       if (withinBounds) {
         return visual;
