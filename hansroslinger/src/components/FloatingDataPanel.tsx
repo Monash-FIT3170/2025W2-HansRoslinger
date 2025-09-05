@@ -22,22 +22,16 @@ const FloatingDataPanel = () => {
   const removeSelectedUpload = useVisualStore((state) => state.removeVisual); //remove visual from selection
   const visuals = useVisualStore((state) => state.visuals); //currently selected visuals
 
-  //Function to check if a visual is already selected
-  //Input: assetId, ID of asset
   const isVisualExist = (assetId: string) => {
     return visuals.some((visual) => visual.assetId === assetId);
   };
 
-  //Function to Handle user clicking on a visual tile
-  // Input: assetId, ID of asset
   const handleClick = (assetId: string) => {
     const uploadData = hardcodedUploads[assetId];
     if (!uploadData) return;
     if (isVisualExist(assetId)) {
-      // If already selected, remove it
       removeSelectedUpload(assetId);
     } else {
-      // If not, add it
       addSelectedUpload(assetId, uploadData);
     }
   };
