@@ -53,6 +53,7 @@ export async function GET(request: NextRequest) {
           // In AWS S3, we need a public URL - for now use default thumbnail
           uploadProp.thumbnailSrc = "/uploads/default-thumbnail.png";
         }
+        
         uploads[assetId] = uploadProp;
       }
     });

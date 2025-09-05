@@ -88,6 +88,7 @@ export default function UploadPage() {
 
       const result = await response.json();
       console.log("Upload result:", result);
+
       if (result.success) {
         setUploadStatus({
           success: true,
@@ -127,6 +128,7 @@ export default function UploadPage() {
         <div className="mb-6">
           <ReturnToDashboard />
         </div>
+
         <h1 className="text-3xl font-bold mb-8">Upload Files</h1>
 
         {uploadStatus && (
@@ -195,6 +197,7 @@ export default function UploadPage() {
                 </div>
               ))}
             </div>
+            
             <div className="mt-6 flex justify-end">
               <button
                 onClick={handleUpload}

@@ -183,7 +183,7 @@ export class InteractionManager {
             pointerA,
             pointerB,
             this.pinchStartDistance,
-            this.pinchStartSize
+            this.pinchStartSize,
           );
           return;
         }
@@ -446,7 +446,7 @@ export class InteractionManager {
           input.position,
           input.position,
           1, // mock pinchStartDistance
-          { ...target.size } // mock pinchStartSize
+          { ...target.size }, // mock pinchStartSize
         );
         break;
       }

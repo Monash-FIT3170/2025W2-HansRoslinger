@@ -10,7 +10,7 @@ on:
     branches:
       - develop
 jobs:
-  Deploy-Preview:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout (GitHub)
