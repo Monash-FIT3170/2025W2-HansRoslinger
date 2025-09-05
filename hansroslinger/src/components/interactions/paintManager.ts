@@ -1,5 +1,10 @@
 import { GesturePayload } from "app/detection/Gesture";
-import { paintStart, paintMove, paintEnd, isPainting } from "./actions/handlePaint";
+import {
+  paintStart,
+  paintMove,
+  paintEnd,
+  isPainting,
+} from "./actions/handlePaint";
 
 /**
  * Paint Manager - handles all paint mode gesture interactions
