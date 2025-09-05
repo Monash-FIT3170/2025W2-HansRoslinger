@@ -3,7 +3,7 @@ import { createUser } from "../../../database/common/user/createUser";
 import { createUserFolder } from "../../../lib/http/createUserFolder";
 
 export type SignupResponse = {
-  user: { email: string};
+  user: { email: string };
   error?: string;
 };
 
@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { email, password } = body;
 
-    if ( !email || !password) {
+    if (!email || !password) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 },
@@ -20,14 +20,11 @@ export async function POST(req: NextRequest) {
     }
 
     // Code for assigning a unique S3 bucket URL is not included here
-    const s3BucketUrl: string = await createS3UserBucket(email);
+    const s3BucketUrl: string = await createUserFolder(email);
 
     const user = await createUser(email, password, s3BucketUrl);
 
-    return NextResponse.json(
-      { user: { email: user.email } },
-      { status: 201 },
-    );
+    return NextResponse.json({ user: { email: user.email } }, { status: 201 });
   } catch (error: unknown) {
     let message = "Internal Server Error";
     if (error instanceof Error) {

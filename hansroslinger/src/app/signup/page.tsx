@@ -4,7 +4,6 @@ import React, { FormEvent, useState } from "react";
 import { SignupResponse } from "app/api/signup/route";
 import { useRouter } from "next/navigation";
 
-
 export default function SignUpPage() {
   const router = useRouter();
   const [email, setEmail] = useState<string>("");
@@ -26,7 +25,11 @@ export default function SignUpPage() {
     }
 
     setError("");
+<<<<<<< HEAD
     console.log("Signing up with:", {email, password });
+=======
+    console.log("Signing up with:", { email, password });
+>>>>>>> origin/develop
     try {
       const res = await fetch("/api/signup", {
         method: "POST",
@@ -39,14 +42,25 @@ export default function SignUpPage() {
 
       if (!data.user) {
         console.log(data.error);
+<<<<<<< HEAD
         if (data.error == "\nInvalid `prisma.user.create()` invocation:\n\n\nUnique constraint failed on the fields: (`email`)") {
+=======
+        if (
+          data.error ==
+          "\nInvalid `prisma.user.create()` invocation:\n\n\nUnique constraint failed on the fields: (`email`)"
+        ) {
+>>>>>>> origin/develop
           setError("User already exists with this email.");
         } else {
           setError(data.error || "Signup failed");
         }
         return;
       }
+<<<<<<< HEAD
       redirect("/login");
+=======
+      router.push("/login");
+>>>>>>> origin/develop
     } catch (error) {
       setError(
         "Error creating user. Please try again. If the problem persists, contact support.",
@@ -66,7 +80,10 @@ export default function SignUpPage() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/develop
           <input
             type="email"
             placeholder="Email"
@@ -102,7 +119,11 @@ export default function SignUpPage() {
         <p className="text-center text-sm mt-4">
           Already have an account?{" "}
           <span
+<<<<<<< HEAD
             onClick={() => redirect("/login")}
+=======
+            onClick={() => router.push("/login")}
+>>>>>>> origin/develop
             className="text-blue-600 hover:underline cursor-pointer"
           >
             Log in

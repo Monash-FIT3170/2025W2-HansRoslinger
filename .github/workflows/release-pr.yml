@@ -12,15 +12,13 @@ on:
 jobs:
   Deploy-Preview:
     runs-on: ubuntu-latest
-    if: github.repository == 'Monash-FIT3170/2025W2-HansRoslinger'
     steps:
       - name: Checkout (GitHub)
         uses: actions/checkout@v3
 
-      - name: Install dependencies
+      - name: Install apt
         run: |
           cd hansroslinger && npm install
-
       - name: Lint
         uses: wearerequired/lint-action@v2
         with:

@@ -30,23 +30,23 @@ export default function UploadPage() {
     setIsDragging(false);
 
     const droppedFiles = Array.from(e.dataTransfer.files);
-    const validFiles = droppedFiles.filter(file => {
-      const fileType = file.name.split('.').pop()?.toLowerCase();
+    const validFiles = droppedFiles.filter((file) => {
+      const fileType = file.name.split(".").pop()?.toLowerCase();
       return fileType === FILE_TYPE_PNG || fileType === FILE_TYPE_JSON;
     });
 
-    setFiles(prev => [...prev, ...validFiles]);
+    setFiles((prev) => [...prev, ...validFiles]);
   };
 
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const selectedFiles = Array.from(e.target.files);
-      const validFiles = selectedFiles.filter(file => {
-        const fileType = file.name.split('.').pop()?.toLowerCase();
+      const validFiles = selectedFiles.filter((file) => {
+        const fileType = file.name.split(".").pop()?.toLowerCase();
         return fileType === FILE_TYPE_PNG || fileType === FILE_TYPE_JSON;
       });
 
-      setFiles(prev => [...prev, ...validFiles]);
+      setFiles((prev) => [...prev, ...validFiles]);
     }
   };
 
@@ -68,7 +68,10 @@ export default function UploadPage() {
         formData.append("file", file);
       });
 
-      console.log("Uploading files...", files.map(f => f.name));
+      console.log(
+        "Uploading files...",
+        files.map((f) => f.name),
+      );
 
       const response = await fetch("/api/upload", {
         method: "POST",
@@ -85,17 +88,16 @@ export default function UploadPage() {
 
       const result = await response.json();
       console.log("Upload result:", result);
-      
       if (result.success) {
         setUploadStatus({
           success: true,
           message: `Successfully uploaded ${files.length} file(s)`,
         });
         setFiles([]);
-        
+
         // Redirect to dashboard after 2 seconds
         setTimeout(() => {
-          router.push('/dashboard');
+          router.push("/dashboard");
         }, 2000);
       } else {
         setUploadStatus({
@@ -107,7 +109,8 @@ export default function UploadPage() {
       console.error("Error uploading files:", error);
       setUploadStatus({
         success: false,
-        message: error instanceof Error ? error.message : "An unknown error occurred",
+        message:
+          error instanceof Error ? error.message : "An unknown error occurred",
       });
     } finally {
       setIsUploading(false);
@@ -115,7 +118,7 @@ export default function UploadPage() {
   };
 
   const removeFile = (index: number) => {
-    setFiles(prev => prev.filter((_, i) => i !== index));
+    setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
   return (
@@ -124,23 +127,24 @@ export default function UploadPage() {
         <div className="mb-6">
           <ReturnToDashboard />
         </div>
-        
         <h1 className="text-3xl font-bold mb-8">Upload Files</h1>
 
         {uploadStatus && (
           <div
             className={`mb-6 p-4 rounded-md ${
-              uploadStatus.success ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+              uploadStatus.success
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-700"
             }`}
           >
             {uploadStatus.message}
           </div>
         )}
 
-        <div 
+        <div
           className={`border-2 border-dashed rounded-lg p-8 mb-6 text-center
-            ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}
-            ${files.length > 0 ? 'bg-gray-50' : ''}
+            ${isDragging ? "border-blue-500 bg-blue-50" : "border-gray-300"}
+            ${files.length > 0 ? "bg-gray-50" : ""}
           `}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
@@ -148,9 +152,11 @@ export default function UploadPage() {
         >
           <div className="mb-4">
             <p className="text-lg mb-2">Drag and drop files here</p>
-            <p className="text-sm text-gray-500">Supported formats: PNG, JSON</p>
+            <p className="text-sm text-gray-500">
+              Supported formats: PNG, JSON
+            </p>
           </div>
-          
+
           <div className="flex justify-center">
             <label className="cursor-pointer bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600">
               Browse Files
@@ -170,10 +176,15 @@ export default function UploadPage() {
             <h2 className="text-xl font-semibold mb-4">Selected Files</h2>
             <div className="space-y-3">
               {files.map((file, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded">
+                <div
+                  key={index}
+                  className="flex items-center justify-between p-3 bg-gray-50 rounded"
+                >
                   <div className="flex items-center space-x-3">
                     <div className="text-gray-600">{file.name}</div>
-                    <div className="text-sm text-gray-400">({Math.round(file.size / 1024)} KB)</div>
+                    <div className="text-sm text-gray-400">
+                      ({Math.round(file.size / 1024)} KB)
+                    </div>
                   </div>
                   <button
                     onClick={() => removeFile(index)}
@@ -184,7 +195,6 @@ export default function UploadPage() {
                 </div>
               ))}
             </div>
-            
             <div className="mt-6 flex justify-end">
               <button
                 onClick={handleUpload}
