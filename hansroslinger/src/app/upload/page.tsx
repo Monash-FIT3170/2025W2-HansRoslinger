@@ -197,7 +197,7 @@ export default function UploadPage() {
                 </div>
               ))}
             </div>
-            
+
             <div className="mt-6 flex justify-end">
               <button
                 onClick={handleUpload}
