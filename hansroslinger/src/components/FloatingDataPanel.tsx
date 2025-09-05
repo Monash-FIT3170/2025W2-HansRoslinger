@@ -1,18 +1,3 @@
-/**
- * FloatingDataPanel.tsx
- *
- * This component renders a floating side panel that displays uploaded visuals (images or charts).
- * - It uses Zustand stores (`usePanelStore`, `useVisualStore`) to manage open/close state and selected visuals.
- * - The panel shows a grid of "uploads" from `hardcodedUploads`, which can be toggled (added/removed) when clicked.
- * - Each visual is displayed as either an image thumbnail (for PNGs) or a VegaLite chart.
- * - A toggle button is always visible on the left side of the screen to open/close the panel.
- *
- * Key responsibilities:
- * - Display uploaded visuals in a scrollable, interactive grid.
- * - Allow users to select/deselect visuals via click.
- * - Manage UI feedback (highlighting selected/hovered visuals).
- * - Provide a collapsible panel UI that overlays the page.
- */
 "use client";
 
 import Image from "next/image";
