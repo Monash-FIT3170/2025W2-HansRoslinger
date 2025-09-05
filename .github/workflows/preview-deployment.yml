@@ -6,6 +6,7 @@ on:
   push:
     branches-ignore:
       - main
+      - develop
 jobs:
   Deploy-Preview:
     runs-on: ubuntu-latest
