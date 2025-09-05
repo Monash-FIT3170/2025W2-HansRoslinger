@@ -247,6 +247,9 @@ export class InteractionManager {
         }
 
         handleHover(target ? target.assetId : null, true);
+        // Set drag offset to null when hovering.
+        // This will reset drag, useful when user change at which point in the visual they are dragging
+        currentDragOffset = null;
 
         // Reset the hold timer when hovering
         this.resetHold(actionPayload.handId);
