@@ -19,70 +19,100 @@ const ViewerPage = ({ params }: { params: Promise<{ id: string }> }) => {
       try {
         ws = new WebSocket("ws://localhost:3001");
         let viewerPeerId = `viewer-${Math.random().toString(36).substr(2, 9)}`;
+        console.log("Connecting as viewer with ID:", viewerPeerId);
         ws.onopen = () => {
-          ws?.send(JSON.stringify({ type: "join", streamId: id }));
+          console.log("WebSocket connected, joining stream:", id);
+          let viewerPeerId = `viewer-${Math.random().toString(36).substr(2, 9)}`;
+          console.log("Viewer ID:", viewerPeerId);
+          ws?.send(JSON.stringify({ 
+            type: "join", 
+            streamId: id,
+            role: "viewer",
+            peerId: viewerPeerId 
+          }));
         };
         ws.onmessage = async (event) => {
-          const data = JSON.parse(event.data);
-          if (data.type === "signal" && data.signalType === "offer") {
-            peerConnection = new RTCPeerConnection({
-              iceServers: [
-                { urls: "stun:stun.l.google.com:19302" },
-                { urls: "stun:stun1.l.google.com:19302" },
-                { urls: "stun:stun2.l.google.com:19302" },
-              ],
-            });
-            peerConnection.ontrack = (event) => {
-              if (!stream) {
-                stream = new window.MediaStream();
-                if (videoRef.current) {
-                  videoRef.current.srcObject = stream;
+          try {
+            const data = JSON.parse(event.data);
+            console.log("Viewer received message:", data.type, data.signalType || '');
+            
+            if (data.type === "signal" && data.signalType === "offer") {
+              console.log("Received offer from broadcaster");
+              peerConnection = new RTCPeerConnection({
+                iceServers: [
+                  { urls: "stun:stun.l.google.com:19302" },
+                  { urls: "stun:stun1.l.google.com:19302" },
+                  { urls: "stun:stun2.l.google.com:19302" },
+                ],
+              });
+              
+              peerConnection.ontrack = (event) => {
+                console.log("Received track from broadcaster");
+                if (!stream) {
+                  stream = new window.MediaStream();
+                  if (videoRef.current) {
+                    videoRef.current.srcObject = stream;
+                    setLoading(false);
+                  }
                 }
-              }
-              stream.addTrack(event.track);
-            };
-            peerConnection.onicecandidate = (e) => {
-              if (e.candidate) {
-                ws?.send(
+                stream.addTrack(event.track);
+              };
+              
+              peerConnection.onicecandidate = (e) => {
+                if (e.candidate) {
+                  ws?.send(
+                    JSON.stringify({
+                      type: "signal",
+                      signalType: "candidate",
+                      peerId: data.peerId,
+                      candidate: e.candidate,
+                      streamId: id,
+                    })
+                  );
+                }
+              };
+              
+              await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
+              const answer = await peerConnection.createAnswer();
+              await peerConnection.setLocalDescription(answer);
+              
+              if (ws) {
+                ws.send(
                   JSON.stringify({
                     type: "signal",
-                    signalType: "candidate",
+                    signalType: "answer",
                     peerId: data.peerId,
-                    candidate: e.candidate,
+                    answer,
                     streamId: id,
                   })
                 );
               }
-            };
-            await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
-            const answer = await peerConnection.createAnswer();
-            await peerConnection.setLocalDescription(answer);
-            if (ws) {
-              ws.send(
-                JSON.stringify({
-                  type: "signal",
-                  signalType: "answer",
-                  peerId: data.peerId,
-                  answer,
-                  streamId: id,
-                })
-              );
+            } else if (data.type === "signal" && data.signalType === "candidate" && peerConnection) {
+              await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
+            } else if (data.type === "end") {
+              setError("The stream has ended.");
+              if (ws) ws.close();
+              peerConnection?.close();
             }
-          } else if (data.type === "signal" && data.signalType === "candidate" && peerConnection) {
-            await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
-          } else if (data.type === "end") {
-            setError("The stream has ended.");
-            if (ws) ws.close();
-            peerConnection?.close();
+          } catch (error) {
+            console.error("Error handling WebSocket message:", error);
+            setError("Error processing stream data");
           }
         };
-        ws.onerror = () => {
+        
+        ws.onerror = (error) => {
+          console.error("WebSocket error:", error);
           setError("Failed to connect to the stream.");
         };
+        
         ws.onclose = () => {
-          setLoading(false);
+          console.log("WebSocket connection closed");
+          if (!error) {
+            setLoading(false);
+          }
         };
       } catch (err) {
+        console.error("Connection error:", err);
         setError("Could not connect to the stream.");
       }
     };

@@ -47,8 +47,7 @@ export class Broadcaster {
           this.ws.send(JSON.stringify({ 
             type: "join", 
             streamId: this.streamId,
-            role: "broadcaster",
-            peerId: this.peerId
+            role: "broadcaster"
           }));
         }
       };
