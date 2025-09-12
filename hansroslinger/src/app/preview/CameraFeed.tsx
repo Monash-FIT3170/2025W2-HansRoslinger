@@ -11,9 +11,12 @@ import AnnotationLayer from "./AnnotationLayer";
  * Shows a mirrored live video feed with landmarks overlay.
  * Annotation layer feature (draw/erase) on top of the camera feed.
  */
-const CameraFeed = () => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+interface CameraFeedProps {
+  videoRef: React.RefObject<HTMLVideoElement>;
+  canvasRef: React.RefObject<HTMLCanvasElement>;
+}
+
+const CameraFeed: React.FC<CameraFeedProps> = ({ videoRef, canvasRef }) => {
   const [cameraError, setCameraError] = useState(false);
   const setGesturePayload = useGestureStore(
     (state) => state.setGesturePayloads,
