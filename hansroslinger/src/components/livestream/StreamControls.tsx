@@ -41,6 +41,7 @@ const StreamControls: React.FC<StreamControlsProps> = ({
   
   // Toggle streaming on/off
   const toggleStreaming = async () => {
+    console.log("[StreamControls] Start/Stop Streaming button clicked");
     if (isStreaming) {
       // Stop streaming
       if (broadcasterRef.current) {
@@ -57,43 +58,29 @@ const StreamControls: React.FC<StreamControlsProps> = ({
           const videoStream = videoRef.current.srcObject as MediaStream;
           const canvas = document.createElement("canvas");
           const context = canvas.getContext("2d");
-          
           if (!videoStream || !context) {
             console.error("Cannot access video stream or canvas context");
             return;
           }
-          
           // Set canvas dimensions to match video
           const videoWidth = videoRef.current.videoWidth;
           const videoHeight = videoRef.current.videoHeight;
           canvas.width = videoWidth;
           canvas.height = videoHeight;
-          
           // Create a capture stream from the canvas
           const canvasStream = canvas.captureStream();
-          
           // Add audio tracks from the video stream to the canvas stream
           videoStream.getAudioTracks().forEach((track) => {
             canvasStream.addTrack(track);
           });
-          
           // Draw video and canvas overlay to the composite canvas
           const drawComposite = () => {
             if (!videoRef.current || !canvasRef.current) return;
-            
-            // Draw video frame
             context.drawImage(videoRef.current, 0, 0, videoWidth, videoHeight);
-            
-            // Draw canvas overlay
             context.drawImage(canvasRef.current, 0, 0, videoWidth, videoHeight);
-            
-            // Request next frame
             requestAnimationFrame(drawComposite);
           };
-          
-          // Start drawing
           drawComposite();
-          
           // Start streaming the composite
           const id = await broadcasterRef.current.startStream(canvasStream);
           setStreamId(id);
@@ -117,7 +104,7 @@ const StreamControls: React.FC<StreamControlsProps> = ({
   };
   
   return (
-    <div className="absolute bottom-4 right-4 flex flex-col items-end gap-2">
+    <div className="fixed md:absolute bottom-4 right-4 left-4 md:left-auto z-50 flex flex-col items-end gap-2 pointer-events-auto">
       <button
         onClick={toggleStreaming}
         className={`px-4 py-2 rounded-full font-medium ${

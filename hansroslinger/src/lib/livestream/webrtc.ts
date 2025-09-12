@@ -20,6 +20,7 @@ export class Broadcaster {
   private stream: MediaStream | null = null;
   private streamId: string | null = null;
   private peerId: string;
+  private ws: WebSocket | null = null;
   private onViewerCountChange: ((count: number) => void) | null = null;
 
   constructor() {
@@ -31,57 +32,46 @@ export class Broadcaster {
    * Start a new livestream and return the stream ID
    */
   async startStream(stream: MediaStream): Promise<string> {
-    try {
-      this.stream = stream;
-      
-      // Create a new stream on the server
-      const response = await fetch("/api/livestream", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to create stream");
+    this.stream = stream;
+    this.streamId = uuidv4();
+    this.ws = new WebSocket("ws://localhost:3001");
+    this.ws.onopen = () => {
+      this.ws?.send(JSON.stringify({ type: "join", streamId: this.streamId }));
+    };
+    this.ws.onmessage = async (event) => {
+      const data = JSON.parse(event.data);
+      if (data.type === "signal" && data.signalType === "answer") {
+        const { peerId, answer } = data;
+        const pc = this.peerConnections.get(peerId);
+        if (pc) {
+          await pc.setRemoteDescription(new RTCSessionDescription(answer));
+        }
+      } else if (data.type === "signal" && data.signalType === "candidate") {
+        const { peerId, candidate } = data;
+        const pc = this.peerConnections.get(peerId);
+        if (pc && candidate) {
+          await pc.addIceCandidate(new RTCIceCandidate(candidate));
+        }
+      } else if (data.type === "viewer-join") {
+        // New viewer joined, create peer connection
+        this.createPeerConnection(data.peerId);
       }
-
-      const data = await response.json();
-      this.streamId = data.streamId;
-
-      // Start polling for new viewers
-      this.pollForViewers();
-
-      return this.streamId as string;
-    } catch (error) {
-      console.error("Error starting stream:", error);
-      throw error;
-    }
+    };
+    return this.streamId;
   }
 
   /**
    * Stop the current livestream
    */
   async stopStream(): Promise<void> {
-    if (!this.streamId) return;
-
-    try {
-      // Close all peer connections
-      this.peerConnections.forEach((pc) => {
-        pc.close();
-      });
-      this.peerConnections.clear();
-
-      // Delete the stream on the server
-      await fetch(`/api/livestream/${this.streamId}`, {
-        method: "DELETE",
-      });
-
-      this.streamId = null;
-      this.stream = null;
-    } catch (error) {
-      console.error("Error stopping stream:", error);
+    if (this.ws) {
+      this.ws.close();
+      this.ws = null;
     }
+    this.peerConnections.forEach((pc) => pc.close());
+    this.peerConnections.clear();
+    this.streamId = null;
+    this.stream = null;
   }
 
   /**
@@ -138,63 +128,42 @@ export class Broadcaster {
   /**
    * Create a peer connection for a new viewer
    */
-  private async createPeerConnection(viewerPeerId: string, answer: RTCSessionDescriptionInit): Promise<void> {
-    if (!this.stream || !this.streamId) {
-      console.error("No stream available");
+  private async createPeerConnection(viewerPeerId: string): Promise<void> {
+    if (!this.stream || !this.streamId || !this.ws) {
+      console.error("No stream or signaling available");
       return;
     }
-
     try {
-      // Create a new peer connection
       const pc = new RTCPeerConnection(iceServers);
       this.peerConnections.set(viewerPeerId, pc);
-      
-      // Add all tracks from the stream to the peer connection
       this.stream.getTracks().forEach((track) => {
         pc.addTrack(track, this.stream!);
       });
-      
-      // Handle ICE candidates
-      pc.onicecandidate = async (event) => {
+      pc.onicecandidate = (event) => {
         if (event.candidate) {
-          try {
-            await fetch(`/api/livestream/${this.streamId}/ice-candidate`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                peerId: this.peerId,
-                candidate: event.candidate,
-              }),
-            });
-          } catch (error) {
-            console.error("Error sending ICE candidate:", error);
-          }
+          this.ws?.send(
+            JSON.stringify({
+              type: "signal",
+              signalType: "candidate",
+              peerId: viewerPeerId,
+              candidate: event.candidate,
+              streamId: this.streamId,
+            })
+          );
         }
       };
-      
-      // Set remote description from viewer's answer
-      await pc.setRemoteDescription(new RTCSessionDescription(answer));
-      
-      // Create an offer
+      // Create offer and send to viewer
       const offer = await pc.createOffer();
       await pc.setLocalDescription(offer);
-      
-      // Send the offer to the server
-      await fetch(`/api/livestream/${this.streamId}/offer`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          peerId: this.peerId,
+      this.ws.send(
+        JSON.stringify({
+          type: "signal",
+          signalType: "offer",
+          peerId: viewerPeerId,
           offer,
-        }),
-      });
-      
-      // Get and apply ICE candidates from the viewer
-      this.pollForIceCandidates(viewerPeerId, pc);
+          streamId: this.streamId,
+        })
+      );
     } catch (error) {
       console.error(`Error creating peer connection for viewer ${viewerPeerId}:`, error);
       this.peerConnections.delete(viewerPeerId);

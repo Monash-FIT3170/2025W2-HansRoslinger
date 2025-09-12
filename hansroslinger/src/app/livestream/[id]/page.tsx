@@ -1,9 +1,10 @@
-"use client";
 
-import { useEffect, useRef, useState } from "react";
+"use client";
+import { use, useRef, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-const ViewerPage = ({ params }: { params: { id: string } }) => {
+const ViewerPage = ({ params }: { params: Promise<{ id: string }> }) => {
+  const { id } = use(params);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -16,15 +17,14 @@ const ViewerPage = ({ params }: { params: { id: string } }) => {
 
     const startViewing = async () => {
       try {
-        ws = new WebSocket(
-          `${window.location.protocol === "https:" ? "wss" : "ws"}://$${window.location.host}/api/livestream/view?id=${params.id}`
-        );
+        ws = new WebSocket("ws://localhost:3001");
+        let viewerPeerId = `viewer-${Math.random().toString(36).substr(2, 9)}`;
         ws.onopen = () => {
-          ws?.send(JSON.stringify({ type: "viewer-join", streamId: params.id }));
+          ws?.send(JSON.stringify({ type: "join", streamId: id }));
         };
         ws.onmessage = async (event) => {
           const data = JSON.parse(event.data);
-          if (data.type === "offer") {
+          if (data.type === "signal" && data.signalType === "offer") {
             peerConnection = new RTCPeerConnection({
               iceServers: [
                 { urls: "stun:stun.l.google.com:19302" },
@@ -45,25 +45,31 @@ const ViewerPage = ({ params }: { params: { id: string } }) => {
               if (e.candidate) {
                 ws?.send(
                   JSON.stringify({
-                    type: "candidate",
+                    type: "signal",
+                    signalType: "candidate",
+                    peerId: data.peerId,
                     candidate: e.candidate,
+                    streamId: id,
                   })
                 );
               }
             };
-            await peerConnection.setRemoteDescription(data.offer);
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
             const answer = await peerConnection.createAnswer();
             await peerConnection.setLocalDescription(answer);
             if (ws) {
               ws.send(
                 JSON.stringify({
-                  type: "answer",
+                  type: "signal",
+                  signalType: "answer",
+                  peerId: data.peerId,
                   answer,
+                  streamId: id,
                 })
               );
             }
-          } else if (data.type === "candidate" && peerConnection) {
-            await peerConnection.addIceCandidate(data.candidate);
+          } else if (data.type === "signal" && data.signalType === "candidate" && peerConnection) {
+            await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
           } else if (data.type === "end") {
             setError("The stream has ended.");
             if (ws) ws.close();
@@ -85,7 +91,7 @@ const ViewerPage = ({ params }: { params: { id: string } }) => {
       ws?.close();
       peerConnection?.close();
     };
-  }, [params.id]);
+  }, [id]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-black">
