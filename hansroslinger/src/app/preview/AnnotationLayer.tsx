@@ -152,16 +152,29 @@ const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
       >
         <ModeToggle />
       </div>
-      <div
-        className="pointer-events-auto"
-      >
-        <button
-          onClick= {handleUndo}
-          className="absolute bottom-4 right-4 bg-white text-black px-4 py-2 rounded shadow-lg hover:bg-gray-200"
-        >
-          Undo
-        </button>
-      </div>
+      {!enabled && (
+        <div className="pointer-events-auto">
+          <button
+            onClick={handleUndo}
+            className="absolute top-4 right-4 bg-white text-black p-3 rounded-full shadow-lg hover:bg-gray-200 transition-colors"
+            title="Undo"
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M3 7v6h6" />
+              <path d="m21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13" />
+            </svg>
+          </button>
+        </div>
+      )}
       {/* Conditionally rendered toolbar */}
       {enabled && (
         <div
