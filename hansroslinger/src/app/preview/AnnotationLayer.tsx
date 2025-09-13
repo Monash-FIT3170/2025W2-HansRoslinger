@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useModeStore } from "store/modeSlice";
 import ModeToggle from "@/components/ModeToggle";
+import { handleUndo } from "@/components/interactions/actions/handleUndo";
 
 type AnnotationLayerProps = {
   /** Element to align/sync canvas size with video element. */
@@ -150,6 +151,16 @@ const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
         style={{ zIndex: zIndex + 2 }}
       >
         <ModeToggle />
+      </div>
+      <div
+        className="pointer-events-auto"
+      >
+        <button
+          onClick= {handleUndo}
+          className="absolute bottom-4 right-4 bg-white text-black px-4 py-2 rounded shadow-lg hover:bg-gray-200"
+        >
+          Undo
+        </button>
       </div>
       {/* Conditionally rendered toolbar */}
       {enabled && (
