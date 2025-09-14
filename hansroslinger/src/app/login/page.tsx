@@ -34,8 +34,9 @@ export default function LoginPage() {
       setError(data.error || "Login failed");
       return;
     }
-    //router.refresh()
-    router.push("/dashboard");
+ 
+    //router.push("/dashboard");
+    window.location.href = "/dashboard";
   };
 
   return (
