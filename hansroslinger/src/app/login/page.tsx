@@ -34,8 +34,8 @@ export default function LoginPage() {
       setError(data.error || "Login failed");
       return;
     }
-    router.refresh()
-    router.push("/dashboard");
+    await router.refresh()
+    await router.push("/dashboard");
   };
 
   return (
