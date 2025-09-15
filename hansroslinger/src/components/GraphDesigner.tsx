@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 /**
  * Simple function that reads a JSON file and extracts a specific property
@@ -8,11 +8,11 @@
  */
 export async function GraphDesigner(
   jsonData: object,
-  targetProperty: string
+  targetProperty: string,
 ): Promise<object | null> {
   try {
     // Extract the target property using dot notation
-    const extractedData = targetProperty.split('.').reduce((obj, key) => {
+    const extractedData = targetProperty.split(".").reduce((obj, key) => {
       return obj && obj[key as keyof object];
     }, jsonData);
 
@@ -37,16 +37,19 @@ export async function updateJsonProperty(
   userEmail: string,
   fileName: string,
   targetProperty: string,
-  newValue: string
+  newValue: string,
 ): Promise<void> {
-
   // Get the JSON file from S3 via API endpoint
-  const apiResponse = await fetch(`/api/aws-get?email=${encodeURIComponent(userEmail)}&key=${encodeURIComponent(fileName)}`);
-  
+  const apiResponse = await fetch(
+    `/api/aws-get?email=${encodeURIComponent(userEmail)}&key=${encodeURIComponent(fileName)}`,
+  );
+
   if (!apiResponse.ok) {
-    throw new Error(`Failed to fetch file: ${apiResponse.status} ${apiResponse.statusText}`);
+    throw new Error(
+      `Failed to fetch file: ${apiResponse.status} ${apiResponse.statusText}`,
+    );
   }
-  
+
   const fileContent = await apiResponse.text();
   const jsonData = JSON.parse(fileContent);
 
@@ -54,7 +57,7 @@ export async function updateJsonProperty(
   const existingValue = await GraphDesigner(jsonData, targetProperty);
 
   // Split the property path once
-  const keys = targetProperty.split('.');
+  const keys = targetProperty.split(".");
   const lastKey = keys.pop()!;
 
   // Start from the root JSON data
@@ -69,7 +72,7 @@ export async function updateJsonProperty(
   } else {
     // Property doesn't exist - create the path
     for (const key of keys) {
-      if (!(key in current) || typeof current[key] !== 'object') {
+      if (!(key in current) || typeof current[key] !== "object") {
         current[key] = {};
       }
       current = current[key];
@@ -77,5 +80,5 @@ export async function updateJsonProperty(
     current[lastKey] = newValue;
   }
 
-  console.log('Updated JSON data:', JSON.stringify(jsonData, null, 2));
+  console.log("Updated JSON data:", JSON.stringify(jsonData, null, 2));
 }
