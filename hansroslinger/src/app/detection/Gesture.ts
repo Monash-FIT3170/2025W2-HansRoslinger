@@ -75,7 +75,7 @@ class PointUp extends Gesture {
   ) {
     const indexFingerTip = landmarks.landmarks[hand][8];
     const indexFingerY = canvas.height * indexFingerTip.y;
-    const indexFingerX = canvas.width * indexFingerTip.x;
+    const indexFingerX = canvas.width - canvas.width * indexFingerTip.x;
 
     return {
       id: landmarks.handedness[hand][0].displayName.toLocaleLowerCase(),
