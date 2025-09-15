@@ -5,6 +5,7 @@ import { HandRecogniser } from "app/detection/handRecognition";
 import { canvasRenderer } from "app/detection/canvasRenderer";
 import { useGestureStore } from "store/gestureSlice";
 import AnnotationLayer from "./AnnotationLayer";
+import { useCanvasStore } from "store/canvasSlice";
 
 /**
  * CameraFeed component handles accessing the user's camera and microphone.
@@ -18,6 +19,13 @@ const CameraFeed = () => {
   const setGesturePayload = useGestureStore(
     (state) => state.setGesturePayloads,
   );
+
+  const setCanvasEl = useCanvasStore((s) => s.setCanvasEl);
+
+  useEffect(() => {
+    setCanvasEl(canvasRef.current);
+    return () => setCanvasEl(null);
+  }, [setCanvasEl]);
 
   // keep track of the interval so we can clear it on unmount
   const intervalRef = useRef<number | null>(null);
