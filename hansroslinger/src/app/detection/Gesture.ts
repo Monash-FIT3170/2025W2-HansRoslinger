@@ -5,6 +5,7 @@ import {
   OPEN_PALM,
   PINCH,
   POINT_UP,
+  CLOSED_FIST,
 } from "constants/application";
 import { GestureType, HandIds } from "types/application";
 
@@ -134,5 +135,45 @@ class DoublePinch extends Gesture {
   }
 }
 
-export { Gesture, Pinch, PointUp, OpenPalm, DoublePinch };
+class ClosedFist extends Gesture {
+  constructor() {
+    super(CLOSED_FIST)
+  }
+  
+  private palmCenter(hand: number, landmarks: GestureRecognizerResult) {
+    const lm = landmarks.landmarks?.[hand];
+    // Fallback to wrist if landmarks missing
+    if (!lm || lm.length < 18) return { x: 0.5, y: 0.5 };
+
+    const idx = [0, 5, 9, 13, 17];
+    let sx = 0, sy = 0;
+    for (const i of idx) {
+      sx += lm[i].x;
+      sy += lm[i].y;
+    }
+    const n = idx.length;
+    return { x: sx / n, y: sy / n }; // normalized [0..1]
+  }
+
+  payload(
+    hand: number,
+    landmarks: GestureRecognizerResult,
+    canvas: HTMLCanvasElement,
+  ): GesturePayload {
+    const center = this.palmCenter(hand, landmarks);
+
+    const fistPointX = canvas.width - canvas.width * center.x;
+    const fistPointY = canvas.height * center.y;
+
+    return {
+      id: landmarks.handedness[hand][0].displayName.toLowerCase() as HandIds,
+      name: this.name as GestureType,
+      points: {
+        fistPoint: { x: fistPointX, y: fistPointY },
+      },
+    };
+  }
+}
+
+export { Gesture, Pinch, PointUp, OpenPalm, DoublePinch, ClosedFist };
 export type { GesturePayload };

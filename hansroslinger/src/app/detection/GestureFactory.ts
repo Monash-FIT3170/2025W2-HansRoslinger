@@ -1,4 +1,4 @@
-import { OpenPalm, Pinch, PointUp, DoublePinch } from "./Gesture";
+import { OpenPalm, Pinch, PointUp, DoublePinch, ClosedFist } from "./Gesture";
 
 export function GestureFactory(name: string) {
   switch (name) {
@@ -10,5 +10,7 @@ export function GestureFactory(name: string) {
       return new DoublePinch();
     case "Pointing_Up":
       return new PointUp();
+    case "Closed_Fist":
+      return new ClosedFist();
   }
 }
