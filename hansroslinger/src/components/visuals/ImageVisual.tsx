@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useMemo, useRef } from "react";
 import { Visual } from "types/application";
 import { useVisualStore } from "store/visualsSlice";
+import Image from "next/image";
 
 type ImageVisualProp = {
   id: string;
@@ -25,43 +26,18 @@ const ImageVisual = ({ id, visual }: ImageVisualProp) => {
     return "";
   }, [visual.isHovered, visual.isDragging]);
 
-  useEffect(() => {
-    // Create image component
-    const img = new window.Image();
-    img.src = visual.uploadData.src;
-
-    img.onload = () => {
-      // Set original size if first load
-      if (visual.useOriginalSizeOnLoad) {
-        setVisualSize(id, {
-          width: img.naturalWidth,
-          height: img.naturalHeight,
-        });
-        setUseOriginalSizeOnLoad(visual.assetId, false);
-      }
-
-      // Set image property
-      if (containerRef && containerRef.current) {
-        // fit to container
-        img.style.objectFit = "contain";
-        img.style.width = "100%";
-        img.style.height = "100%";
-        // avoid only dragging image
-        img.draggable = false;
-
-        // Clear previous and add image as child
-        containerRef.current.innerHTML = "";
-        containerRef.current.appendChild(img);
-      }
-    };
-  }, [
-    id,
-    visual.uploadData.src,
-    setVisualSize,
-    visual.useOriginalSizeOnLoad,
-    setUseOriginalSizeOnLoad,
-    visual.assetId,
-  ]);
+  const handleImgLoad = (
+    e: React.SyntheticEvent<HTMLImageElement> | { currentTarget: { naturalWidth: number; naturalHeight: number } },
+  ) => {
+    const img = e.currentTarget as HTMLImageElement | { naturalWidth: number; naturalHeight: number };
+    if (visual.useOriginalSizeOnLoad) {
+      setVisualSize(id, {
+        width: img.naturalWidth,
+        height: img.naturalHeight,
+      });
+      setUseOriginalSizeOnLoad(visual.assetId, false);
+    }
+  };
 
   return (
     <div
@@ -98,6 +74,21 @@ const ImageVisual = ({ id, visual }: ImageVisualProp) => {
           />
         </>
       )}
+      {/* Render image via React to avoid manual DOM mutations */}
+      <Image
+        src={visual.uploadData.src}
+        alt=""
+        fill
+        sizes="100vw"
+  onLoad={handleImgLoad}
+        draggable={false}
+        style={{
+          objectFit: "contain",
+          pointerEvents: "none",
+          userSelect: "none",
+        }}
+        priority={true}
+      />
     </div>
   );
 };
