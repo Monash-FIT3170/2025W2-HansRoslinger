@@ -40,6 +40,11 @@ export const useGestureListener = (interactionManager: InteractionManager) => {
           case "pinch":
             paintManager.handlePinch(payload);
             break;
+
+          case "closed_fist": 
+            paintManager.handleClosedFist(payload);
+            break;
+
           default:
             console.log(
               `[GestureListener] Paint mode: unhandled gesture ${payload.name}`,
