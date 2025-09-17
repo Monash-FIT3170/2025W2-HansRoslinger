@@ -6,6 +6,12 @@ import {
   isPainting,
 } from "./actions/handlePaint";
 
+
+function setTool(tool: "draw" | "erase") {
+  const canvas = document.getElementById("annotation-canvas");
+  if (canvas) canvas.setAttribute("data-tool", tool);
+}
+
 /**
  * Paint Manager - handles all paint mode gesture interactions
  */
@@ -23,6 +29,16 @@ export class PaintManager {
     } else {
       paintMove(pinchPoint);
     }
+  }
+
+  handleClosedFist(payload: GesturePayload) {
+    // Your ClosedFist payload uses `fistPoint`
+    const p = payload.points.fistPoint || payload.points.erasePoint;
+    if (!p) return;
+
+    setTool("erase");
+    if (!isPainting()) paintStart(p);
+    else paintMove(p);
   }
 
   /**
