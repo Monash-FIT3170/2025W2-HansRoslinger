@@ -1,15 +1,15 @@
 import { GesturePayload } from "app/detection/Gesture";
-import {
-  paintStart,
-  paintMove,
-  paintEnd,
-  isPainting,
-} from "./actions/handlePaint";
+import { paintStart, paintMove, paintEnd, isPainting } from "./actions/handlePaint";
+import { eraserOverlay } from "./actions/eraserOverlay";
 
 
 function setTool(tool: "draw" | "erase") {
-  const canvas = document.getElementById("annotation-canvas");
-  if (canvas) canvas.setAttribute("data-tool", tool);
+  document.getElementById("annotation-canvas")?.setAttribute("data-tool", tool);
+}
+
+function getStrokeRadius(): number {
+  const w = Number(document.getElementById("annotation-canvas")?.getAttribute("data-stroke-width") || 4);
+  return Math.max(1, w / 2);
 }
 
 /**
@@ -22,6 +22,9 @@ export class PaintManager {
   handlePinch(payload: GesturePayload) {
     const pinchPoint = payload.points.pinchPoint;
     if (!pinchPoint) return;
+
+    setTool("draw");
+    eraserOverlay.clear();
 
     // Delegate to paint helpers so behavior matches AnnotationLayer
     if (!isPainting()) {
@@ -37,6 +40,8 @@ export class PaintManager {
     if (!p) return;
 
     setTool("erase");
+    eraserOverlay.drawAt(p, getStrokeRadius());
+
     if (!isPainting()) paintStart(p);
     else paintMove(p);
   }
@@ -46,6 +51,7 @@ export class PaintManager {
    */
   stopDrawing() {
     paintEnd();
+    eraserOverlay.clear();
   }
 
   /**
@@ -59,6 +65,7 @@ export class PaintManager {
     if (!ctx) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    eraserOverlay.clear();
     console.log("[PaintManager] Canvas cleared");
   }
 }
