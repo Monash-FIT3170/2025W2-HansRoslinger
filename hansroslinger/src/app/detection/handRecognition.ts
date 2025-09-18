@@ -59,7 +59,6 @@
       const gesture = GestureFactory(categoryName);
       if (gesture) {
         const payload = gesture.payload(i, gestureRecognitionResult, canvas);
-        console.log(payload)
         payloads.push(payload);
       }
     });
