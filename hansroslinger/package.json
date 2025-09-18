@@ -24,6 +24,7 @@
     "aws-sdk": "^2.1692.0",
     "aws4": "^1.13.2",
     "canvas": "^3.0.0-rc3",
+    "dotenv": "^17.2.2",
     "fingerpose": "^0.1.0",
     "formidable": "^3.5.4",
     "konva": "^9.3.20",

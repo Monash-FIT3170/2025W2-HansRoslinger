@@ -150,6 +150,10 @@ export class InteractionManager {
     const point = coordinates[0];
     const target = this.findTargetAt(point);
 
+    if (action !== VEGA_INTERACTION) {
+      handleVegaInteraction(point, null);
+    }
+
     switch (action) {
       case RESIZE: {
         // Point for each hand
