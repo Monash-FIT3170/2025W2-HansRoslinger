@@ -15,37 +15,73 @@ import ClearButton from "./ClearButton";
 
 const CanvasOverlay = () => {
   const visuals = useVisualStore((state) => state.visuals);
-  //const { gestureFeedbackId } = useVisualStore();
 
-  const [dimensions, setDimensions] = useState<{
-    width: number;
-    height: number;
-  } | null>(null);
+  const [dimensions, setDimensions] = useState<{ width: number; height: number } | null>(null);
 
-  // Setup Interaction Manager and mouse mock stream
+  // NEW refs for sizing
+  const rootRef = useRef<HTMLDivElement>(null);
+  const annCanvasRef = useRef<HTMLCanvasElement>(null);
+  const hudCanvasRef = useRef<HTMLCanvasElement>(null); // overlay (eraser preview)
+
+  // Setup Interaction Manager and streams
   const interactionManager = useRef(new InteractionManager()).current;
   useMouseMockStream(interactionManager);
   useGestureListener(interactionManager);
 
-  useEffect(() => {
-    const updateSize = () => {
-      setDimensions({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
-    };
+  // DPI-safe size helper
+  const sizeCanvasTo = (canvas: HTMLCanvasElement, w: number, h: number) => {
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = Math.max(1, Math.floor(w * dpr));
+    canvas.height = Math.max(1, Math.floor(h * dpr));
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale(dpr, dpr);
+    }
+  };
 
-    updateSize();
-    window.addEventListener("resize", updateSize);
-    return () => window.removeEventListener("resize", updateSize);
+  // Use ResizeObserver so canvases always match the preview box (not window)
+  useEffect(() => {
+    if (!rootRef.current) return;
+    const el = rootRef.current;
+
+    const ro = new ResizeObserver(() => {
+      const rect = el.getBoundingClientRect();
+      setDimensions({ width: rect.width, height: rect.height });
+
+      if (annCanvasRef.current) sizeCanvasTo(annCanvasRef.current, rect.width, rect.height);
+      if (hudCanvasRef.current) sizeCanvasTo(hudCanvasRef.current, rect.width, rect.height);
+    });
+
+    ro.observe(el);
+    return () => ro.disconnect();
   }, []);
 
   return (
-    <div className="absolute inset-0 z-10 pointer-events-none">
+    <div ref={rootRef} className="absolute inset-0 z-10">
+      {/* --- Annotation layers (behind visuals) --- */}
+      <canvas
+        id="annotation-canvas"
+        ref={annCanvasRef}
+        // draw/erase happen here
+        data-tool="draw"
+        data-stroke-width="6"
+        data-stroke-color="#00ff88"
+        className="absolute inset-0 z-0 pointer-events-none"
+      />
+      <canvas
+        id="annotation-overlay"
+        ref={hudCanvasRef}
+        // HUD for eraser cursor (visual only)
+        className="absolute inset-0 z-0 pointer-events-none"
+      />
+
+      {/* --- Visuals above canvases --- */}
       {dimensions && (
-        <div className="w-full h-full">
+        <div className="w-full h-full pointer-events-auto relative z-10">
           {visuals.map((visual) => {
             const isHovered = visual.isHovered;
+
             if (visual.uploadData.type === FILE_TYPE_JSON) {
               return (
                 <div
@@ -58,8 +94,7 @@ const CanvasOverlay = () => {
                       className="absolute z-20"
                       style={{
                         top: visual.position.y + visual.size?.height,
-                        left:
-                          visual.position.x + (visual.size?.width || 0) + 10, // 10px gap
+                        left: visual.position.x + (visual.size?.width || 0) + 10,
                       }}
                     >
                       <FeedbackDisplay
@@ -70,7 +105,7 @@ const CanvasOverlay = () => {
                   )}
                 </div>
               );
-            } else if (visual.uploadData.type == FILE_TYPE_PNG) {
+            } else if (visual.uploadData.type === FILE_TYPE_PNG) {
               return (
                 <div
                   key={visual.assetId}
@@ -86,8 +121,7 @@ const CanvasOverlay = () => {
                       className="absolute z-20"
                       style={{
                         top: visual.position.y + visual.size?.height,
-                        left:
-                          visual.position.x + (visual.size?.width || 0) + 10, // 10px gap
+                        left: visual.position.x + (visual.size?.width || 0) + 10,
                       }}
                     >
                       <FeedbackDisplay
