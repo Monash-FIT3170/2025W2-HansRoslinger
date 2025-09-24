@@ -16,5 +16,30 @@ model User {
   email String  @unique
   s3BucketUrl String @unique
   password String
+  assets Asset[]
+  collections Collection[]
 }
 
+model Collection {
+  id Int @id @default(autoincrement())
+  name String
+  isSelected Boolean @default(false)
+  author User @relation(fields: [authorID], references: [id])
+  authorID Int
+  assets Asset[]
+  @@unique([authorID, name])
+}
+
+model Asset {
+  id Int @id @default(autoincrement())
+  priority Int @default(1)
+  name String 
+
+  author User? @relation(fields: [authorID], references: [id])
+  authorID Int
+  @@unique([authorID, name])
+
+  collection Collection? @relation(fields: [collectionID], references: [id])
+  collectionID Int
+  @@unique([collectionID, name])
+}
