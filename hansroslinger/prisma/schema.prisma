@@ -32,7 +32,7 @@ model Collection {
 
 model Asset {
   id Int @id @default(autoincrement())
-  priority Int @default(1)
+  order Int @default(1)
   name String 
 
   author User? @relation(fields: [authorID], references: [id])
