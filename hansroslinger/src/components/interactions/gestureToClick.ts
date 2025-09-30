@@ -12,18 +12,18 @@ type HandState = {
 
 type HandStateMap = Record<HandIds, HandState>;
 
-const PINCH_MAX_DURATION_MS = 1000;
+const PINCH_MAX_DURATION_MS = 1300;
 
 /**
  * This class handles pinch to click
  * It will mouse events as a result of pinching gesture
- * If not pinch -> pinch -> not pinch all happens within 1 second (max duration),
+ * If not pinch -> pinch -> not pinch all happens within 1.3 second (max duration),
  * this class will fire on mouse events to trigger clicking
  *
  * Duration is set so that dragging does not trigger click
  * Dragging is activated after 1 second of constantly pinching
  * Threshold of 1 second is chosen for click as not pinch -> pinch -> not pinch
- * all need to happen within 1 second, meaning drag is not trigger yet
+ * all need to happen within 1.3 second, meaning drag is not trigger yet
  */
 class GestureToClick {
   private handStateMap: HandStateMap = {
@@ -78,7 +78,7 @@ class GestureToClick {
       if (el) {
         this.handStateMap[handId].downTarget = el;
         el.dispatchEvent(
-          new MouseEvent("mousedown", { bubbles: true, clientX, clientY }),
+          new MouseEvent("mousedown", { bubbles: true, clientX, clientY })
         );
       }
     }
@@ -90,13 +90,13 @@ class GestureToClick {
 
       if (elapsed <= PINCH_MAX_DURATION_MS && state.downTarget) {
         state.downTarget.dispatchEvent(
-          new MouseEvent("mouseup", { bubbles: true, clientX, clientY }),
+          new MouseEvent("mouseup", { bubbles: true, clientX, clientY })
         );
         (state.downTarget as HTMLElement).click?.();
       } else {
         if (state.downTarget) {
           state.downTarget.dispatchEvent(
-            new MouseEvent("mouseup", { bubbles: true, clientX, clientY }),
+            new MouseEvent("mouseup", { bubbles: true, clientX, clientY })
           );
         }
       }
