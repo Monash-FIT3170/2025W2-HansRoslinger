@@ -28,7 +28,6 @@ export const useGestureListener = (interactionManager: InteractionManager) => {
       if (payload.id !== LEFT_RIGHT) gestureToClick.handleGestureClick(payload);
     });
 
-
     // Handle gestures based on mode
     if (mode === "paint") {
       // Paint mode: route gestures to paintManager
