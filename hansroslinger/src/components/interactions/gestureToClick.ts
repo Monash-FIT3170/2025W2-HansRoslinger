@@ -78,7 +78,7 @@ class GestureToClick {
       if (el) {
         this.handStateMap[handId].downTarget = el;
         el.dispatchEvent(
-          new MouseEvent("mousedown", { bubbles: true, clientX, clientY })
+          new MouseEvent("mousedown", { bubbles: true, clientX, clientY }),
         );
       }
     }
@@ -90,13 +90,13 @@ class GestureToClick {
 
       if (elapsed <= PINCH_MAX_DURATION_MS && state.downTarget) {
         state.downTarget.dispatchEvent(
-          new MouseEvent("mouseup", { bubbles: true, clientX, clientY })
+          new MouseEvent("mouseup", { bubbles: true, clientX, clientY }),
         );
         (state.downTarget as HTMLElement).click?.();
       } else {
         if (state.downTarget) {
           state.downTarget.dispatchEvent(
-            new MouseEvent("mouseup", { bubbles: true, clientX, clientY })
+            new MouseEvent("mouseup", { bubbles: true, clientX, clientY }),
           );
         }
       }

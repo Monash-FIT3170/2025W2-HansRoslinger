@@ -18,7 +18,7 @@ const CameraFeed = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [cameraError, setCameraError] = useState(false);
   const setGesturePayload = useGestureStore(
-    (state) => state.setGesturePayloads
+    (state) => state.setGesturePayloads,
   );
 
   const setContainerEl = useContainerStore((s) => s.setContainerEl);
@@ -75,12 +75,12 @@ const CameraFeed = () => {
               ) {
                 const payload = await HandRecogniser(
                   videoRef.current,
-                  canvasRef.current
+                  canvasRef.current,
                 );
                 canvasRenderer(
                   canvasRef.current,
                   videoRef.current,
-                  payload.gestureRecognitionResult
+                  payload.gestureRecognitionResult,
                 );
                 setGesturePayload(payload.payloads);
               }
