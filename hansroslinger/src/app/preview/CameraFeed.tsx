@@ -59,9 +59,10 @@ const CameraFeed = () => {
         if (videoRef.current && canvasRef.current) {
           videoRef.current.srcObject = stream;
 
-          // size overlay once laid out and on resize
+          // size overlay once laid out and on resize/fullscreenchange
           requestAnimationFrame(sizeOverlayToVideo);
           window.addEventListener("resize", sizeOverlayToVideo);
+          document.addEventListener("fullscreenchange", sizeOverlayToVideo);
 
           // original detection/render loop
           intervalRef.current = window.setInterval(async () => {
@@ -97,6 +98,7 @@ const CameraFeed = () => {
     const videoElement = videoRef.current;
     return () => {
       window.removeEventListener("resize", sizeOverlayToVideo);
+      document.removeEventListener("fullscreenchange", sizeOverlayToVideo);
       if (intervalRef.current != null) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
