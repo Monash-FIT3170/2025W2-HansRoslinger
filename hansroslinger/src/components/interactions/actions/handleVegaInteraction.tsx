@@ -1,6 +1,6 @@
 import { Visual } from "types/application";
 import { handleHover } from "./handleHover";
-import { canvasStore } from "store/canvasSlice";
+import { containerStore } from "store/containerSlice";
 
 // Track last simulated pointer position and target to prevent spamming events
 let lastSimulatedPosition: { x: number; y: number } | null = null;
@@ -10,7 +10,7 @@ let lastClientXY: { x: number; y: number } | null = null;
 
 export const handleVegaInteraction = (
   position: { x: number; y: number } | null,
-  visual: Visual | null,
+  visual: Visual | null
 ) => {
   // console.log("[Manager] Finding target at position:", position);
   if (!visual || !position) {
@@ -47,7 +47,7 @@ export const handleVegaInteraction = (
 
 const simulatePointerEvents = (
   position: { x: number; y: number },
-  visual: Visual,
+  visual: Visual
 ) => {
   if (!position) return;
 
@@ -57,14 +57,14 @@ const simulatePointerEvents = (
   }
 
   // Get the canvas used to detect gesture
-  const { gestureCanvas } = canvasStore.getState();
-  if (!gestureCanvas) {
+  const { container } = containerStore.getState();
+  if (!container) {
     console.warn("Canvas used to detect gesture not found");
     return;
   }
 
   // Get the client area and calculate the x and y respective to the client bounding area
-  const rect = gestureCanvas.getBoundingClientRect();
+  const rect = container.getBoundingClientRect();
   // Map to client coordinates
   const clientX = rect.left + position.x;
   const clientY = rect.top + position.y;
@@ -79,7 +79,7 @@ const simulatePointerEvents = (
   // When there is multiple under the same point, it gets the very top canvas.
   const stack = document.elementsFromPoint(clientX, clientY);
   const target = stack.find(
-    (el) => el instanceof HTMLCanvasElement && el.matches("canvas.marks"),
+    (el) => el instanceof HTMLCanvasElement && el.matches("canvas.marks")
   ) as HTMLCanvasElement;
   if (!target) return;
 
@@ -100,8 +100,8 @@ const simulatePointerEvents = (
         isPrimary: true,
         clientX: clientX,
         clientY: clientY,
-      }),
-    ),
+      })
+    )
   );
 
   lastTargetElement = target;
@@ -110,7 +110,7 @@ const simulatePointerEvents = (
 
 const simulateExitEvents = (
   target: HTMLCanvasElement,
-  clientXY: { x: number; y: number },
+  clientXY: { x: number; y: number }
 ) => {
   const { x: clientX, y: clientY } = clientXY;
 
@@ -134,7 +134,7 @@ const simulateExitEvents = (
         isPrimary: true,
         clientX,
         clientY,
-      }),
+      })
     );
   });
 
