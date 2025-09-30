@@ -1,5 +1,5 @@
 import { GesturePayload } from "app/detection/Gesture";
-import { PINCH } from "constants/application";
+import { LEFT_RIGHT, PINCH } from "constants/application";
 import { containerStore } from "store/containerSlice";
 import { HandIds } from "types/application";
 
@@ -40,6 +40,14 @@ class GestureToClick {
       lastPoint: null,
     },
   };
+
+  resetState(handId: HandIds) {
+    if (handId === LEFT_RIGHT) return;
+    this.handStateMap[handId].wasPinching = false;
+    this.handStateMap[handId].downTarget = null;
+    this.handStateMap[handId].pinchStartTime = 0;
+    this.handStateMap[handId].lastPoint = null;
+  }
 
   handleGestureClick(gesturePayload: GesturePayload) {
     const point = Object.values(gesturePayload.points)[0];
@@ -92,6 +100,9 @@ class GestureToClick {
           );
         }
       }
+
+      // reset
+      this.resetState(handId);
     }
 
     state.wasPinching = gesturePayload.name === PINCH;
