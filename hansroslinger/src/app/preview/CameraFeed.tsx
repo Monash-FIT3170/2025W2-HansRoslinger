@@ -5,7 +5,7 @@ import { HandRecogniser } from "app/detection/handRecognition";
 import { canvasRenderer } from "app/detection/canvasRenderer";
 import { useGestureStore } from "store/gestureSlice";
 import AnnotationLayer from "./AnnotationLayer";
-import { useCanvasStore } from "store/canvasSlice";
+import { useContainerStore } from "store/containerSlice";
 
 /**
  * CameraFeed component handles accessing the user's camera and microphone.
@@ -13,19 +13,20 @@ import { useCanvasStore } from "store/canvasSlice";
  * Annotation layer feature (draw/erase) on top of the camera feed.
  */
 const CameraFeed = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [cameraError, setCameraError] = useState(false);
   const setGesturePayload = useGestureStore(
-    (state) => state.setGesturePayloads,
+    (state) => state.setGesturePayloads
   );
 
-  const setCanvasEl = useCanvasStore((s) => s.setCanvasEl);
+  const setContainerEl = useContainerStore((s) => s.setContainerEl);
 
   useEffect(() => {
-    setCanvasEl(canvasRef.current);
-    return () => setCanvasEl(null);
-  }, [setCanvasEl]);
+    setContainerEl(containerRef.current);
+    return () => setContainerEl(null);
+  }, [setContainerEl]);
 
   // keep track of the interval so we can clear it on unmount
   const intervalRef = useRef<number | null>(null);
@@ -74,12 +75,12 @@ const CameraFeed = () => {
               ) {
                 const payload = await HandRecogniser(
                   videoRef.current,
-                  canvasRef.current,
+                  canvasRef.current
                 );
                 canvasRenderer(
                   canvasRef.current,
                   videoRef.current,
-                  payload.gestureRecognitionResult,
+                  payload.gestureRecognitionResult
                 );
                 setGesturePayload(payload.payloads);
               }
@@ -110,7 +111,7 @@ const CameraFeed = () => {
   }, []);
 
   return (
-    <div className="relative w-full h-full">
+    <div ref={containerRef} className="relative w-full h-full">
       {/* Video layer (mirrored) */}
       {!cameraError && (
         <video
