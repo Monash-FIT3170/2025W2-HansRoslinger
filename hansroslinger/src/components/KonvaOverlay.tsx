@@ -44,7 +44,6 @@ const CanvasOverlay = () => {
     <div className="absolute inset-0 z-10">
       {dimensions && (
         <div className="w-full h-full pointer-events-auto">
-          
           {visuals.map((visual) => {
             const isHovered = visual.isHovered;
             if (visual.uploadData.type === FILE_TYPE_JSON) {
