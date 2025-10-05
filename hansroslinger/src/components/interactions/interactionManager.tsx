@@ -128,7 +128,7 @@ export class InteractionManager {
     this.pinchStartDistance = null;
     this.pinchStartSize = null;
     this.currentClearCount = 0;
-  }  
+  }
 
   /**
    * Primary handler for all gesture-to-action mappings.
