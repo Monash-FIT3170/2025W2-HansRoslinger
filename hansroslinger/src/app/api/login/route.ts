@@ -33,6 +33,13 @@ export async function POST(
       // If rememberMe, persist for 30 days; otherwise session cookie
       ...(rememberMe ? { maxAge: 60 * 60 * 24 * 30 } : {}),
     });
+
+    (await cookies()).set({
+      name: "userID",
+      value: String(user.id),
+      path: "/",
+    });
+
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
     console.error("Login error:", error);
