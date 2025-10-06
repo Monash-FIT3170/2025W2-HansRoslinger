@@ -19,6 +19,7 @@ import {
   VEGA_INTERACTION,
 } from "constants/application";
 import { handleVegaInteraction } from "./actions/handleVegaInteraction";
+import { saveUndoState } from "./actions/handleUndo";
 
 type GestureTrack = {
   visual: Visual | null;
@@ -128,6 +129,7 @@ export class InteractionManager {
     this.pinchStartSize = null;
     this.currentClearCount = 0;
   }
+
   /**
    * Primary handler for all gesture-to-action mappings.
    * Called by `useGestureListener` with mapped ActionPayloads.
@@ -189,6 +191,7 @@ export class InteractionManager {
             this.pinchStartDistance,
             this.pinchStartSize,
           );
+          console.log("Ongoing resize");
           return;
         }
 
@@ -201,6 +204,7 @@ export class InteractionManager {
           this.pinchStartSize == null ||
           !boundVisual
         ) {
+          saveUndoState(target.assetId);
           const distance = Math.hypot(
             pointerA.x - pointerB.x,
             pointerA.y - pointerB.y,
@@ -268,6 +272,7 @@ export class InteractionManager {
           // First MOVE action (first pinch), get the start time
           if (handVisual.holdStartAt == null) {
             handVisual.holdStartAt = this.now();
+            saveUndoState(boundVisual.assetId);
             return;
           }
 
