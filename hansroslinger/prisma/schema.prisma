@@ -16,7 +16,6 @@ model User {
   email String  @unique
   s3BucketUrl String @unique
   password String
-  assets Asset[]
   collections Collection[]
 }
 
@@ -33,11 +32,7 @@ model Collection {
 model Asset {
   id Int @id @default(autoincrement())
   order Int @default(1)
-  name String 
-
-  author User? @relation(fields: [authorID], references: [id])
-  authorID Int
-  @@unique([authorID, name])
+  name String
 
   collection Collection? @relation(fields: [collectionID], references: [id])
   collectionID Int
