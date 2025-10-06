@@ -34,7 +34,7 @@ model Asset {
   order Int @default(1)
   name String
 
-  collection Collection? @relation(fields: [collectionID], references: [id])
+  collection Collection @relation(fields: [collectionID], references: [id])
   collectionID Int
   @@unique([collectionID, name])
 }
