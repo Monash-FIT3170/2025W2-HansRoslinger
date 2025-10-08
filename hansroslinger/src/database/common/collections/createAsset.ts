@@ -2,31 +2,25 @@ import prisma from "../client";
 import { getCollection } from "./getCollection";
 
 export async function createAsset(
-  collectionName: string,
+  collectionID : number,
   name: string,
-  email: string
 ) {
   try {
-    const collection = await getCollection(collectionName, email);
-    if (!collection) {
-      throw new Error(`Collection with name ${collectionName} for user ${email} not found`);
-    }
-
     const asset = await prisma.asset.create({
       data: {
         name: name,
-        collectionID: collection.id
+        collectionID: collectionID
       },    
       select: {
         id: true
       }
     });
     await prisma.collection.update({
-      where: { id: collection.id },
+      where: { id: collectionID },
       data: { assets: { connect: { id: asset.id } } }
     });
 
-    console.log(`Asset for collection ${collection.id} created:`, asset.id);
+    console.log(`Asset for collection ${collectionID} created:`, asset.id);
     return asset;
   } catch (error) {
     console.error("Error creating asset:", error);
