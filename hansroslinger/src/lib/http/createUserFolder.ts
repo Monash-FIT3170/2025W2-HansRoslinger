@@ -5,7 +5,7 @@ export async function createUserFolder(user_email: string, folder?: string): Pro
   const bucketName = process.env.AWS_BUCKET_NAME;
 
   const s3BucketUrl = `s3://${bucketName}/${user_email}/`;
-  const folderKey = `${user_email}/${folder ? folder + "/" : ""}`;
+  const folderKey = `${user_email}/${folder ? folder + "/" : "Home/"}`;
 
   await s3Client.send(
     new PutObjectCommand({
