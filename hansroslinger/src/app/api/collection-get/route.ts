@@ -25,9 +25,9 @@ export async function GET(request: NextRequest) {
         { status: 401 },
       );
     }
-    const collectionId = getCollection(collection, email);
+    const collectionId = await getCollection(collection, email);
     // Retrieve files from S3
-    const files = await retrieveUserFiles(email, String(collectionId));
+    const files = await retrieveUserFiles(email, String(collectionId?.id));
 
     // Convert to the format expected by UploadsDisplay
     const uploads: Uploads = {};

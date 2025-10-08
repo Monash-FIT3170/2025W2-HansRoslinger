@@ -5,10 +5,11 @@ export async function uploadBufferToS3(
   userEmail: string,
   fileName: string,
   buffer: Buffer,
+  collectionID: string = "Home",
 ) {
   try {
     const bucketName = process.env.AWS_BUCKET_NAME;
-    const s3Key = `${userEmail}/${fileName}`;
+    const s3Key = `${userEmail}/${collectionID}/${fileName}`;
 
     const command = new PutObjectCommand({
       Bucket: bucketName,
