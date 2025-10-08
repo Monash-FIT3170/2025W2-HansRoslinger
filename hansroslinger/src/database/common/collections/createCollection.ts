@@ -18,7 +18,8 @@ export async function createCollection(
         authorID: user.id
       },    
       select: {
-        id: true
+        id: true,
+        name: true,
       }
     });
 
