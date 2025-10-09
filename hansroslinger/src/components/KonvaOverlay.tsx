@@ -12,6 +12,7 @@ import { useGestureListener } from "./interactions/useGestureListener";
 import { FeedbackDisplay } from "./interactions/actions/handleFeedback";
 
 import ClearButton from "./ClearButton";
+import TrashBin from "./TrashBin";
 
 const CanvasOverlay = () => {
   const visuals = useVisualStore((state) => state.visuals);
@@ -21,6 +22,7 @@ const CanvasOverlay = () => {
     width: number;
     height: number;
   } | null>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
 
   // Setup Interaction Manager and mouse mock stream
   const interactionManager = useRef(new InteractionManager()).current;
@@ -43,7 +45,10 @@ const CanvasOverlay = () => {
   return (
     <div className="absolute inset-0 z-10">
       {dimensions && (
-        <div className="w-full h-full pointer-events-auto">
+        <div
+          ref={overlayRef}
+          className="w-full h-full pointer-events-auto relative"
+        >
           {visuals.map((visual) => {
             const isHovered = visual.isHovered;
             if (visual.uploadData.type === FILE_TYPE_JSON) {
@@ -100,6 +105,7 @@ const CanvasOverlay = () => {
           })}
 
           <ClearButton />
+          <TrashBin containerRef={overlayRef} />
         </div>
       )}
     </div>

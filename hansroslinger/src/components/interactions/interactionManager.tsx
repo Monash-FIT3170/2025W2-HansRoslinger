@@ -20,6 +20,7 @@ import {
 } from "constants/application";
 import { handleVegaInteraction } from "./actions/handleVegaInteraction";
 import { saveUndoState } from "./actions/handleUndo";
+import { isPointInTrashZone } from "./trashZone";
 
 type GestureTrack = {
   visual: Visual | null;
@@ -28,6 +29,7 @@ type GestureTrack = {
 
   holdStartAt: number | null; // ms timestamp
   holdArmed: boolean; // true after HOLD_MS on same visual
+  lastPointer: { x: number; y: number } | null;
 };
 
 type HandVisualMap = Record<HandIds, GestureTrack>;
@@ -41,6 +43,7 @@ export class InteractionManager {
       dragOffset: null,
       holdStartAt: null,
       holdArmed: false,
+      lastPointer: null,
     },
     right: {
       visual: null,
@@ -48,6 +51,7 @@ export class InteractionManager {
       dragOffset: null,
       holdStartAt: null,
       holdArmed: false,
+      lastPointer: null,
     },
     left_right: {
       visual: null,
@@ -55,6 +59,7 @@ export class InteractionManager {
       dragOffset: null,
       holdStartAt: null,
       holdArmed: false,
+      lastPointer: null,
     },
   };
 
@@ -83,6 +88,7 @@ export class InteractionManager {
     this.handVisualMap[handId].holdStartAt = null;
     this.handVisualMap[handId].holdArmed = false;
     this.handVisualMap[handId].dragOffset = null;
+    this.handVisualMap[handId].lastPointer = null;
 
     const currHand = this.handVisualMap[handId];
 
@@ -122,6 +128,7 @@ export class InteractionManager {
       hand.visual = null;
       hand.dragOffset = null;
       hand.clearCount = 0;
+      hand.lastPointer = null;
     });
 
     // Reset shared resize / clear state
@@ -326,6 +333,7 @@ export class InteractionManager {
 
     // Update drag offset
     this.handVisualMap[actionPayload.handId].dragOffset = currentDragOffset;
+    this.handVisualMap[actionPayload.handId].lastPointer = point;
   }
 
   /**
@@ -334,9 +342,10 @@ export class InteractionManager {
    */
   handleClear() {
     if (this.currentClearCount === this.CLEAR_THRESHOLD) {
-      Object.keys(this.handVisualMap).forEach((h) =>
-        this.resetHold(h as HandIds),
-      );
+      Object.keys(this.handVisualMap).forEach((h) => {
+        this.maybeDropVisual(h as HandIds);
+        this.resetHold(h as HandIds);
+      });
 
       // Clear hover and bound visual for each hand
       Object.values(this.handVisualMap).forEach((handVisual) => {
@@ -350,6 +359,7 @@ export class InteractionManager {
         );
         handVisual.dragOffset = null;
         handVisual.visual = null;
+        handVisual.lastPointer = null;
       });
       return;
     }
@@ -365,6 +375,7 @@ export class InteractionManager {
     const currentHand = this.handVisualMap[handId];
 
     if (currentHand.clearCount === this.CLEAR_THRESHOLD || instantClear) {
+      this.maybeDropVisual(handId);
       // Find current and other hand visual and the resize visual if any
       const otherHandId = handId === LEFT ? RIGHT : LEFT;
       const otherHand = this.handVisualMap[otherHandId];
@@ -394,6 +405,7 @@ export class InteractionManager {
 
       this.handVisualMap[handId].visual = null;
       this.handVisualMap[handId].dragOffset = null;
+      this.handVisualMap[handId].lastPointer = null;
 
       // Reset resize calculation
       if (handId === LEFT_RIGHT) {
@@ -431,6 +443,32 @@ export class InteractionManager {
       }
     }
     return null;
+  }
+
+  private maybeDropVisual(handId: HandIds) {
+    const hand = this.handVisualMap[handId];
+    if (
+      !hand ||
+      !hand.visual ||
+      !hand.lastPointer ||
+      !hand.holdArmed ||
+      !isPointInTrashZone(hand.lastPointer)
+    ) {
+      return;
+    }
+
+    const store = useVisualStore.getState();
+    const visualId = hand.visual.assetId;
+
+    handleHover(visualId, false);
+    handleDragStartEnd(visualId, false);
+    store.removeVisual(visualId);
+
+    hand.visual = null;
+    hand.dragOffset = null;
+    hand.holdArmed = false;
+    hand.lastPointer = null;
+    hand.holdStartAt = null;
   }
 
   // ONLY USED FOR MOUSE MOCK
