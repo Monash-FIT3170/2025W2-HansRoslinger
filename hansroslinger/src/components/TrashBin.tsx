@@ -1,10 +1,20 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type MutableRefObject,
+  type RefObject,
+} from "react";
 import { setTrashZoneRect } from "./interactions/trashZone";
 
+type TrashBinRef =
+  | RefObject<HTMLElement | null>
+  | MutableRefObject<HTMLElement | null>;
+
 type TrashBinProps = {
-  containerRef: React.RefObject<HTMLElement>;
+  containerRef: TrashBinRef;
 };
 
 const TRASH_SIZE = 120;
