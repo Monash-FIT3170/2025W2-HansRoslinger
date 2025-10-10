@@ -102,7 +102,7 @@ const CanvasOverlay = () => {
             return null;
           })}
 
-          <ClearButton className="pointer-events-auto" />
+          <ClearButton />
         </div>
       )}
     </div>
