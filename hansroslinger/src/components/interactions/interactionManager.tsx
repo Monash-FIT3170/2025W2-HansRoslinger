@@ -159,7 +159,7 @@ export class InteractionManager {
     if (!indexPoint) return;
 
 
-    let target: Visual | null = this.findTargetAt(indexPoint);
+    const target: Visual | null = this.findTargetAt(indexPoint);
     let point = indexPoint;
 
 
@@ -239,14 +239,14 @@ export class InteractionManager {
         const otherHand = this.handVisualMap[otherHandId];
         const otherVisual = otherHand?.visual;
 
-        const visuals = useVisualStore.getState().visuals;
-        const addSelectedUpload = useVisualStore.getState().addSelectedUpload;
-        const removeVisual = useVisualStore.getState().removeVisual;
-        const panelToggle = usePanelStore.getState().toggle;
-        const now = Date.now();
+        // const visuals = useVisualStore.getState().visuals;
+        // const addSelectedUpload = useVisualStore.getState().addSelectedUpload;
+        // const removeVisual = useVisualStore.getState().removeVisual;
+        // const panelToggle = usePanelStore.getState().toggle;
+        // const now = Date.now();
 
         const visualTarget = this.findTargetAt(indexPoint);
-        const sidebarAssetId = this.findSidebarTargetAt(indexPoint);
+        //const sidebarAssetId = this.findSidebarTargetAt(indexPoint);
 
         // --- Visual Hover ---
         if (visualTarget) {
@@ -278,6 +278,7 @@ export class InteractionManager {
         this.resetHold(actionPayload.handId);
         break;
       }
+    }
 
       case MOVE: {
         const handVisual = this.handVisualMap[actionPayload.handId];
@@ -339,6 +340,7 @@ export class InteractionManager {
         }
         break;
       }
+    
       case VEGA_INTERACTION:
         handleVegaInteraction(point, target);
         break;
