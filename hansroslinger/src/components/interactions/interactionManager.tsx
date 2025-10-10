@@ -5,7 +5,6 @@ import { useVisualStore } from "store/visualsSlice";
 import { useModeStore } from "store/modeSlice";
 import {
   ActionPayload,
-  ActionType,
   HandIds,
   InteractionInput,
   Visual,
@@ -20,6 +19,7 @@ import {
   VEGA_INTERACTION,
 } from "constants/application";
 import { handleVegaInteraction } from "./actions/handleVegaInteraction";
+import { saveUndoState } from "./actions/handleUndo";
 
 type GestureTrack = {
   visual: Visual | null;
@@ -33,15 +33,6 @@ type GestureTrack = {
 type HandVisualMap = Record<HandIds, GestureTrack>;
 
 export class InteractionManager {
-  private gestureTargetId: string | null = null;
-  private visualCooldownMap: Record<string, number> = {};
-  private readonly HOVER_COOLDOWN_MS = 3000; // 3 seconds
-  private dragOffset: { x: number; y: number } | null = null;
-  private previousAction: ActionType | null = null;
-  private hoveredTargetId: string | null = null;
-
-  private readonly INTERACTION_RADIUS = 20;
-
   // Clear count is added for each hand fue to flicker
   private handVisualMap: HandVisualMap = {
     left: {
@@ -138,6 +129,7 @@ export class InteractionManager {
     this.pinchStartSize = null;
     this.currentClearCount = 0;
   }
+
   /**
    * Primary handler for all gesture-to-action mappings.
    * Called by `useGestureListener` with mapped ActionPayloads.
@@ -154,20 +146,14 @@ export class InteractionManager {
     const boundVisual = this.handVisualMap[actionPayload.handId].visual;
     let currentDragOffset = this.handVisualMap[actionPayload.handId].dragOffset;
 
-    // Only respond to index finger
-    const indexPoint = coordinates?.[1];
-    if (!indexPoint) return;
+    if (!coordinates || coordinates.length === 0) return;
 
+    // Use the first gesture point as the targeting reference
+    const point = coordinates[0];
+    const target = this.findTargetAt(point);
 
-    const target: Visual | null = this.findTargetAt(indexPoint);
-    let point = indexPoint;
-
-
-    if (!target) {
-    const sidebarAssetId = this.findSidebarTargetAt(indexPoint);
-    if (sidebarAssetId) {
-    point = indexPoint;
-    }
+    if (action !== VEGA_INTERACTION) {
+      handleVegaInteraction(point, null);
     }
 
     switch (action) {
@@ -205,6 +191,7 @@ export class InteractionManager {
             this.pinchStartDistance,
             this.pinchStartSize,
           );
+          console.log("Ongoing resize");
           return;
         }
 
@@ -217,6 +204,7 @@ export class InteractionManager {
           this.pinchStartSize == null ||
           !boundVisual
         ) {
+          saveUndoState(target.assetId);
           const distance = Math.hypot(
             pointerA.x - pointerB.x,
             pointerA.y - pointerB.y,
@@ -231,40 +219,28 @@ export class InteractionManager {
 
         break;
       }
-      case HOVER: {
-        const indexPoint = coordinates[1];
-        if (!indexPoint) return; // skip if index not detected
-
+      case HOVER:
+        // Find if the visual is on the other hand
         const otherHandId = actionPayload.handId === LEFT ? RIGHT : LEFT;
         const otherHand = this.handVisualMap[otherHandId];
         const otherVisual = otherHand?.visual;
 
-        // const visuals = useVisualStore.getState().visuals;
-        // const addSelectedUpload = useVisualStore.getState().addSelectedUpload;
-        // const removeVisual = useVisualStore.getState().removeVisual;
-        // const panelToggle = usePanelStore.getState().toggle;
-        // const now = Date.now();
+        const isSharedVisual =
+          boundVisual &&
+          otherVisual &&
+          boundVisual.assetId === otherVisual.assetId;
 
-        const visualTarget = this.findTargetAt(indexPoint);
-        //const sidebarAssetId = this.findSidebarTargetAt(indexPoint);
-
-        // --- Visual Hover ---
-        if (visualTarget) {
-          const boundVisual = this.handVisualMap[actionPayload.handId].visual;
-          const isSharedVisual =
-            boundVisual &&
-            otherVisual &&
-            boundVisual.assetId === otherVisual.assetId;
-
-          if (
-            boundVisual &&
-            !isSharedVisual &&
-            boundVisual.assetId !== visualTarget.assetId
-          ) {
-            handleHover(boundVisual.assetId, false);
-          }
-
-          this.handVisualMap[actionPayload.handId].visual = visualTarget;
+        // If visual is hovered by two hands, don't remove the hover on visual
+        // If target is different from bound visual (hovering to different visual)
+        // or if there is no visual on hover, remove hover (remove outline) from bound visual
+        if (
+          boundVisual &&
+          !isSharedVisual &&
+          ((target && boundVisual.assetId !== target.assetId) || !target)
+        ) {
+          handleHover(boundVisual.assetId, false);
+        }
+        this.handVisualMap[actionPayload.handId].visual = target;
 
         // If the current target is the same as the other hand's visual
         // Return, don't hover or reset the drag
@@ -274,11 +250,13 @@ export class InteractionManager {
 
         handleHover(target ? target.assetId : null, true);
 
+        // Set drag offset to null when hovering.
+        // This will reset drag, useful when user change at which point in the visual they are dragging
+        currentDragOffset = null;
+
         // Reset the hold timer when hovering
         this.resetHold(actionPayload.handId);
         break;
-      }
-    }
 
       case MOVE: {
         const handVisual = this.handVisualMap[actionPayload.handId];
@@ -294,6 +272,7 @@ export class InteractionManager {
           // First MOVE action (first pinch), get the start time
           if (handVisual.holdStartAt == null) {
             handVisual.holdStartAt = this.now();
+            saveUndoState(boundVisual.assetId);
             return;
           }
 
@@ -340,7 +319,6 @@ export class InteractionManager {
         }
         break;
       }
-    
       case VEGA_INTERACTION:
         handleVegaInteraction(point, target);
         break;
@@ -443,28 +421,16 @@ export class InteractionManager {
       const { width, height } = visual.size;
 
       const withinBounds =
-        position.x >= x - this.INTERACTION_RADIUS &&
-        position.x <= x + width + this.INTERACTION_RADIUS &&
-        position.y >= y - this.INTERACTION_RADIUS &&
-        position.y <= y + height + this.INTERACTION_RADIUS;
+        position.x >= x &&
+        position.x <= x + width &&
+        position.y >= y &&
+        position.y <= y + height;
 
       if (withinBounds) {
         return visual;
       }
     }
     return null;
-  }
-
-  /**
-   * Checks if the pointer is hovering over a visual inside the sidebar
-   * Returns the assetId if so, else null
-   */
-  private findSidebarTargetAt(position: { x: number; y: number }): string | null {
-    const element = document.elementFromPoint(position.x, position.y);
-    if (!element) return null;
-
-    const visualContainer = element.closest("[data-asset-id]");
-    return visualContainer?.getAttribute("data-asset-id") ?? null;
   }
 
   // ONLY USED FOR MOUSE MOCK

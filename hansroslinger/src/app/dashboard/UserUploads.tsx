@@ -18,24 +18,28 @@ export default function UserUploads({ initialUploads }: UserUploadsProps) {
       try {
         const response = await fetch("/api/user-uploads");
         if (!response.ok) {
-          throw new Error(`Failed to fetch user uploads: ${response.statusText}`);
+          throw new Error(
+            `Failed to fetch user uploads: ${response.statusText}`,
+          );
         }
 
         const data = await response.json();
-        
+
         if (data.error) {
           throw new Error(data.error);
         }
 
         // Merge the hardcoded uploads with user uploads
         // User uploads take precedence (will override if same key exists)
-        setUploads(prevUploads => ({
+        setUploads((prevUploads) => ({
           ...prevUploads,
-          ...data.uploads
+          ...data.uploads,
         }));
       } catch (err) {
         console.error("Error fetching user uploads:", err);
-        setError(err instanceof Error ? err.message : "Failed to load your uploads");
+        setError(
+          err instanceof Error ? err.message : "Failed to load your uploads",
+        );
       } finally {
         setIsLoading(false);
       }
@@ -52,7 +56,7 @@ export default function UserUploads({ initialUploads }: UserUploadsProps) {
           <span className="block sm:inline">{error}</span>
         </div>
       )}
-      
+
       {isLoading ? (
         <div className="flex flex-col justify-center items-center my-8 py-12 bg-gray-50 rounded-lg mx-auto max-w-4xl">
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500 mb-3"></div>

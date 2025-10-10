@@ -44,37 +44,37 @@ const UploadsDisplay = ({ uploads }: UploadsDisplayProps) => {
         {hasUploads && (
           <div className="flex justify-center gap-x-6 p-4 min-w-max">
             {Object.entries(uploads).map(([assetId, data]) => (
-            <div
-              key={assetId}
-              className={`min-w-[180px] h-52 bg-white shadow-md 
+              <div
+                key={assetId}
+                className={`min-w-[180px] h-52 bg-white shadow-md 
                 rounded-md flex flex-col items-center justify-center 
                 p-3 text-center cursor-pointer hover:-translate-y-1 hover:shadow-lg
                 ${isVisualExist(assetId) ? "border-4 border-green-500" : ""}
                 `}
-              role="button"
-              onClick={() => handleCLick(assetId, data)}
-            >
-              <div className="relative w-24 h-24 m-3 flex items-center justify-center">
-                {data.type === FILE_TYPE_PNG ? (
-                  <Image
-                    src={
-                      data.thumbnailSrc
-                        ? data.thumbnailSrc
-                        : "/uploads/default-thumbnail.png"
-                    }
-                    alt={data.name}
-                    className="object-contain object-center"
-                    fill={true}
-                    sizes="max-width: 24px"
-                  />
-                ) : (
-                  <VegaLiteChartDisplay data={data} />
-                )}
+                role="button"
+                onClick={() => handleCLick(assetId, data)}
+              >
+                <div className="relative w-24 h-24 m-3 flex items-center justify-center">
+                  {data.type === FILE_TYPE_PNG ? (
+                    <Image
+                      src={
+                        data.thumbnailSrc
+                          ? data.thumbnailSrc
+                          : "/uploads/default-thumbnail.png"
+                      }
+                      alt={data.name}
+                      className="object-contain object-center"
+                      fill={true}
+                      sizes="max-width: 24px"
+                    />
+                  ) : (
+                    <VegaLiteChartDisplay data={data} />
+                  )}
+                </div>
+                <div className="font-semibold text-base">{data.name}</div>
+                <div className="text-sm text-gray-500">{data.type}</div>
               </div>
-              <div className="font-semibold text-base">{data.name}</div>
-              <div className="text-sm text-gray-500">{data.type}</div>
-            </div>
-          ))}
+            ))}
           </div>
         )}
       </div>

@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useModeStore } from "store/modeSlice";
 import ModeToggle from "@/components/ModeToggle";
+import { handleUndo } from "@/components/interactions/actions/handleUndo";
 
 type AnnotationLayerProps = {
   /** Element to align/sync canvas size with video element. */
@@ -16,7 +17,7 @@ type AnnotationLayerProps = {
 const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
   targetRef,
   className = "",
-  zIndex = 30,
+  zIndex = 50,
 }) => {
   // Canvas & drawing refs
   const annotationCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -130,7 +131,7 @@ const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
       <canvas
         ref={annotationCanvasRef}
         id="annotation-canvas"
-        className={`absolute inset-0 pointer-events-none ${enabled ? 'pointer-events-auto' : ''} ${className}`}
+        className={`absolute inset-0 ${className}`}
         style={{
           zIndex,
           pointerEvents: enabled ? "auto" : "none",
@@ -146,11 +147,34 @@ const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
       />
       {/* Paint mode button */}
       <div
-        className="absolute bottom-4 right-4 pointer-events-auto"
+        className="absolute top-3 left-3 pointer-events-auto"
         style={{ zIndex: zIndex + 2 }}
       >
         <ModeToggle />
       </div>
+      {!enabled && (
+        <div className="pointer-events-auto">
+          <button
+            onClick={handleUndo}
+            className="absolute top-4 right-4 bg-white text-black p-3 rounded-full shadow-lg hover:bg-gray-200 transition-colors"
+            title="Undo"
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M3 7v6h6" />
+              <path d="m21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13" />
+            </svg>
+          </button>
+        </div>
+      )}
       {/* Conditionally rendered toolbar */}
       {enabled && (
         <div

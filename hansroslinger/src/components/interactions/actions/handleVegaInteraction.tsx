@@ -1,5 +1,6 @@
 import { Visual } from "types/application";
 import { handleHover } from "./handleHover";
+import { containerStore } from "store/containerSlice";
 
 // Track last simulated pointer position and target to prevent spamming events
 let lastSimulatedPosition: { x: number; y: number } | null = null;
@@ -55,27 +56,32 @@ const simulatePointerEvents = (
     return;
   }
 
-  // Target the Vega canvas with class 'marks'
-  const canvas = document.querySelector("canvas.marks") as HTMLCanvasElement;
-  if (!canvas) {
-    console.warn("Vega canvas with class 'marks' not found");
+  // Get the canvas used to detect gesture
+  const { container } = containerStore.getState();
+  if (!container) {
+    console.warn("Canvas used to detect gesture not found");
     return;
   }
 
-  const rect = canvas.getBoundingClientRect();
-
-  // Offset the pointer position by the visual's position
-  const localX = position.x - visual.position.x;
-  const localY = position.y - visual.position.y;
-
+  // Get the client area and calculate the x and y respective to the client bounding area
+  const rect = container.getBoundingClientRect();
   // Map to client coordinates
-  const clientX = rect.left + localX;
-  const clientY = rect.top + localY;
+  const clientX = rect.left + position.x;
+  const clientY = rect.top + position.y;
 
   // Always dispatch events directly to the Vega canvas so the overlay
   // doesn't intercept them. Using `elementFromPoint` here would return the
   // overlay div, preventing Vega from receiving pointer events for tooltips.
-  const target = canvas;
+
+  // When there is multiple vega chart, there can be multiple Vega canvas
+  // To find the right canvas for this specific point, get all the element
+  // under this point and filter of canvas marks.
+  // When there is multiple under the same point, it gets the very top canvas.
+  const stack = document.elementsFromPoint(clientX, clientY);
+  const target = stack.find(
+    (el) => el instanceof HTMLCanvasElement && el.matches("canvas.marks"),
+  ) as HTMLCanvasElement;
+  if (!target) return;
 
   [
     "pointerenter",

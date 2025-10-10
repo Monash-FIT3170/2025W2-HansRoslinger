@@ -4,7 +4,7 @@ import { s3Client } from "./s3Client";
 export async function uploadBufferToS3(
   userEmail: string,
   fileName: string,
-  buffer: Buffer
+  buffer: Buffer,
 ) {
   try {
     const bucketName = process.env.AWS_BUCKET_NAME;
