@@ -48,7 +48,10 @@ const CanvasOverlay = () => {
             const isHovered = visual.isHovered;
             if (visual.uploadData.type === FILE_TYPE_JSON) {
               return (
-                <div key={visual.assetId} className="relative pointer-events-auto">
+                <div
+                  key={visual.assetId}
+                  className="relative pointer-events-auto"
+                >
                   <VegaLiteVisual id={visual.assetId} />
                   {isHovered && (
                     <div

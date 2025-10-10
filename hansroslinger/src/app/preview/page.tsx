@@ -6,7 +6,6 @@ import FloatingDataPanel from "@/components/FloatingDataPanel";
 
 import CanvasOverlay from "@/components/KonvaOverlay";
 
-
 const CameraFeed = dynamic(() => import("./CameraFeed"), {
   ssr: false,
 });
