@@ -131,7 +131,7 @@ const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
       <canvas
         ref={annotationCanvasRef}
         id="annotation-canvas"
-        className={`absolute inset-0 pointer-events-none ${enabled ? 'pointer-events-auto' : ''} ${className}`}
+        className={`absolute inset-0 pointer-events-none ${enabled ? "pointer-events-auto" : ""} ${className}`}
         style={{
           zIndex,
           pointerEvents: enabled ? "auto" : "none",
