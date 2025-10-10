@@ -22,7 +22,7 @@ import { FILE_TYPE_PNG } from "constants/application";
 import VegaLiteChartDisplay from "@/components/VegaLiteChartDisplay";
 import { hardcodedUploads } from "../hardcodedData";
 
-// // allow hardcoded uploads accessible
+// allow hardcoded uploads accessible
 // if (typeof window !== "undefined") {
 //   (window as any).hardcodedUploads = hardcodedUploads;
 // }
