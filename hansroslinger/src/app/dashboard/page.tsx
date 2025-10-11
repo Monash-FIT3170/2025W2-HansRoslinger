@@ -5,6 +5,7 @@ import Preview from "@/components/Preview";
 import Upload from "@/components/Upload";
 import { cookies } from "next/headers";
 import UserUploads from "./UserUploads";
+import CollectionsButton from "@/components/CollectionsButton";
 
 const Dashboard = async () => {
   // Right now this is hard coded, once we have data base setup, we can fetch instead
@@ -39,10 +40,11 @@ const Dashboard = async () => {
     <main className="flex-1 overflow-y-auto scroll-auto scroll-smooth lg:overflow-hidden">
       <UserUploads initialUploads={uploads} />
 
-      {/* Section 2: Preview Button */}
+      {/* Section 2: Action Buttons */}
       <section className="flex items-center justify-center mb-8 mt-8 gap-4">
         <Upload></Upload>
         <Preview></Preview>
+        <CollectionsButton></CollectionsButton>
       </section>
 
       {/* Section 3: Gestures */}
