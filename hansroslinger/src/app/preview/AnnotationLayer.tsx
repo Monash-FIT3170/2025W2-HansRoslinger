@@ -28,7 +28,7 @@ const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
   const mode = useModeStore((s) => s.mode);
   const enabled = mode === "paint";
   const [tool, setTool] = useState<"draw" | "erase">("draw");
-  const [strokeWidth, setStrokeWidth] = useState(4);
+  const [strokeWidth, setStrokeWidth] = useState(8); // default stroke width
   const [strokeColor, setStrokeColor] = useState("#00ff88");
 
   // Size canvas to match target

@@ -4,122 +4,150 @@ import { eraserOverlay } from "./actions/eraserOverlay";
 
 type Tool = "draw" | "erase";
 
-function setTool(tool: "draw" | "erase") {
-  document.getElementById("annotation-canvas")?.setAttribute("data-tool", tool);
+const ERASER_MULTIPLIER = 3;        
+const EMPTY_LIMIT_FRAMES = 5;         // end stroke after N empty frames
+const SWITCH_HYSTERESIS_FRAMES = 3;   // require N frames to switch tools
+
+function getCanvas(): HTMLCanvasElement | null {
+  return document.getElementById("annotation-canvas") as HTMLCanvasElement | null;
+}
+function getAttr(name: string): string | null {
+  return getCanvas()?.getAttribute(name) ?? null;
+}
+function setAttr(name: string, value: string) {
+  const c = getCanvas();
+  if (c) c.setAttribute(name, value);
+}
+function getStrokeWidth(): number {
+  const w = Number(getAttr("data-stroke-width") ?? 4);
+  return Number.isFinite(w) ? w : 4;
+}
+function setStrokeWidth(px: number) {
+  setAttr("data-stroke-width", String(Math.max(1, Math.round(px))));
+}
+function setToolAttr(tool: Tool) {
+  setAttr("data-tool", tool);
 }
 
-function getStrokeRadius(): number {
-  const w = Number(document.getElementById("annotation-canvas")?.getAttribute("data-stroke-width") || 4);
-  return Math.max(1, w / 2);
+/** Eraser preview radius (device px); overlay converts to CSS px internally if needed */
+function getEraseRadiusDevicePx(baseDrawWidth: number | null): number {
+  const base = baseDrawWidth ?? getStrokeWidth(); // draw width we recorded or current
+  return Math.max(1, (base * ERASER_MULTIPLIER) / 2);
 }
 
 /**
- * Paint Manager - handles all paint mode gesture interactions
+ * Paint Manager
+ * - Single owner of paint-mode behavior: debounce, priority, hysteresis, overlay.
+ * - Enlarges eraser by increasing `data-stroke-width` while erasing; restores when drawing.
  */
 export class PaintManager {
-  // internal stabilizers
   private emptyFrames = 0;
   private toolState: { current: Tool; vote: number } = { current: "draw", vote: 0 };
 
-  private readonly EMPTY_LIMIT = 5;       // end stroke after N empty frames
-  private readonly SWITCH_HYSTERESIS = 3; // require N frames to switch tools
+  // Remember the user's brush width so we can restore it after erasing.
+  private savedDrawWidth: number | null = null;
 
-  /** Call this once per frame with all gesture payloads */
+  /** Call once per frame with ALL gesture payloads (only in paint mode). */
   processFrame(payloads: GesturePayload[]) {
-    // 0) no gestures → debounce & maybe end stroke
+    // No gestures → debounce stop + hide overlay
     if (!payloads || payloads.length === 0) {
-      if (++this.emptyFrames >= this.EMPTY_LIMIT) {
+      if (++this.emptyFrames >= EMPTY_LIMIT_FRAMES) {
         this.stopDrawing();
         this.emptyFrames = 0;
       }
-      // hide HUD immediately
       eraserOverlay?.clear?.();
       return;
     }
 
     this.emptyFrames = 0;
 
-    // choose target tool for this frame (eraser has priority)
+    // Choose target tool for this frame (eraser has priority over draw)
     const fist = payloads.find((p) => p.name === "closed_fist");
     const pinch = payloads.find((p) => p.name === "pinch");
     const target: Tool = fist ? "erase" : pinch ? "draw" : this.toolState.current;
 
-    // hysteresis: only switch tools after N consecutive frames
+    // Hysteresis for tool switching
     if (target !== this.toolState.current) {
       this.toolState.vote += 1;
-      if (this.toolState.vote >= this.SWITCH_HYSTERESIS) {
+      if (this.toolState.vote >= SWITCH_HYSTERESIS_FRAMES) {
         this.toolState.current = target;
         this.toolState.vote = 0;
+        this.onToolSwitched(target);
       }
     } else {
       this.toolState.vote = 0;
     }
 
-    // execute only the stabilized tool
+    // Execute only the stabilized tool for this frame
     if (this.toolState.current === "erase" && fist) {
       this.handleClosedFist(fist);
-      return; // don't also draw this frame
+      return; // do not also draw
     }
     if (this.toolState.current === "draw" && pinch) {
       this.handlePinch(pinch);
       return;
     }
-    // ignore other gestures in paint mode for now
+    // ignore other gestures in paint mode
   }
 
-  /**
-   * Handle pinch gesture for drawing
-   */
-  handlePinch(payload: GesturePayload) {
-    const pinchPoint = payload.points.pinchPoint;
-    if (!pinchPoint) return;
-
-    setTool("draw");
-    eraserOverlay.clear();
-
-    // Delegate to paint helpers so behavior matches AnnotationLayer
-    if (!isPainting()) {
-      paintStart(pinchPoint);
+  /** Apply stroke-width changes when the tool switches. */
+  private onToolSwitched(newTool: Tool) {
+    if (newTool === "erase") {
+      // Save current draw width (once per erase session) and bump the stroke width.
+      if (this.savedDrawWidth == null) this.savedDrawWidth = getStrokeWidth();
+      const eraseWidth = (this.savedDrawWidth ?? 4) * ERASER_MULTIPLIER;
+      setStrokeWidth(eraseWidth);
+      setToolAttr("erase");
     } else {
-      paintMove(pinchPoint);
+      // Restore the original draw width and tool attr.
+      if (this.savedDrawWidth != null) setStrokeWidth(this.savedDrawWidth);
+      setToolAttr("draw");
+      // Reset for next erase session
+      this.savedDrawWidth = null;
+      // Hide overlay when returning to draw
+      eraserOverlay?.clear?.();
     }
   }
 
-  handleClosedFist(payload: GesturePayload) {
-    // Your ClosedFist payload uses `fistPoint`
-    const p = payload.points.fistPoint || payload.points.erasePoint;
+  /** Draw with pinch (uses current brush width from data-stroke-width). */
+  handlePinch(payload: GesturePayload) {
+    const p = payload.points.pinchPoint;
     if (!p) return;
-
-    setTool("erase");
-    eraserOverlay.drawAt(p, getStrokeRadius());
+    // tool attr managed by onToolSwitched; just hide HUD
+    eraserOverlay?.clear?.();
 
     if (!isPainting()) paintStart(p);
     else paintMove(p);
   }
 
-  /**
-   * Stop drawing
-   */
-  stopDrawing() {
-    paintEnd();
-    eraserOverlay.clear();
+  /** Erase with closed fist (uses enlarged stroke width, shows overlay). */
+  handleClosedFist(payload: GesturePayload) {
+    const p = payload.points.fistPoint || payload.points.erasePoint;
+    if (!p) return;
+
+    // Overlay radius reflects the actual (enlarged) erase size.
+    eraserOverlay?.drawAt?.(p, getEraseRadiusDevicePx(this.savedDrawWidth));
+
+    if (!isPainting()) paintStart(p);
+    else paintMove(p);
   }
 
-  /**
-   * Clear the canvas
-   */
-  clearCanvas() {
-    const canvas = document.querySelector("canvas") as HTMLCanvasElement;
-    if (!canvas) return;
+  /** Lift pen & hide overlay. */
+  stopDrawing() {
+    paintEnd();
+    eraserOverlay?.clear?.();
+  }
 
+  /** Clear only the annotation canvas; also hide overlay. */
+  clearCanvas() {
+    const canvas = getCanvas();
+    if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    eraserOverlay.clear();
+    eraserOverlay?.clear?.();
     console.log("[PaintManager] Canvas cleared");
   }
 }
 
-// Export singleton instance
 export const paintManager = new PaintManager();
