@@ -10,5 +10,10 @@ export default function CollectionsLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  // Ensure vertical scrolling for the collections page
+  return (
+    <div className="flex flex-col min-h-screen w-full overflow-y-auto">
+      {children}
+    </div>
+  );
 }
