@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect} from "react";
 import { gestureToActionMap } from "./gestureMappings";
 import { InteractionManager } from "./interactionManager";
 import { useGestureStore } from "store/gestureSlice";
@@ -10,15 +10,6 @@ import { gestureToClick } from "./gestureToClick";
 export const useGestureListener = (interactionManager: InteractionManager) => {
   const gesturePayloads = useGestureStore((s) => s.gesturePayloads);
   const mode = useModeStore((s) => s.mode);
-
-  // Debounce & hysteresis
-  const emptyFrames = useRef(0);
-  const toolState = useRef<{ current: "draw" | "erase"; vote: number }>({
-    current: "draw",
-    vote: 0,
-  });
-  const EMPTY_LIMIT = 3;        // frames with no gesture before ending stroke
-  const SWITCH_HYSTERESIS = 2;  // frames required to switch tool (draw <-> erase)
 
   useEffect(() => {
     if (!gesturePayloads) return;
@@ -49,51 +40,24 @@ export const useGestureListener = (interactionManager: InteractionManager) => {
 
     // --- Paint mode ---
     if (mode === "paint") {
-      // Priority: if any closed_fist present, prefer erase; else prefer pinch (draw)
-      const fist = gesturePayloads.find((p) => p.name === "closed_fist");
-      const pinch = gesturePayloads.find((p) => p.name === "pinch");
-      const targetTool: "draw" | "erase" = fist ? "erase" : pinch ? "draw" : toolState.current.current;
-
-      // Hysteresis to avoid flicker between tools
-      if (targetTool !== toolState.current.current) {
-        toolState.current.vote += 1;
-        if (toolState.current.vote >= SWITCH_HYSTERESIS) {
-          toolState.current.current = targetTool;
-          toolState.current.vote = 0;
-        }
+      // Delegate the entire frame to the PaintManager.
+      paintManager.processFrame(gesturePayloads);
+    } else {
+      // Interaction mode: unchanged routing to InteractionManager.
+      if (gesturePayloads.length === 0) {
+        interactionManager.handleClear();
       } else {
-        toolState.current.vote = 0;
-      }
-
-      // Execute only the stabilized tool for this frame
-      if (toolState.current.current === "erase" && fist) {
-        // If multiple fists appear, handle them (usually one)
         gesturePayloads.forEach((payload) => {
-          switch (payload.name) {
-            case "closed_fist":
-              paintManager.handleClosedFist(payload);
-              break;
-            default:
-              // ignore other gestures in paint mode this frame
+          const action = gestureToActionMap[payload.name];
+          if (action) {
+            interactionManager.handleAction({
+              handId: payload.id,
+              action,
+              coordinates: Object.values(payload.points),
+            });
           }
         });
-        return; // do not also draw this frame
       }
-
-      if (toolState.current.current === "draw" && pinch) {
-        gesturePayloads.forEach((payload) => {
-          switch (payload.name) {
-            case "pinch":
-              paintManager.handlePinch(payload);
-              break;
-            default:
-              // ignore other gestures in paint mode this frame
-          }
-        });
-        return;
-      }
-      // No relevant paint gesture this frame (ignore others)
-      return;
     }
 
     gesturePayloads.forEach((payload) => {
@@ -107,10 +71,12 @@ export const useGestureListener = (interactionManager: InteractionManager) => {
       }
     });
 
-    // Per-hand cleanup for non-reported hands
+    // Per-hand cleanup for non-reported hands (clear targets for hands with no gesture this frame.)
     const receivedHands = new Set(gesturePayloads.map((g) => g.id));
     HAND_IDS.forEach((handId) => {
-      if (!receivedHands.has(handId)) interactionManager.clearTargetForHand(handId);
+      if (!receivedHands.has(handId)) {
+        interactionManager.clearTargetForHand(handId);
+      }
     });
   }, [gesturePayloads, interactionManager, mode]);
 
