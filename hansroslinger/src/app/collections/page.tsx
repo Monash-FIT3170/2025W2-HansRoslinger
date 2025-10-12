@@ -25,6 +25,8 @@ export default function CollectionsPage() {
     description: "",
   });
   const [selectedCollection, setSelectedCollection] = useState<Collection | null>(null);
+  const [activeCollections, setActiveCollections] = useState<string[]>([]);
+  const [showActiveOnly, setShowActiveOnly] = useState(false);
   const [availableUploads, setAvailableUploads] = useState<Uploads>({});
   const [isLoading, setIsLoading] = useState(true);
   const [isAddItemsModalOpen, setIsAddItemsModalOpen] = useState(false);
@@ -145,6 +147,18 @@ export default function CollectionsPage() {
       setSelectedCollection(collection);
     }
   };
+  
+  const toggleActiveCollection = (collectionId: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering selectCollection
+    
+    setActiveCollections(prev => {
+      if (prev.includes(collectionId)) {
+        return prev.filter(id => id !== collectionId);
+      } else {
+        return [...prev, collectionId];
+      }
+    });
+  };
 
   return (
     <main className="flex-1 p-8">
@@ -155,15 +169,37 @@ export default function CollectionsPage() {
 
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">My Collections</h1>
-          <button 
-            onClick={toggleCreateForm}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
-            </svg>
-            New Collection
-          </button>
+          <div className="flex items-center space-x-3">
+            <button
+              className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg flex items-center"
+              onClick={() => setShowActiveOnly(!showActiveOnly)}
+            >
+              {showActiveOnly ? (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5 mr-2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 12h16.5" />
+                  </svg>
+                  Show All
+                </>
+              ) : (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5 mr-2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
+                  </svg>
+                  View Active
+                </>
+              )}
+            </button>
+            <button 
+              onClick={toggleCreateForm}
+              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+              </svg>
+              New Collection
+            </button>
+          </div>
         </div>
 
         {isCreating && (
@@ -216,63 +252,87 @@ export default function CollectionsPage() {
             Array.from({length: 3}).map((_, i) => (
               <div key={i} className="bg-gray-100 h-60 rounded-lg animate-pulse"></div>
             ))
+          ) : showActiveOnly && activeCollections.length === 0 ? (
+            <div className="md:col-span-2 lg:col-span-3 p-10 bg-gray-50 rounded-lg text-center">
+              <p className="text-gray-600 mb-2">No active collections.</p>
+              <p className="text-gray-500">Mark collections as active by clicking the star icon.</p>
+            </div>
           ) : collections.length === 0 ? (
             <div className="md:col-span-2 lg:col-span-3 p-10 bg-gray-50 rounded-lg text-center">
               <p className="text-gray-600 mb-2">You don't have any collections yet.</p>
               <p className="text-gray-500">Create a collection to organize your uploads.</p>
             </div>
           ) : (
-            collections.map((collection) => (
-              <div 
-                key={collection.id} 
-                className={`bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg cursor-pointer transition-shadow
-                  ${selectedCollection?.id === collection.id ? 'ring-2 ring-blue-500' : ''}`}
-                onClick={() => selectCollection(collection)}
-              >
-                <div className="h-40 bg-gray-200 relative">
-                  {collection.thumbnailSrc && collection.thumbnailSrc.endsWith('.json') ? (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <Image
-                        src="/uploads/chart-icon.png"
-                        alt={collection.name}
-                        width={64}
-                        height={64}
-                      />
-                    </div>
-                  ) : (
-                    <div className="relative w-full h-full">
-                      <Image
-                        src={collection.thumbnailSrc || "/uploads/default-thumbnail.png"}
-                        alt={collection.name}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  )}
-                </div>
-                <div className="p-4">
-                  <div className="flex justify-between items-start">
-                    <h3 className="text-lg font-semibold truncate">{collection.name}</h3>
-                    <button 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteCollection(collection.id);
-                      }}
-                      className="text-gray-400 hover:text-red-500"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
-                      </svg>
-                    </button>
+            collections
+              .filter(collection => !showActiveOnly || activeCollections.includes(collection.id))
+              .map((collection) => (
+                <div 
+                  key={collection.id} 
+                  className={`bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg cursor-pointer transition-shadow
+                    ${selectedCollection?.id === collection.id ? 'ring-2 ring-blue-500' : ''}`}
+                  onClick={() => selectCollection(collection)}
+                >
+                  <div className="h-40 bg-gray-200 relative">
+                    {collection.thumbnailSrc && collection.thumbnailSrc.endsWith('.json') ? (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <Image
+                          src="/uploads/chart-icon.png"
+                          alt={collection.name}
+                          width={64}
+                          height={64}
+                        />
+                      </div>
+                    ) : (
+                      <div className="relative w-full h-full">
+                        <Image
+                          src={collection.thumbnailSrc || "/uploads/default-thumbnail.png"}
+                          alt={collection.name}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                    )}
                   </div>
-                  <p className="text-gray-500 text-sm mt-1 line-clamp-2">{collection.description || "No description"}</p>
-                  <div className="flex justify-between items-center mt-3">
-                    <span className="text-sm text-gray-500">{collection.items.length} items</span>
-                    <span className="text-xs text-gray-400">Created: {collection.createdAt}</span>
+                  <div className="p-4">
+                    <div className="flex justify-between items-start">
+                      <div className="flex items-center">
+                        <h3 className="text-lg font-semibold truncate">{collection.name}</h3>
+                        <button 
+                          onClick={(e) => toggleActiveCollection(collection.id, e)}
+                          className={`ml-2 p-1 rounded-full ${
+                            activeCollections.includes(collection.id) 
+                              ? 'text-yellow-500 bg-yellow-50' 
+                              : 'text-gray-400 hover:text-gray-600 bg-transparent'
+                          }`}
+                          title={activeCollections.includes(collection.id) ? "Remove from presentation" : "Add to presentation"}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" fill={activeCollections.includes(collection.id) ? "currentColor" : "none"} 
+                            viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                            <path strokeLinecap="round" strokeLinejoin="round" 
+                              d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
+                          </svg>
+                        </button>
+                      </div>
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteCollection(collection.id);
+                        }}
+                        className="text-gray-400 hover:text-red-500"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                        </svg>
+                      </button>
+                    </div>
+                    <p className="text-gray-500 text-sm mt-1 line-clamp-2">{collection.description || "No description"}</p>
+                    <div className="flex justify-between items-center mt-3">
+                      <span className="text-sm text-gray-500">{collection.items.length} items</span>
+                      <span className="text-xs text-gray-400">Created: {collection.createdAt}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
+              ))
           )}
         </div>
 
