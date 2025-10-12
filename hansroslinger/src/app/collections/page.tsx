@@ -247,10 +247,10 @@ export default function CollectionsPage() {
           </div>
         )}
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {isLoading ? (
-            Array.from({length: 3}).map((_, i) => (
-              <div key={i} className="bg-gray-100 h-60 rounded-lg animate-pulse"></div>
+            Array.from({length: 4}).map((_, i) => (
+              <div key={i} className="bg-gray-100 h-32 rounded-lg animate-pulse"></div>
             ))
           ) : showActiveOnly && activeCollections.length === 0 ? (
             <div className="md:col-span-2 lg:col-span-3 p-10 bg-gray-50 rounded-lg text-center">
@@ -272,14 +272,14 @@ export default function CollectionsPage() {
                     ${selectedCollection?.id === collection.id ? 'ring-2 ring-blue-500' : ''}`}
                   onClick={() => selectCollection(collection)}
                 >
-                  <div className="h-40 bg-gray-200 relative">
+                  <div className="h-28 bg-gray-200 relative">
                     {collection.thumbnailSrc && collection.thumbnailSrc.endsWith('.json') ? (
                       <div className="absolute inset-0 flex items-center justify-center">
                         <Image
                           src="/uploads/chart-icon.png"
                           alt={collection.name}
-                          width={64}
-                          height={64}
+                          width={40}
+                          height={40}
                         />
                       </div>
                     ) : (
@@ -293,10 +293,10 @@ export default function CollectionsPage() {
                       </div>
                     )}
                   </div>
-                  <div className="p-4">
+                  <div className="p-3">
                     <div className="flex justify-between items-start">
                       <div className="flex items-center">
-                        <h3 className="text-lg font-semibold truncate">{collection.name}</h3>
+                        <h3 className="text-base font-semibold truncate">{collection.name}</h3>
                         <button 
                           onClick={(e) => toggleActiveCollection(collection.id, e)}
                           className={`ml-2 p-1 rounded-full ${
@@ -325,9 +325,9 @@ export default function CollectionsPage() {
                         </svg>
                       </button>
                     </div>
-                    <p className="text-gray-500 text-sm mt-1 line-clamp-2">{collection.description || "No description"}</p>
-                    <div className="flex justify-between items-center mt-3">
-                      <span className="text-sm text-gray-500">{collection.items.length} items</span>
+                    <p className="text-gray-500 text-xs mt-1 line-clamp-1">{collection.description || "No description"}</p>
+                    <div className="flex justify-between items-center mt-2">
+                      <span className="text-xs text-gray-500">{collection.items.length} items</span>
                       <span className="text-xs text-gray-400">Created: {collection.createdAt}</span>
                     </div>
                   </div>
