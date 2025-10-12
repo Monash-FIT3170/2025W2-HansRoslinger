@@ -138,7 +138,12 @@ export default function CollectionsPage() {
   };
 
   const selectCollection = (collection: Collection) => {
-    setSelectedCollection(collection);
+    // Toggle selection - if clicking the already selected collection, unselect it
+    if (selectedCollection && selectedCollection.id === collection.id) {
+      setSelectedCollection(null);
+    } else {
+      setSelectedCollection(collection);
+    }
   };
 
   return (
