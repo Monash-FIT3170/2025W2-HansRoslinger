@@ -4,7 +4,7 @@ import type { FileObject } from "./fileInterfaces";
 
 export async function retrieveUserFiles(
   userEmail: string,
-  collection: string
+  collection: string ="Home"
 ): Promise<FileObject[]> {
   try {
     const bucketName = process.env.AWS_BUCKET_NAME;
