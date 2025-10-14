@@ -71,7 +71,9 @@ const FloatingDataPanel = () => {
           <div className="flex-1 overflow-y-auto">
             <div className="grid grid-cols-2 gap-x-8 gap-y-10 px-4">
               {Object.entries(hardcodedUploads).map(([assetId, uploadData]) => {
+                // find visual object that corresponds to assetId
                 const visual = visuals.find((v) => v.assetId === assetId);
+                //check if visual currently hovered for highlighting
                 const isHovered = visual?.isHovered;
 
                 return (
@@ -81,6 +83,7 @@ const FloatingDataPanel = () => {
                     onClick={() => handleClick(assetId)}
                     className={`cursor-pointer flex flex-col items-center p-2 rounded ${isHovered ? "ring-2 ring-green-400" : ""}`}
                   >
+                    {/* === THUMBNAIL / PREVIEW === */}
                     <div
                       className={`relative w-52 h-52 border-2 rounded bg-white flex items-center justify-center overflow-hidden ${
                         isVisualExist(assetId)
