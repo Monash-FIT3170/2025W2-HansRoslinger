@@ -91,6 +91,7 @@ const FloatingDataPanel = () => {
                           : "border-gray-300"
                       }`}
                     >
+                      {/* Render image if it's a PNG, otherwise render VegaLite chart */}
                       {uploadData.type === FILE_TYPE_PNG ? (
                         <Image
                           src={
@@ -106,7 +107,8 @@ const FloatingDataPanel = () => {
                         <VegaLiteChartDisplay data={uploadData} />
                       )}
                     </div>
-
+                    
+                    {/* === LABELS === */}
                     <p className="mt-3 text-base font-medium text-center w-full">
                       {uploadData.name}
                     </p>
@@ -126,6 +128,7 @@ const FloatingDataPanel = () => {
         onClick={toggle}
         className="absolute top-1/2 left-0 -translate-y-1/2 z-50 w-6 h-16 bg-gray-400 text-black border border-l-0 border-gray-500 rounded-r shadow hover:bg-gray-300 flex items-center justify-center text-sm font-bold"
       >
+        {/* Collapse or expand indicator */}
         {isOpen ? "<" : ">"}
       </button>
     </>
