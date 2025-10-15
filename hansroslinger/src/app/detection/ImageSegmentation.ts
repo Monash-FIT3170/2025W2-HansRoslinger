@@ -10,7 +10,7 @@ export const createImageSegmenter = async () => {
   
   imageSegmenter = await ImageSegmenter.createFromOptions(vision, {
     baseOptions: {
-      modelAssetPath: "/models/selfie_segmenter_landscape.tflite",
+      modelAssetPath: "https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_segmentation/float16/1/selfie_segmentation.tflite",
       delegate: "GPU",
     },
     runningMode: runningMode,
