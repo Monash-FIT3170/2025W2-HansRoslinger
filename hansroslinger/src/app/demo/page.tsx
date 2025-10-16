@@ -68,9 +68,23 @@ const spec: TopLevelSpec = {
 };
 const Demo = () => {
   return (
-    <main className="flex-1 overflow-y-auto scroll-auto scroll-smooth lg:overflow-hidden">
-      <section className="flex items-center justify-center mb-8 mt-8">
-        <VegaLite spec={spec} />
+    <main className="flex-1 p-8 relative overflow-hidden">
+      {/* Background decoration to match dashboard */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#F5F9FC] via-[#5C9BB8]/10 to-[#E8F0F7]/25 -z-10"></div>
+
+      <section className="max-w-7xl mx-auto">
+        <div className="mb-6">
+          <h1 className="text-4xl font-bold">
+            Vega-Lite <span className="gradient-text">Demo</span>
+          </h1>
+          <p className="text-[#4a4a4a] mt-1">A simple chart rendered with Vega-Lite</p>
+        </div>
+
+        <div className="modern-card p-6">
+          <div className="flex items-center justify-center">
+            <VegaLite spec={spec} />
+          </div>
+        </div>
       </section>
     </main>
   );
