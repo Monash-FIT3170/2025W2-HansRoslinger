@@ -706,25 +706,27 @@ export default function CollectionsPage() {
                 </div>
               </div>
             ) : (
-              <div className="flex items-start mb-6 gap-3">
-                <p className="text-base md:text-lg text-[#4a4a4a]/90 leading-relaxed flex-1">
-                  {selectedCollection.description || "No description"}
-                </p>
-                <button
-                  onClick={startEditingDescription}
-                  className="p-2.5 text-[#5C9BB8] hover:text-[#4a89a6] hover:bg-[#5C9BB8]/10 transition-all duration-300 hover:scale-110"
-                  title="Edit description"
-                  aria-label="Edit collection description"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
+              <div className="mb-6">
+                <div className="flex items-start gap-3 inline-flex">
+                  <p className="text-base md:text-lg text-[#4a4a4a]/90 leading-relaxed">
+                    {selectedCollection.description || "No description"}
+                  </p>
+                  <button
+                    onClick={startEditingDescription}
+                    className="p-2.5 text-[#5C9BB8] hover:text-[#4a89a6] hover:bg-[#5C9BB8]/10 transition-all duration-300 hover:scale-110"
+                    title="Edit description"
+                    aria-label="Edit collection description"
                   >
-                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                  </svg>
-                </button>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                    </svg>
+                  </button>
+                </div>
               </div>
             )}
 
