@@ -220,10 +220,14 @@ export default function CollectionsPage() {
 
   return (
     <main className="flex-1 p-8 relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#F5F9FC] via-[#5C9BB8]/8 to-[#E8F0F7]/12 -z-10"></div>
+      {/* Enhanced Background decoration to match dashboard */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#F5F9FC] via-[#5C9BB8]/10 to-[#E8F0F7]/25 -z-10"></div>
       
-      <div className="max-w-7xl mx-auto relative">
+      {/* Floating background orbs */}
+      <div className="absolute top-10 left-[10%] w-96 h-96 bg-gradient-to-r from-[#5C9BB8]/10 to-[#FC9770]/10 blur-3xl animate-float-slow opacity-40"></div>
+      <div className="absolute bottom-20 right-[15%] w-80 h-80 bg-gradient-to-r from-[#FBC841]/10 to-[#E5A168]/10 blur-3xl animate-float-delayed opacity-40"></div>
+      
+      <div className="max-w-7xl mx-auto relative z-10">
         <div className="mb-8 flex items-center justify-between animate-fade-in">
           <div>
             <h1 className="text-4xl font-bold mb-2">
@@ -239,18 +243,21 @@ export default function CollectionsPage() {
         <div className="flex justify-between items-center mb-8 animate-slide-up">
           <div className="flex items-center gap-3">
             <button
-              className="inline-flex items-center gap-2 bg-[#FC9770] text-white px-5 py-2.5 font-semibold shadow-lg shadow-[#FC9770]/30 transition-all hover:shadow-xl hover:shadow-[#FC9770]/40 hover:-translate-y-0.5 hover:bg-[#fb8659]"
+              className="group relative inline-flex items-center gap-2 bg-gradient-to-r from-[#FC9770] to-[#fb8659] text-white px-6 py-3 font-bold shadow-lg shadow-[#FC9770]/30 transition-all duration-300 hover:shadow-xl hover:shadow-[#FC9770]/40 hover:-translate-y-0.5 overflow-hidden"
               onClick={() => setShowActiveOnly(!showActiveOnly)}
             >
+              {/* Animated shine effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FC9770] to-[#FBC841] opacity-0 group-hover:opacity-75 blur-sm transition-opacity duration-300"></div>
               {showActiveOnly ? (
                 <>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
-                    strokeWidth={2}
+                    strokeWidth={2.5}
                     stroke="currentColor"
-                    className="h-5 w-5"
+                    className="h-5 w-5 relative z-10 transition-transform group-hover:scale-110"
                   >
                     <path
                       strokeLinecap="round"
@@ -258,7 +265,7 @@ export default function CollectionsPage() {
                       d="M3.75 12h16.5"
                     />
                   </svg>
-                  Show All
+                  <span className="relative z-10 tracking-wide">Show All</span>
                 </>
               ) : (
                 <>
@@ -266,7 +273,7 @@ export default function CollectionsPage() {
                     xmlns="http://www.w3.org/2000/svg"
                     fill="currentColor"
                     viewBox="0 0 24 24"
-                    className="h-5 w-5"
+                    className="h-5 w-5 relative z-10 transition-transform group-hover:scale-110"
                   >
                     <path
                       strokeLinecap="round"
@@ -274,17 +281,21 @@ export default function CollectionsPage() {
                       d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
                     />
                   </svg>
-                  View Active
+                  <span className="relative z-10 tracking-wide">View Active</span>
                 </>
               )}
             </button>
             <button
               onClick={toggleCreateForm}
-              className="inline-flex items-center gap-2 bg-[#5C9BB8] text-white px-5 py-2.5 font-semibold shadow-lg shadow-[#5C9BB8]/30 transition-all hover:shadow-xl hover:shadow-[#5C9BB8]/40 hover:-translate-y-0.5 hover:bg-[#4a89a6]"
+              className="group relative inline-flex items-center gap-2 bg-gradient-to-r from-[#5C9BB8] to-[#4a89a6] text-white px-6 py-3 font-bold shadow-lg shadow-[#5C9BB8]/30 transition-all duration-300 hover:shadow-xl hover:shadow-[#5C9BB8]/40 hover:-translate-y-0.5 overflow-hidden"
             >
+              {/* Animated shine effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-[#5C9BB8] to-[#7BAFD4] opacity-0 group-hover:opacity-75 blur-sm transition-opacity duration-300"></div>
+              
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
+                className="h-5 w-5 relative z-10 transition-transform group-hover:scale-110 group-hover:rotate-90"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -294,14 +305,14 @@ export default function CollectionsPage() {
                   clipRule="evenodd"
                 />
               </svg>
-              New Collection
+              <span className="relative z-10 tracking-wide">New Collection</span>
             </button>
           </div>
         </div>
 
         {isCreating && (
-          <div className="modern-card p-8 mb-8 animate-scale-in">
-            <h2 className="text-2xl font-bold mb-6 gradient-text">
+          <div className="modern-card-enhanced p-8 mb-8 animate-scale-in backdrop-blur-md bg-white/80">
+            <h2 className="text-2xl font-bold mb-6 gradient-text-enhanced">
               Create New Collection
             </h2>
             <div className="space-y-5">
@@ -344,16 +355,17 @@ export default function CollectionsPage() {
               <div className="flex justify-end gap-3 pt-2">
                 <button
                   onClick={() => setIsCreating(false)}
-                  className="px-6 py-2.5 border-2 border-[#2a2a2a] text-[#2a2a2a] font-semibold hover:bg-[#2a2a2a] hover:text-white transition-all"
+                  className="group relative px-6 py-3 border-2 border-[#2a2a2a] text-[#2a2a2a] font-bold hover:bg-[#2a2a2a] hover:text-white transition-all duration-300 overflow-hidden"
                 >
-                  Cancel
+                  <span className="relative z-10">Cancel</span>
                 </button>
                 <button
                   onClick={handleCreateCollection}
-                  className="px-6 py-2.5 bg-gradient-to-r from-[#5C9BB8] via-[#FC9770] to-[#FBC841] text-white font-semibold shadow-lg shadow-[#5C9BB8]/30 transition-all hover:shadow-xl hover:shadow-[#FC9770]/40 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+                  className="group relative px-6 py-3 bg-gradient-to-r from-[#5C9BB8] via-[#FC9770] to-[#FBC841] text-white font-bold shadow-lg shadow-[#5C9BB8]/30 transition-all duration-300 hover:shadow-xl hover:shadow-[#FC9770]/40 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 overflow-hidden"
                   disabled={!newCollection.name.trim()}
                 >
-                  Create Collection
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                  <span className="relative z-10">Create Collection</span>
                 </button>
               </div>
             </div>
@@ -369,29 +381,39 @@ export default function CollectionsPage() {
               ></div>
             ))
           ) : showActiveOnly && activeCollections.length === 0 ? (
-            <div className="col-span-full modern-card p-12 text-center animate-fade-in">
-              <div className="flex justify-center mb-4">
-                <svg className="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
-                </svg>
+            <div className="col-span-full modern-card-enhanced p-20 text-center animate-fade-in max-w-2xl mx-auto backdrop-blur-sm bg-white/80">
+              <div className="flex justify-center mb-8">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-[#FBC841]/30 blur-3xl animate-pulse"></div>
+                  <div className="relative bg-gradient-to-br from-[#FBC841]/20 to-[#FC9770]/20 p-8 backdrop-blur-sm">
+                    <svg className="w-24 h-24 text-[#FBC841] relative" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
+                    </svg>
+                  </div>
+                </div>
               </div>
-              <p className="text-[#4a4a4a] mb-2 text-lg font-semibold">No active collections</p>
-              <p className="text-gray-500">
-                Mark collections as active by clicking the star icon
+              <p className="text-[#2a2a2a] mb-3 text-2xl font-bold">No active collections</p>
+              <p className="text-[#4a4a4a]/80 text-lg leading-relaxed">
+                Mark collections as active by clicking the <span className="text-[#FBC841] font-semibold">star</span> icon
               </p>
             </div>
           ) : collections.length === 0 ? (
-            <div className="col-span-full modern-card p-12 text-center animate-fade-in">
-              <div className="flex justify-center mb-4">
-                <svg className="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                </svg>
+            <div className="col-span-full modern-card-enhanced p-20 text-center animate-fade-in max-w-2xl mx-auto backdrop-blur-sm bg-white/80">
+              <div className="flex justify-center mb-8">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-[#5C9BB8]/30 blur-3xl animate-pulse"></div>
+                  <div className="relative bg-gradient-to-br from-[#5C9BB8]/20 to-[#FC9770]/20 p-8 backdrop-blur-sm">
+                    <svg className="w-24 h-24 text-[#5C9BB8] relative" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    </svg>
+                  </div>
+                </div>
               </div>
-              <p className="text-[#4a4a4a] mb-2 text-lg font-semibold">
+              <p className="text-[#2a2a2a] mb-3 text-2xl font-bold">
                 No collections yet
               </p>
-              <p className="text-gray-500">
-                Create a collection to organise your uploads
+              <p className="text-[#4a4a4a]/80 text-lg leading-relaxed">
+                Create a collection to organise your <span className="text-[#5C9BB8] font-semibold">uploads</span>
               </p>
             </div>
           ) : (
@@ -403,12 +425,17 @@ export default function CollectionsPage() {
               .map((collection, idx) => (
                 <div
                   key={collection.id}
-                  className={`modern-card overflow-hidden cursor-pointer group animate-scale-in
-                    ${selectedCollection?.id === collection.id ? "ring-4 ring-[#5C9BB8] shadow-[#5C9BB8]/30" : ""}`}
+                  className={`modern-card-enhanced overflow-hidden cursor-pointer group animate-scale-in backdrop-blur-md transition-all duration-500
+                    ${selectedCollection?.id === collection.id 
+                      ? "bg-white/95 shadow-2xl shadow-[#5C9BB8]/40 ring-2 ring-[#5C9BB8] scale-105" 
+                      : "bg-white/80 hover:bg-white/95 hover:shadow-2xl hover:-translate-y-2"
+                    }`}
                   style={{ animationDelay: `${idx * 50}ms` }}
                   onClick={() => selectCollection(collection)}
                 >
-                  <div className="h-28 bg-gray-200 relative">
+                  <div className="h-28 bg-gradient-to-br from-[#F5F9FC] via-[#E8F0F7]/60 to-[#D8E4F0]/40 relative overflow-hidden border-b border-[#5C9BB8]/15">
+                    {/* Shine effect */}
+                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                     {collection.thumbnailSrc &&
                     collection.thumbnailSrc.endsWith(".json") ? (
                       <div className="absolute inset-0 flex items-center justify-center">
@@ -433,9 +460,9 @@ export default function CollectionsPage() {
                       </div>
                     )}
                   </div>
-                  <div className="p-3">
+                  <div className="p-3 relative z-10">
                     <div className="flex justify-between items-start">
-                      <div className="flex items-center">
+                      <div className="flex items-center gap-1">
                         <h3 className="text-base font-semibold truncate">
                           {collection.name}
                         </h3>
@@ -443,15 +470,15 @@ export default function CollectionsPage() {
                           onClick={(e) =>
                             toggleActiveCollection(collection.id, e)
                           }
-                          className={`ml-2 p-1 ${
+                          className={`relative p-1.5 transition-all duration-300 hover:scale-110 ${
                             activeCollections.includes(collection.id)
-                              ? "text-[#FBC841] bg-[#FBC841]/10"
-                              : "text-gray-400 hover:text-[#5C9BB8] bg-transparent"
+                              ? "text-[#FBC841] bg-[#FBC841]/20"
+                              : "text-gray-400 hover:text-[#FBC841] hover:bg-[#FBC841]/10 bg-transparent"
                           }`}
                           title={
                             activeCollections.includes(collection.id)
-                              ? "Remove from presentation"
-                              : "Add to presentation"
+                              ? "Remove from active"
+                              : "Add to active"
                           }
                         >
                           <svg
@@ -462,7 +489,7 @@ export default function CollectionsPage() {
                                 : "none"
                             }
                             viewBox="0 0 24 24"
-                            strokeWidth={1.5}
+                            strokeWidth={2}
                             stroke="currentColor"
                             className="w-5 h-5"
                           >
@@ -479,7 +506,8 @@ export default function CollectionsPage() {
                           e.stopPropagation();
                           handleDeleteCollection(collection.id);
                         }}
-                        className="text-gray-400 hover:text-red-500"
+                        className="relative p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all duration-300 hover:scale-110"
+                        title="Delete collection"
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -513,7 +541,7 @@ export default function CollectionsPage() {
         </div>
 
         {selectedCollection && (
-          <div className="mt-8 modern-card p-8 animate-slide-up">
+          <div className="mt-8 modern-card-enhanced p-8 animate-slide-up backdrop-blur-md bg-white/80">
             <div className="flex justify-between items-center mb-6">
               {isEditingTitle ? (
                 <div className="flex items-center gap-2">
@@ -585,12 +613,15 @@ export default function CollectionsPage() {
                 </div>
               )}
               <button
-                className="inline-flex items-center gap-2 bg-[#5C9BB8] text-white px-5 py-2.5 font-semibold shadow-lg shadow-[#5C9BB8]/30 transition-all hover:shadow-xl hover:shadow-[#5C9BB8]/40 hover:-translate-y-0.5 hover:bg-[#4a89a6]"
+                className="group relative inline-flex items-center gap-2 bg-gradient-to-r from-[#5C9BB8] to-[#4a89a6] text-white px-6 py-3 font-bold shadow-lg shadow-[#5C9BB8]/30 transition-all duration-300 hover:shadow-xl hover:shadow-[#5C9BB8]/40 hover:-translate-y-0.5 overflow-hidden"
                 onClick={() => setIsAddItemsModalOpen(true)}
               >
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-[#5C9BB8] to-[#7BAFD4] opacity-0 group-hover:opacity-75 blur-sm transition-opacity duration-300"></div>
+                
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
+                  className="h-5 w-5 relative z-10 transition-transform group-hover:scale-110 group-hover:rotate-90"
                   viewBox="0 0 20 20"
                   fill="currentColor"
                 >
@@ -600,7 +631,7 @@ export default function CollectionsPage() {
                     clipRule="evenodd"
                   />
                 </svg>
-                Add Items
+                <span className="relative z-10 tracking-wide">Add Items</span>
               </button>
             </div>
 
@@ -677,17 +708,22 @@ export default function CollectionsPage() {
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
               {selectedCollection.items.length === 0 ? (
-                <div className="col-span-full p-12 bg-gradient-to-br from-gray-50 to-gray-100 text-center">
-                  <div className="flex justify-center mb-3">
-                    <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-                    </svg>
+                <div className="col-span-full p-16 bg-gradient-to-br from-[#F5F9FC] via-[#E8F0F7]/60 to-[#D8E4F0]/40 text-center border border-[#5C9BB8]/15">
+                  <div className="flex justify-center mb-6">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-[#5C9BB8]/20 blur-2xl"></div>
+                      <div className="relative p-6 bg-gradient-to-br from-[#5C9BB8]/10 to-[#FC9770]/10">
+                        <svg className="w-16 h-16 text-[#5C9BB8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                        </svg>
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-[#4a4a4a] font-semibold">
+                  <p className="text-[#2a2a2a] font-bold text-xl mb-2">
                     This collection is empty
                   </p>
-                  <p className="text-gray-500 text-sm mt-1">
-                    Add some items to get started
+                  <p className="text-[#4a4a4a]/80 text-base">
+                    Click <span className="text-[#5C9BB8] font-semibold">Add Items</span> to get started
                   </p>
                 </div>
               ) : (
@@ -698,10 +734,11 @@ export default function CollectionsPage() {
                   return (
                     <div
                       key={itemId}
-                      className="group bg-gradient-to-br from-white to-gray-50 border border-gray-200 overflow-hidden hover:shadow-lg transition-all hover:-translate-y-1 animate-scale-in"
+                      className="group bg-white/80 backdrop-blur-md border border-[#5C9BB8]/15 overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 hover:-translate-y-2 hover:bg-white/95 animate-scale-in"
                       style={{ animationDelay: `${idx * 30}ms` }}
                     >
-                      <div className="h-28 bg-gray-100 relative flex items-center justify-center">
+                      <div className="h-28 bg-gradient-to-br from-[#F5F9FC] via-[#E8F0F7]/60 to-[#D8E4F0]/40 relative flex items-center justify-center overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                         {item.type === FILE_TYPE_PNG ? (
                           <Image
                             src={
