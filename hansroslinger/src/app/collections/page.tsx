@@ -221,13 +221,13 @@ export default function CollectionsPage() {
   return (
     <main className="flex-1 p-8 relative overflow-hidden">
       {/* Background decoration */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#FFF8F0] via-[#FFEFD5] to-[#FED6A6]/40 -z-10"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-[#F5F9FC] via-[#5C9BB8]/8 to-[#E8F0F7]/12 -z-10"></div>
       
       <div className="max-w-7xl mx-auto relative">
         <div className="mb-8 flex items-center justify-between animate-fade-in">
           <div>
             <h1 className="text-4xl font-bold mb-2">
-              My <span className="gradient-text">Collections</span>
+              My <span className="gradient-text-enhanced">Collections</span>
             </h1>
             <p className="text-[#4a4a4a]">
               Organise and manage your visual assets
@@ -404,7 +404,7 @@ export default function CollectionsPage() {
                 <div
                   key={collection.id}
                   className={`modern-card overflow-hidden cursor-pointer group animate-scale-in
-                    ${selectedCollection?.id === collection.id ? "ring-4 ring-purple-500 shadow-purple-500/30" : ""}`}
+                    ${selectedCollection?.id === collection.id ? "ring-4 ring-[#5C9BB8] shadow-[#5C9BB8]/30" : ""}`}
                   style={{ animationDelay: `${idx * 50}ms` }}
                   onClick={() => selectCollection(collection)}
                 >
@@ -445,8 +445,8 @@ export default function CollectionsPage() {
                           }
                           className={`ml-2 p-1 ${
                             activeCollections.includes(collection.id)
-                              ? "text-yellow-500 bg-yellow-50"
-                              : "text-gray-400 hover:text-gray-600 bg-transparent"
+                              ? "text-[#FBC841] bg-[#FBC841]/10"
+                              : "text-gray-400 hover:text-[#5C9BB8] bg-transparent"
                           }`}
                           title={
                             activeCollections.includes(collection.id)
@@ -585,7 +585,7 @@ export default function CollectionsPage() {
                 </div>
               )}
               <button
-                className="inline-flex items-center gap-2 bg-[#FBC841] text-white px-5 py-2.5 font-semibold shadow-lg shadow-[#FBC841]/30 transition-all hover:shadow-xl hover:shadow-[#FBC841]/40 hover:-translate-y-0.5 hover:bg-[#eab730]"
+                className="inline-flex items-center gap-2 bg-[#5C9BB8] text-white px-5 py-2.5 font-semibold shadow-lg shadow-[#5C9BB8]/30 transition-all hover:shadow-xl hover:shadow-[#5C9BB8]/40 hover:-translate-y-0.5 hover:bg-[#4a89a6]"
                 onClick={() => setIsAddItemsModalOpen(true)}
               >
                 <svg

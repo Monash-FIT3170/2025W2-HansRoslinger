@@ -41,19 +41,19 @@ const Dashboard = async () => {
       {/* Hero Section */}
       <section className="relative py-20 px-6 overflow-hidden min-h-[60vh] flex items-center">
         {/* Animated background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#FFF8F0] via-[#FFEFD5] to-[#FED6A6]/40"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-[#F5F9FC] via-[#5C9BB8]/8 to-[#E8F0F7]/20"></div>
         
         {/* Floating orbs with animation */}
-        <div className="absolute top-20 left-[15%] w-72 h-72 bg-gradient-to-r from-[#FC9770]/20 to-[#FBC841]/20 blur-3xl animate-float"></div>
-        <div className="absolute top-40 right-[20%] w-96 h-96 bg-gradient-to-r from-[#5C9BB8]/15 to-[#FED6A6]/15 blur-3xl animate-float-delayed"></div>
-        <div className="absolute bottom-20 left-[40%] w-64 h-64 bg-gradient-to-r from-[#E5A168]/20 to-[#FC9770]/15 blur-3xl animate-float-slow"></div>
+        <div className="absolute top-20 left-[15%] w-72 h-72 bg-gradient-to-r from-[#FC9770]/25 to-[#FBC841]/25 blur-3xl animate-float"></div>
+        <div className="absolute top-40 right-[20%] w-96 h-96 bg-gradient-to-r from-[#5C9BB8]/25 to-[#FED6A6]/20 blur-3xl animate-float-delayed"></div>
+        <div className="absolute bottom-20 left-[40%] w-64 h-64 bg-gradient-to-r from-[#E5A168]/20 to-[#5C9BB8]/15 blur-3xl animate-float-slow"></div>
         
         <div className="relative max-w-7xl mx-auto text-center w-full animate-fade-in">
           
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight tracking-tight">
             <span className="gradient-text-enhanced">Gesture-Controlled</span>
             <br />
-            <span className="text-[#2a2a2a]">Visualisation</span>
+            <span className="bg-gradient-to-r from-[#5C9BB8] via-[#FC9770] to-[#FBC841] bg-clip-text text-transparent">Visualisation</span>
           </h1>
           
           <p className="text-xl md:text-2xl text-[#4a4a4a] mb-12 max-w-3xl mx-auto leading-relaxed font-light">
@@ -82,7 +82,7 @@ const Dashboard = async () => {
       {/* Gestures Guide Section */}
       <section className="py-20 px-6 mb-8 relative">
         {/* Background decoration */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#FED6A6]/15 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-[#5C9BB8]/8 via-[#E8F0F7]/10 to-transparent"></div>
         
         <div className="max-w-7xl mx-auto relative">
           <div className="text-center mb-16 animate-slide-up">
@@ -103,8 +103,8 @@ const Dashboard = async () => {
               >
                 {/* Icon container with gradient background */}
                 <div className="relative mb-6">
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#5C9BB8]/15 to-[#FC9770]/15 blur-xl group-hover:blur-2xl transition-all"></div>
-                  <div className="relative flex justify-center items-center gap-3 p-6 bg-gradient-to-br from-white to-[#FED6A6]/20 border border-[#E5A168]/20 shadow-sm transform transition-transform group-hover:scale-110">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#5C9BB8]/20 via-[#7BAFD4]/15 to-[#D8E4F0]/20 blur-xl group-hover:blur-2xl transition-all"></div>
+                  <div className="relative flex justify-center items-center gap-3 p-6 bg-gradient-to-br from-white to-[#E8F0F7]/40 border border-[#5C9BB8]/20 shadow-sm transform transition-transform group-hover:scale-110">
                     {Array.isArray(g.img) ? (
                       g.img.map((src, i) => (
                         <Image
@@ -121,7 +121,7 @@ const Dashboard = async () => {
                   </div>
                 </div>
                 
-                <h3 className="font-bold text-xl mb-3 bg-gradient-to-r from-[#5C9BB8] via-[#FC9770] to-[#FBC841] bg-clip-text text-transparent">
+                <h3 className="font-bold text-xl mb-3 bg-gradient-to-r from-[#5C9BB8] via-[#7BAFD4] to-[#5C9BB8] bg-clip-text text-transparent">
                   {g.title}
                 </h3>
                 <p className="text-sm leading-relaxed text-[#4a4a4a]">
