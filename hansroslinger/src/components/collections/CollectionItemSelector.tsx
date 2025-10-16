@@ -19,13 +19,13 @@ export default function CollectionItemSelector({
   const [search, setSearch] = useState("");
 
   // Filter items based on search term
-  const filteredItems = Object.entries(availableItems).filter(([_, item]) => 
-    item.name.toLowerCase().includes(search.toLowerCase())
+  const filteredItems = Object.entries(availableItems).filter(([, item]) =>
+    item.name.toLowerCase().includes(search.toLowerCase()),
   );
 
   const toggleItemSelection = (itemId: string) => {
     if (selectedItems.includes(itemId)) {
-      onSelectionChange(selectedItems.filter(id => id !== itemId));
+      onSelectionChange(selectedItems.filter((id) => id !== itemId));
     } else {
       onSelectionChange([...selectedItems, itemId]);
     }
@@ -45,7 +45,9 @@ export default function CollectionItemSelector({
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-96 overflow-y-auto p-2">
         {filteredItems.length === 0 ? (
-          <p className="col-span-full text-center text-gray-500 py-8">No items found</p>
+          <p className="col-span-full text-center text-gray-500 py-8">
+            No items found
+          </p>
         ) : (
           filteredItems.map(([itemId, item]) => (
             <div
@@ -53,9 +55,11 @@ export default function CollectionItemSelector({
               onClick={() => toggleItemSelection(itemId)}
               className={`
                 cursor-pointer border rounded-md overflow-hidden transition-all
-                ${selectedItems.includes(itemId) 
-                  ? 'border-blue-500 bg-blue-50 shadow-md' 
-                  : 'border-gray-200 hover:border-blue-300'}
+                ${
+                  selectedItems.includes(itemId)
+                    ? "border-blue-500 bg-blue-50 shadow-md"
+                    : "border-gray-200 hover:border-blue-300"
+                }
               `}
             >
               <div className="h-28 bg-gray-100 relative flex items-center justify-center">
@@ -76,11 +80,20 @@ export default function CollectionItemSelector({
                     />
                   </div>
                 )}
-                
+
                 {selectedItems.includes(itemId) && (
                   <div className="absolute top-2 right-2 bg-blue-500 rounded-full w-6 h-6 flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4 text-white"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                        clipRule="evenodd"
+                      />
                     </svg>
                   </div>
                 )}
