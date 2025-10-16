@@ -72,39 +72,43 @@ const Dashboard = async () => {
   return (
     <main className="flex-1 overflow-y-auto scroll-auto scroll-smooth lg:overflow-hidden">
       {/* Hero Section */}
-      <section className="relative py-20 px-6 overflow-hidden min-h-[60vh] flex items-center">
-        {/* Animated background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#F5F9FC] via-[#5C9BB8]/8 to-[#E8F0F7]/20"></div>
+      <section className="relative py-24 px-6 overflow-hidden min-h-[65vh] flex items-center">
+        {/* Enhanced animated background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#F5F9FC] via-[#5C9BB8]/10 to-[#E8F0F7]/25"></div>
         
-        {/* Floating orbs with animation */}
-        <div className="absolute top-20 left-[15%] w-72 h-72 bg-gradient-to-r from-[#FC9770]/25 to-[#FBC841]/25 blur-3xl animate-float"></div>
-        <div className="absolute top-40 right-[20%] w-96 h-96 bg-gradient-to-r from-[#5C9BB8]/25 to-[#FED6A6]/20 blur-3xl animate-float-delayed"></div>
-        <div className="absolute bottom-20 left-[40%] w-64 h-64 bg-gradient-to-r from-[#E5A168]/20 to-[#5C9BB8]/15 blur-3xl animate-float-slow"></div>
+        {/* Enhanced floating orbs with animation */}
+        <div className="absolute top-20 left-[15%] w-80 h-80 bg-gradient-to-r from-[#FC9770]/30 to-[#FBC841]/30 blur-3xl animate-float"></div>
+        <div className="absolute top-40 right-[20%] w-96 h-96 bg-gradient-to-r from-[#5C9BB8]/30 to-[#FED6A6]/25 blur-3xl animate-float-delayed"></div>
+        <div className="absolute bottom-20 left-[40%] w-72 h-72 bg-gradient-to-r from-[#E5A168]/25 to-[#5C9BB8]/20 blur-3xl animate-float-slow"></div>
         
         <div className="relative max-w-7xl mx-auto text-center w-full animate-fade-in">
           
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight tracking-tight">
-            <span className="gradient-text-enhanced">Gesture-Controlled</span>
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-8 leading-tight tracking-tight">
+            <span className="gradient-text-enhanced drop-shadow-sm">Gesture-Controlled</span>
             <br />
-            <span className="bg-gradient-to-r from-[#5C9BB8] via-[#FC9770] to-[#FBC841] bg-clip-text text-transparent">Visualisation</span>
+            <span className="bg-gradient-to-r from-[#5C9BB8] via-[#FC9770] to-[#FBC841] bg-clip-text text-transparent drop-shadow-sm">Visualisation</span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-[#4a4a4a] mb-12 max-w-3xl mx-auto leading-relaxed font-light">
+          <p className="text-xl md:text-2xl text-[#4a4a4a]/90 mb-14 max-w-4xl mx-auto leading-relaxed font-light">
             Interact with your data like never before. Upload, organise, and visualise with intuitive hand gestures.
           </p>
           
-          {/* Action Buttons */}
-          <div className="flex items-center justify-center gap-5 flex-wrap">
+          {/* Enhanced Action Buttons */}
+          <div className="flex items-center justify-center gap-6 flex-wrap mb-6">
             <Upload />
             <Preview />
             <CollectionsButton />
           </div>
           
-          {/* Scroll indicator */}
-          <div className="mt-16 animate-bounce">
-            <svg className="w-10 h-10 mx-auto text-[#FC9770] drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-            </svg>
+          {/* Enhanced scroll indicator */}
+          <div className="mt-20 animate-bounce">
+            <div className="relative inline-block">
+              {/* Glow effect */}
+              <div className="absolute inset-0 bg-[#FC9770]/30 blur-xl"></div>
+              <svg className="w-12 h-12 mx-auto text-[#FC9770] drop-shadow-lg relative" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+              </svg>
+            </div>
           </div>
         </div>
       </section>
@@ -113,64 +117,84 @@ const Dashboard = async () => {
       <UserUploads initialUploads={uploads} />
 
       {/* Gestures Guide Section */}
-      <section className="py-20 px-6 mb-8 relative">
-        {/* Background decoration */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#5C9BB8]/8 via-[#E8F0F7]/10 to-transparent"></div>
+      <section className="py-24 px-6 mb-8 relative overflow-hidden">
+        {/* Enhanced Background decoration */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#5C9BB8]/10 via-[#E8F0F7]/15 to-[#FBC841]/5"></div>
         
-        <div className="max-w-7xl mx-auto relative">
-          <div className="text-center mb-16 animate-slide-up">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-[#2a2a2a]">
+        {/* Floating background orbs */}
+        <div className="absolute top-20 right-[12%] w-96 h-96 bg-gradient-to-r from-[#FC9770]/12 to-[#FBC841]/12 blur-3xl animate-float opacity-40"></div>
+        <div className="absolute bottom-32 left-[8%] w-80 h-80 bg-gradient-to-r from-[#5C9BB8]/12 to-[#E5A168]/10 blur-3xl animate-float-delayed opacity-40"></div>
+        
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="text-center mb-20 animate-slide-up">
+            <h2 className="text-4xl md:text-6xl font-bold mb-5 text-[#2a2a2a]">
               Master the <span className="gradient-text-enhanced">Gestures</span>
             </h2>
-            <p className="text-lg md:text-xl text-[#4a4a4a] max-w-2xl mx-auto whitespace-nowrap">
+            <p className="text-lg md:text-xl text-[#4a4a4a]/90 max-w-3xl mx-auto leading-relaxed">
               Learn how to interact with your visualisations using hand gestures
             </p>
           </div>
           
-          <div className="flex flex-wrap justify-center gap-8">
+          <div className="flex flex-wrap justify-center gap-10">
             {gestures.map((g, idx) => (
               <div
                 key={idx}
-                className="w-[260px] bg-white/70 backdrop-blur-sm shadow-xl hover:shadow-2xl hover:bg-white/90 transition-all duration-500 animate-scale-in hover:-translate-y-2 overflow-hidden group"
-                style={{ animationDelay: `${idx * 100}ms` }}
+                className="relative w-[280px] bg-white/80 backdrop-blur-md shadow-xl hover:shadow-2xl hover:bg-white/95 transition-all duration-500 hover:-translate-y-3 overflow-visible group"
+                style={{ 
+                  animationDelay: `${idx * 100}ms`,
+                  animation: 'scaleIn 0.5s ease-out backwards'
+                }}
               >
-                {/* Hover overlay */}
-                <div className="absolute inset-0 bg-[#5C9BB8]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                {/* Animated gradient overlay on hover */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#5C9BB8]/8 via-[#FC9770]/5 to-[#FBC841]/8 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                
+                {/* Animated border glow */}
+                <div className={`absolute -inset-0.5 ${g.iconColor} opacity-0 blur-sm group-hover:opacity-30 transition-opacity duration-500 pointer-events-none`}></div>
                 
                 {/* Content wrapper */}
-                <div className="relative p-6 flex flex-col items-center text-center">
-                  {/* Action Icon Badge (top-right) */}
-                  <div className="absolute top-4 right-4 z-10">
-                    <div className={`p-2.5 rounded-xl ${g.iconColor} shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110`}>
-                      <g.ActionIcon 
-                        className="w-5 h-5 text-white drop-shadow-md"
-                        strokeWidth={2}
-                      />
+                <div className="relative p-7 flex flex-col items-center text-center">
+                  {/* Enhanced Action Icon Badge (top-right) */}
+                  <div className="absolute top-5 right-5 z-10">
+                    <div className="relative group/badge">
+                      {/* Badge glow */}
+                      <div className={`absolute inset-0 ${g.iconColor} blur-md opacity-40 group-hover/badge:opacity-70 transition-opacity duration-300`}></div>
+                      <div className={`relative p-3 ${g.iconColor} shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110 group-hover:rotate-6`}>
+                        <g.ActionIcon 
+                          className="w-6 h-6 text-white drop-shadow-md"
+                          strokeWidth={2}
+                        />
+                      </div>
                     </div>
                   </div>
 
-                  {/* Gesture Icon Container (center) */}
-                  <div className="relative w-full aspect-square mb-5 flex items-center justify-center">
-                    <div className={`absolute inset-0 ${g.iconColor} opacity-10 blur-2xl group-hover:opacity-20 group-hover:blur-3xl transition-all duration-500`}></div>
-                    <div className="relative flex justify-center items-center gap-4 w-full h-full bg-[#F5F9FC] border border-[#5C9BB8]/15 shadow-inner overflow-hidden group-hover:scale-105 transition-transform duration-500">
+                  {/* Enhanced Gesture Icon Container (center) */}
+                  <div className="relative w-full aspect-square mb-6 flex items-center justify-center">
+                    <div className={`absolute inset-0 ${g.iconColor} opacity-12 blur-3xl group-hover:opacity-25 group-hover:blur-[48px] transition-all duration-500`}></div>
+                    <div className="relative flex justify-center items-center gap-4 w-full h-full bg-gradient-to-br from-[#F5F9FC] via-[#E8F0F7]/60 to-[#D8E4F0]/40 border border-[#5C9BB8]/15 shadow-inner overflow-hidden group-hover:scale-[1.03] transition-transform duration-500">
+                      {/* Shine effect */}
+                      <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                      
+                      {/* Corner accents */}
+                      <div className={`absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-current opacity-30 group-hover:opacity-60 transition-opacity duration-300 ${g.iconColor.replace('bg-', 'text-')}`}></div>
+                      <div className={`absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-current opacity-30 group-hover:opacity-60 transition-opacity duration-300 ${g.iconColor.replace('bg-', 'text-')}`}></div>
                       
                       {g.isDouble ? (
                         <>
-                          <div className={`relative z-10 p-3 rounded-2xl ${g.iconColor} shadow-lg transition-all duration-300 group-hover:scale-105`}>
+                          <div className={`relative z-10 p-3.5 ${g.iconColor} shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:-rotate-3`}>
                             <g.GestureIcon 
-                              className="w-12 h-12 text-white"
+                              className="w-14 h-14 text-white drop-shadow-lg"
                               strokeWidth={1.5}
                             />
                           </div>
-                          <div className={`relative z-10 p-3 rounded-2xl ${g.iconColor} shadow-lg transition-all duration-300 group-hover:scale-105`}>
+                          <div className={`relative z-10 p-3.5 ${g.iconColor} shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:rotate-3`}>
                             <g.GestureIcon 
-                              className="w-12 h-12 text-white"
+                              className="w-14 h-14 text-white drop-shadow-lg"
                               strokeWidth={1.5}
                             />
                           </div>
                         </>
                       ) : (
-                        <div className={`relative z-10 p-4 rounded-2xl ${g.iconColor} shadow-lg transition-all duration-300 group-hover:scale-110`}>
+                        <div className={`relative z-10 p-5 ${g.iconColor} shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:rotate-3`}>
                           <g.GestureIcon 
                             className="w-16 h-16 text-white drop-shadow-lg"
                             strokeWidth={1.5}
@@ -180,12 +204,14 @@ const Dashboard = async () => {
                     </div>
                   </div>
                   
-                  <h3 className="font-bold text-lg mb-3 text-[#5C9BB8] uppercase tracking-wide">
-                    {g.title}
-                  </h3>
-                  <p className="text-sm leading-relaxed text-[#4a4a4a]/80 group-hover:text-[#4a4a4a] transition-colors duration-300">
-                    {g.description}
-                  </p>
+                  <div className="space-y-3 w-full">
+                    <h3 className="font-bold text-xl mb-2 text-[#5C9BB8] uppercase tracking-wider group-hover:text-[#4a89a6] transition-colors duration-300">
+                      {g.title}
+                    </h3>
+                    <p className="text-base leading-relaxed text-[#4a4a4a]/80 group-hover:text-[#4a4a4a] transition-colors duration-300 px-2">
+                      {g.description}
+                    </p>
+                  </div>
                 </div>
               </div>
             ))}
