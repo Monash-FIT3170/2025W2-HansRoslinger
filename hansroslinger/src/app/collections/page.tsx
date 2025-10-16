@@ -228,12 +228,12 @@ export default function CollectionsPage() {
       <div className="absolute bottom-20 right-[15%] w-80 h-80 bg-gradient-to-r from-[#FBC841]/10 to-[#E5A168]/10 blur-3xl animate-float-delayed opacity-40"></div>
       
       <div className="max-w-7xl mx-auto relative z-10">
-        <div className="mb-8 flex items-center justify-between animate-fade-in">
+        <div className="mb-10 flex items-center justify-between animate-fade-in">
           <div>
-            <h1 className="text-4xl font-bold mb-2">
+            <h1 className="text-5xl md:text-6xl font-bold mb-3 leading-tight">
               My <span className="gradient-text-enhanced">Collections</span>
             </h1>
-            <p className="text-[#4a4a4a]">
+            <p className="text-lg text-[#4a4a4a]/90 font-medium">
               Organise and manage your visual assets
             </p>
           </div>
@@ -372,13 +372,20 @@ export default function CollectionsPage() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 animate-slide-up" style={{ animationDelay: '200ms' }}>
           {isLoading ? (
             Array.from({ length: 4 }).map((_, i) => (
               <div
                 key={i}
-                className="modern-card h-48 animate-pulse bg-gradient-to-br from-gray-100 to-gray-200"
-              ></div>
+                className="h-48 bg-gradient-to-br from-[#F5F9FC] via-[#E8F0F7]/60 to-[#D8E4F0]/40 animate-pulse border border-[#5C9BB8]/15 overflow-hidden"
+                style={{ animationDelay: `${i * 100}ms` }}
+              >
+                <div className="h-28 bg-gradient-to-br from-[#5C9BB8]/10 to-[#FC9770]/10 animate-pulse"></div>
+                <div className="p-3 space-y-2">
+                  <div className="h-4 bg-[#5C9BB8]/20 w-3/4 animate-pulse"></div>
+                  <div className="h-3 bg-[#5C9BB8]/10 w-1/2 animate-pulse"></div>
+                </div>
+              </div>
             ))
           ) : showActiveOnly && activeCollections.length === 0 ? (
             <div className="col-span-full modern-card-enhanced p-20 text-center animate-fade-in max-w-2xl mx-auto backdrop-blur-sm bg-white/80">
@@ -433,18 +440,25 @@ export default function CollectionsPage() {
                   style={{ animationDelay: `${idx * 50}ms` }}
                   onClick={() => selectCollection(collection)}
                 >
-                  <div className="h-28 bg-gradient-to-br from-[#F5F9FC] via-[#E8F0F7]/60 to-[#D8E4F0]/40 relative overflow-hidden border-b border-[#5C9BB8]/15">
+                  <div className="h-32 bg-gradient-to-br from-[#F5F9FC] via-[#E8F0F7]/60 to-[#D8E4F0]/40 relative overflow-hidden border-b border-[#5C9BB8]/15">
                     {/* Shine effect */}
                     <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                    
+                    {/* Corner accents */}
+                    <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-[#5C9BB8]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-[#5C9BB8]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    
                     {collection.thumbnailSrc &&
                     collection.thumbnailSrc.endsWith(".json") ? (
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <Image
-                          src="/uploads/chart-icon.png"
-                          alt={collection.name}
-                          width={40}
-                          height={40}
-                        />
+                        <div className="transition-transform group-hover:scale-110 duration-300">
+                          <Image
+                            src="/uploads/chart-icon.png"
+                            alt={collection.name}
+                            width={48}
+                            height={48}
+                          />
+                        </div>
                       </div>
                     ) : (
                       <div className="relative w-full h-full">
@@ -455,7 +469,7 @@ export default function CollectionsPage() {
                           }
                           alt={collection.name}
                           fill
-                          className="object-cover"
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                       </div>
                     )}
@@ -463,7 +477,7 @@ export default function CollectionsPage() {
                   <div className="p-3 relative z-10">
                     <div className="flex justify-between items-start">
                       <div className="flex items-center gap-1">
-                        <h3 className="text-base font-semibold truncate">
+                        <h3 className="text-base font-bold text-[#2a2a2a] truncate">
                           {collection.name}
                         </h3>
                         <button
@@ -506,7 +520,7 @@ export default function CollectionsPage() {
                           e.stopPropagation();
                           handleDeleteCollection(collection.id);
                         }}
-                        className="relative p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all duration-300 hover:scale-110"
+                        className="relative p-1.5 text-[#FC9770] hover:text-[#fb8659] hover:bg-[#FC9770]/10 transition-all duration-300 hover:scale-110"
                         title="Delete collection"
                       >
                         <svg
@@ -523,15 +537,18 @@ export default function CollectionsPage() {
                         </svg>
                       </button>
                     </div>
-                    <p className="text-gray-500 text-xs mt-1 line-clamp-1">
+                    <p className="text-[#4a4a4a]/70 text-xs mt-1 line-clamp-1 leading-relaxed">
                       {collection.description || "No description"}
                     </p>
-                    <div className="flex justify-between items-center mt-2">
-                      <span className="text-xs text-gray-500">
-                        {collection.items.length} items
-                      </span>
-                      <span className="text-xs text-gray-400">
-                        Created: {collection.createdAt}
+                    <div className="flex justify-between items-center mt-3 pt-2 border-t border-[#5C9BB8]/10">
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-1.5 h-1.5 bg-[#5C9BB8] opacity-60"></div>
+                        <span className="text-xs text-[#5C9BB8] font-bold uppercase tracking-wide">
+                          {collection.items.length} {collection.items.length === 1 ? 'item' : 'items'}
+                        </span>
+                      </div>
+                      <span className="text-xs text-[#4a4a4a]/60 font-medium">
+                        {collection.createdAt}
                       </span>
                     </div>
                   </div>
@@ -541,26 +558,27 @@ export default function CollectionsPage() {
         </div>
 
         {selectedCollection && (
-          <div className="mt-8 modern-card-enhanced p-8 animate-slide-up backdrop-blur-md bg-white/80">
+          <div className="mt-10 modern-card-enhanced p-8 animate-slide-up backdrop-blur-md bg-white/80" style={{ animationDelay: '400ms' }}>
             <div className="flex justify-between items-center mb-6">
               {isEditingTitle ? (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3 flex-1">
                   <input
                     type="text"
                     value={editableTitle}
                     onChange={(e) => setEditableTitle(e.target.value)}
-                    className="text-2xl font-bold border-b-2 border-blue-500 focus:outline-none py-1"
+                    className="text-3xl font-bold border-b-2 border-[#5C9BB8] focus:outline-none focus:border-[#FC9770] py-2 bg-transparent text-[#2a2a2a] transition-colors duration-300"
                     autoFocus
                   />
-                  <div className="flex items-center">
+                  <div className="flex items-center gap-2">
                     <button
                       onClick={saveTitle}
-                      className="text-green-500 hover:text-green-700"
+                      className="group relative p-2.5 bg-gradient-to-r from-[#5C9BB8] to-[#4a89a6] text-white shadow-lg shadow-[#5C9BB8]/30 hover:shadow-xl hover:shadow-[#5C9BB8]/50 transition-all duration-300 hover:scale-110"
                       title="Save"
+                      aria-label="Save title"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5"
+                        className="h-5 w-5 relative z-10"
                         viewBox="0 0 20 20"
                         fill="currentColor"
                       >
@@ -573,12 +591,12 @@ export default function CollectionsPage() {
                     </button>
                     <button
                       onClick={() => setIsEditingTitle(false)}
-                      className="text-red-500 hover:text-red-700 ml-1"
+                      className="group relative p-2.5 bg-gradient-to-r from-[#FC9770] to-[#fb8659] text-white shadow-lg shadow-[#FC9770]/30 hover:shadow-xl hover:shadow-[#FC9770]/50 transition-all duration-300 hover:scale-110"
                       title="Cancel"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5"
+                        className="h-5 w-5 relative z-10"
                         viewBox="0 0 20 20"
                         fill="currentColor"
                       >
@@ -592,14 +610,15 @@ export default function CollectionsPage() {
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center">
-                  <h2 className="text-2xl font-bold">
+                <div className="flex items-center gap-3">
+                  <h2 className="text-3xl md:text-4xl font-bold gradient-text-enhanced">
                     {selectedCollection.name}
                   </h2>
                   <button
                     onClick={startEditingTitle}
-                    className="ml-2 text-gray-400 hover:text-gray-600"
+                    className="p-2.5 text-[#5C9BB8] hover:text-[#4a89a6] hover:bg-[#5C9BB8]/10 transition-all duration-300 hover:scale-110"
                     title="Edit title"
+                    aria-label="Edit collection title"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -640,19 +659,20 @@ export default function CollectionsPage() {
                 <textarea
                   value={editableDescription}
                   onChange={(e) => setEditableDescription(e.target.value)}
-                  className="w-full p-2 text-gray-600 border-2 border-blue-300 focus:outline-none focus:border-blue-500"
+                  className="w-full px-4 py-3 text-[#4a4a4a] border-2 border-[#5C9BB8]/30 focus:outline-none focus:border-[#5C9BB8] focus:ring-2 focus:ring-[#5C9BB8]/20 bg-white/80 backdrop-blur-sm transition-all duration-300"
                   rows={3}
                   placeholder="Add a description"
                   autoFocus
                 />
-                <div className="flex justify-end mt-2 gap-2">
+                <div className="flex justify-end mt-3 gap-3">
                   <button
                     onClick={saveDescription}
-                    className="text-green-500 hover:text-green-700 flex items-center"
+                    className="group relative inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-[#5C9BB8] to-[#4a89a6] text-white font-bold shadow-lg shadow-[#5C9BB8]/30 hover:shadow-xl hover:shadow-[#5C9BB8]/50 transition-all duration-300 hover:scale-105 overflow-hidden"
                   >
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 mr-1"
+                      className="h-5 w-5 relative z-10"
                       viewBox="0 0 20 20"
                       fill="currentColor"
                     >
@@ -662,15 +682,16 @@ export default function CollectionsPage() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    Save
+                    <span className="relative z-10">Save</span>
                   </button>
                   <button
                     onClick={() => setIsEditingDescription(false)}
-                    className="text-red-500 hover:text-red-700 flex items-center"
+                    className="group relative inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-[#FC9770] to-[#fb8659] text-white font-bold shadow-lg shadow-[#FC9770]/30 hover:shadow-xl hover:shadow-[#FC9770]/50 transition-all duration-300 hover:scale-105 overflow-hidden"
                   >
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 mr-1"
+                      className="h-5 w-5 relative z-10"
                       viewBox="0 0 20 20"
                       fill="currentColor"
                     >
@@ -680,19 +701,20 @@ export default function CollectionsPage() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    Cancel
+                    <span className="relative z-10">Cancel</span>
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="flex items-start mb-6">
-                <p className="text-gray-600">
+              <div className="flex items-start mb-6 gap-3">
+                <p className="text-base md:text-lg text-[#4a4a4a]/90 leading-relaxed flex-1">
                   {selectedCollection.description || "No description"}
                 </p>
                 <button
                   onClick={startEditingDescription}
-                  className="ml-2 text-gray-400 hover:text-gray-600"
+                  className="p-2.5 text-[#5C9BB8] hover:text-[#4a89a6] hover:bg-[#5C9BB8]/10 transition-all duration-300 hover:scale-110"
                   title="Edit description"
+                  aria-label="Edit collection description"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -705,6 +727,13 @@ export default function CollectionsPage() {
                 </button>
               </div>
             )}
+
+            {/* Items Section Header */}
+            <div className="mb-4 pb-3 border-b border-[#5C9BB8]/20">
+              <h3 className="text-xl font-bold text-[#2a2a2a]">
+                Collection Items <span className="text-[#5C9BB8]">({selectedCollection.items.length})</span>
+              </h3>
+            </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
               {selectedCollection.items.length === 0 ? (
@@ -734,11 +763,17 @@ export default function CollectionsPage() {
                   return (
                     <div
                       key={itemId}
-                      className="group bg-white/80 backdrop-blur-md border border-[#5C9BB8]/15 overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 hover:-translate-y-2 hover:bg-white/95 animate-scale-in"
+                      className="group bg-white/80 backdrop-blur-md border border-[#5C9BB8]/15 overflow-hidden shadow-lg hover:shadow-xl hover:shadow-[#5C9BB8]/20 transition-all duration-500 hover:-translate-y-2 hover:bg-white/95 animate-scale-in relative"
                       style={{ animationDelay: `${idx * 30}ms` }}
                     >
-                      <div className="h-28 bg-gradient-to-br from-[#F5F9FC] via-[#E8F0F7]/60 to-[#D8E4F0]/40 relative flex items-center justify-center overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                      <div className="h-32 bg-gradient-to-br from-[#F5F9FC] via-[#E8F0F7]/60 to-[#D8E4F0]/40 relative flex items-center justify-center overflow-hidden">
+                        {/* Shine effect */}
+                        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                        
+                        {/* Corner accents */}
+                        <div className="absolute top-0 left-0 w-5 h-5 border-t-2 border-l-2 border-[#5C9BB8]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div className="absolute bottom-0 right-0 w-5 h-5 border-b-2 border-r-2 border-[#5C9BB8]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        
                         {item.type === FILE_TYPE_PNG ? (
                           <Image
                             src={
@@ -747,20 +782,22 @@ export default function CollectionsPage() {
                             }
                             alt={item.name}
                             fill
-                            className="object-contain"
+                            className="object-contain p-2 group-hover:scale-105 transition-transform duration-500"
                           />
                         ) : (
-                          <Image
-                            src="/uploads/chart-icon.png"
-                            alt={item.name}
-                            width={40}
-                            height={40}
-                          />
+                          <div className="transition-transform group-hover:scale-110 duration-300">
+                            <Image
+                              src="/uploads/chart-icon.png"
+                              alt={item.name}
+                              width={48}
+                              height={48}
+                            />
+                          </div>
                         )}
                       </div>
-                      <div className="p-2">
-                        <div className="flex justify-between items-center">
-                          <h4 className="text-sm font-medium truncate">
+                      <div className="p-3">
+                        <div className="flex justify-between items-center mb-1">
+                          <h4 className="text-sm font-semibold text-[#2a2a2a] truncate flex-1">
                             {item.name}
                           </h4>
                           <button
@@ -781,7 +818,8 @@ export default function CollectionsPage() {
                                 ),
                               );
                             }}
-                            className="text-gray-400 hover:text-red-500"
+                            className="ml-2 p-1.5 text-[#FC9770] hover:text-[#fb8659] hover:bg-[#FC9770]/10 transition-all duration-300 hover:scale-110"
+                            title="Remove from collection"
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -797,7 +835,7 @@ export default function CollectionsPage() {
                             </svg>
                           </button>
                         </div>
-                        <p className="text-xs text-gray-500">{item.type}</p>
+                        <p className="text-xs text-[#4a4a4a]/70 font-medium uppercase tracking-wider">{item.type}</p>
                       </div>
                     </div>
                   );
