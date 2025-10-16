@@ -70,7 +70,13 @@ export default function UserUploads({ initialUploads }: UserUploadsProps) {
         <div className="w-full py-12 px-6">
           <div className="max-w-6xl mx-auto">
             <div className="flex flex-col justify-center items-center py-16 modern-card animate-fade-in">
-              <div className="spinner mb-4"></div>
+              <div className="mb-4">
+                <span className="loading-dots">
+                  <span className="dot"></span>
+                  <span className="dot"></span>
+                  <span className="dot"></span>
+                </span>
+              </div>
               <span className="text-lg font-medium text-[#2a2a2a]">Loading your uploads...</span>
               <span className="text-sm text-[#4a4a4a] mt-2">This won&apos;t take long</span>
             </div>
