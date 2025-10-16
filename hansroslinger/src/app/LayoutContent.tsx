@@ -30,25 +30,50 @@ export default function LayoutContent({ children }: { children: ReactNode }) {
               <span className="text-2xl font-bold gradient-text font-notulen">Yubi</span>
             </Link>
             
-            {/* Navigation hint */}
-            <div className="hidden md:flex items-center gap-6 text-sm text-[#4a4a4a]">
+            {/* Navigation - Enhanced */}
+            <div className="hidden md:flex items-center gap-4">
               <Link 
                 href="/dashboard" 
-                className="flex items-center gap-2 hover:text-[#5C9BB8] transition-colors"
+                className={`group relative flex items-center gap-3 px-5 py-2.5 font-bold text-base transition-all duration-300 overflow-hidden ${
+                  pathname === '/dashboard' 
+                    ? 'text-[#6a6a6a] bg-white/60' 
+                    : 'text-[#8a8a8a] hover:text-[#6a6a6a]'
+                }`}
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                {/* Animated background on hover */}
+                <div className="absolute inset-0 bg-gradient-to-r from-white/40 to-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                
+                <svg className="w-6 h-6 relative z-10 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                 </svg>
-                Dashboard
+                <span className="relative z-10 tracking-wide">Dashboard</span>
+                
+                {/* Active indicator */}
+                {pathname === '/dashboard' && (
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#6a6a6a]"></div>
+                )}
               </Link>
+              
               <Link 
                 href="/collections" 
-                className="flex items-center gap-2 hover:text-[#FC9770] transition-colors"
+                className={`group relative flex items-center gap-3 px-5 py-2.5 font-bold text-base transition-all duration-300 overflow-hidden ${
+                  pathname === '/collections' 
+                    ? 'text-[#6a6a6a] bg-white/60' 
+                    : 'text-[#8a8a8a] hover:text-[#6a6a6a]'
+                }`}
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                {/* Animated background on hover */}
+                <div className="absolute inset-0 bg-gradient-to-r from-white/40 to-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                
+                <svg className="w-6 h-6 relative z-10 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                 </svg>
-                Collections
+                <span className="relative z-10 tracking-wide">Collections</span>
+                
+                {/* Active indicator */}
+                {pathname === '/collections' && (
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#6a6a6a]"></div>
+                )}
               </Link>
             </div>
             
