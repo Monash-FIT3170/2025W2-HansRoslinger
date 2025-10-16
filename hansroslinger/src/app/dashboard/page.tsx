@@ -81,31 +81,46 @@ const Dashboard = async () => {
         <div className="absolute top-40 right-[20%] w-96 h-96 bg-gradient-to-r from-[#5C9BB8]/30 to-[#FED6A6]/25 blur-3xl animate-float-delayed"></div>
         <div className="absolute bottom-20 left-[40%] w-72 h-72 bg-gradient-to-r from-[#E5A168]/25 to-[#5C9BB8]/20 blur-3xl animate-float-slow"></div>
         
-        <div className="relative max-w-7xl mx-auto text-center w-full animate-fade-in">
+        <div className="relative max-w-7xl mx-auto text-center w-full">
           
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-8 leading-tight tracking-tight">
-            <span className="gradient-text-enhanced drop-shadow-sm">Gesture-Controlled</span>
-            <br />
-            <span className="bg-gradient-to-r from-[#5C9BB8] via-[#FC9770] to-[#FBC841] bg-clip-text text-transparent drop-shadow-sm">Visualisation</span>
-          </h1>
+          {/* Enhanced title with animation */}
+          <div className="animate-fade-in mb-10">
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight tracking-tight">
+              <div className="relative inline-block mb-3">
+                <span className="gradient-text-enhanced drop-shadow-lg">Gesture-Controlled</span>
+                {/* Subtle underline accent */}
+                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-3/4 h-1 bg-gradient-to-r from-transparent via-[#5C9BB8]/40 to-transparent"></div>
+              </div>
+              <br />
+              <div className="relative inline-block mt-2">
+                <span className="bg-gradient-to-r from-[#5C9BB8] via-[#FC9770] to-[#FBC841] bg-clip-text text-transparent drop-shadow-lg">Visualisation</span>
+                {/* Glow effect for second line */}
+                <div className="absolute inset-0 bg-gradient-to-r from-[#5C9BB8]/20 via-[#FC9770]/20 to-[#FBC841]/20 blur-3xl -z-10"></div>
+              </div>
+            </h1>
+          </div>
           
-          <p className="text-xl md:text-2xl text-[#4a4a4a]/90 mb-14 max-w-4xl mx-auto leading-relaxed font-light">
-            Interact with your data like never before. Upload, organise, and visualise with intuitive hand gestures.
-          </p>
+          {/* Enhanced description */}
+          <div className="animate-slide-up" style={{ animationDelay: '100ms' }}>
+            <p className="text-xl md:text-2xl text-[#4a4a4a]/90 mb-12 max-w-4xl mx-auto leading-relaxed font-light">
+              Interact with your data like never before. Upload, organise, and visualise with{' '}
+              <span className="text-[#5C9BB8] font-semibold">intuitive hand gestures</span>.
+            </p>
+          </div>
           
           {/* Enhanced Action Buttons */}
-          <div className="flex items-center justify-center gap-6 flex-wrap mb-6">
+          <div className="flex items-center justify-center gap-6 flex-wrap mb-8 animate-scale-in" style={{ animationDelay: '200ms' }}>
             <Upload />
             <Preview />
             <CollectionsButton />
           </div>
           
           {/* Enhanced scroll indicator */}
-          <div className="mt-20 animate-bounce">
-            <div className="relative inline-block">
-              {/* Glow effect */}
-              <div className="absolute inset-0 bg-[#FC9770]/30 blur-xl"></div>
-              <svg className="w-12 h-12 mx-auto text-[#FC9770] drop-shadow-lg relative" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="mt-20 animate-bounce" style={{ animationDelay: '400ms' }}>
+            <div className="relative inline-block group cursor-pointer">
+              {/* Enhanced glow effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-[#FC9770]/40 via-[#FBC841]/40 to-[#FC9770]/40 blur-xl group-hover:blur-2xl transition-all duration-300"></div>
+              <svg className="w-12 h-12 mx-auto text-[#FC9770] drop-shadow-xl relative transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
               </svg>
             </div>
