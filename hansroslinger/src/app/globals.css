@@ -385,3 +385,16 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   background: rgba(92, 155, 184, 0.3);
   color: inherit;
 }
+
+/* Prevent Chrome/Safari autofill from changing input colors */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  /* match inputs' semi-transparent white background */
+  -webkit-box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.5) inset;
+  -webkit-text-fill-color: #2a2a2a; /* match text color */
+  caret-color: #2a2a2a;
+  transition: background-color 9999s ease-out, color 9999s ease-out;
+}
