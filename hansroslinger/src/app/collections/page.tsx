@@ -43,7 +43,7 @@ export default function CollectionsPage() {
         {
           id: "col-1",
           name: "Line Charts",
-          description: "Collection of line chart visualizations",
+          description: "Collection of line chart visualisations",
           items: ["chart-1", "chart-2"],
           createdAt: "2025-10-01",
           thumbnailSrc: "/uploads/line-chart.json",
@@ -51,7 +51,7 @@ export default function CollectionsPage() {
         {
           id: "col-2",
           name: "Bar Charts",
-          description: "Collection of bar chart visualizations",
+          description: "Collection of bar chart visualisations",
           items: ["chart-3", "chart-4"],
           createdAt: "2025-10-05",
           thumbnailSrc: "/uploads/bar-chart.json",
@@ -219,17 +219,27 @@ export default function CollectionsPage() {
   };
 
   return (
-    <main className="flex-1 p-8">
-      <div className="max-w-6xl mx-auto">
-        <div className="mb-6">
+    <main className="flex-1 p-8 relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#FFF8F0] via-[#FFEFD5] to-[#FED6A6]/40 -z-10"></div>
+      
+      <div className="max-w-7xl mx-auto relative">
+        <div className="mb-8 flex items-center justify-between animate-fade-in">
+          <div>
+            <h1 className="text-4xl font-bold mb-2">
+              My <span className="gradient-text">Collections</span>
+            </h1>
+            <p className="text-[#4a4a4a]">
+              Organise and manage your visual assets
+            </p>
+          </div>
           <ReturnToDashboard />
         </div>
 
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">My Collections</h1>
-          <div className="flex items-center space-x-3">
+        <div className="flex justify-between items-center mb-8 animate-slide-up">
+          <div className="flex items-center gap-3">
             <button
-              className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg flex items-center"
+              className="inline-flex items-center gap-2 bg-[#FC9770] text-white px-5 py-2.5 font-semibold shadow-lg shadow-[#FC9770]/30 transition-all hover:shadow-xl hover:shadow-[#FC9770]/40 hover:-translate-y-0.5 hover:bg-[#fb8659]"
               onClick={() => setShowActiveOnly(!showActiveOnly)}
             >
               {showActiveOnly ? (
@@ -238,9 +248,9 @@ export default function CollectionsPage() {
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
-                    strokeWidth={1.5}
+                    strokeWidth={2}
                     stroke="currentColor"
-                    className="h-5 w-5 mr-2"
+                    className="h-5 w-5"
                   >
                     <path
                       strokeLinecap="round"
@@ -254,11 +264,9 @@ export default function CollectionsPage() {
                 <>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
+                    fill="currentColor"
                     viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="h-5 w-5 mr-2"
+                    className="h-5 w-5"
                   >
                     <path
                       strokeLinecap="round"
@@ -272,11 +280,11 @@ export default function CollectionsPage() {
             </button>
             <button
               onClick={toggleCreateForm}
-              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center"
+              className="inline-flex items-center gap-2 bg-[#5C9BB8] text-white px-5 py-2.5 font-semibold shadow-lg shadow-[#5C9BB8]/30 transition-all hover:shadow-xl hover:shadow-[#5C9BB8]/40 hover:-translate-y-0.5 hover:bg-[#4a89a6]"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 mr-2"
+                className="h-5 w-5"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -292,13 +300,13 @@ export default function CollectionsPage() {
         </div>
 
         {isCreating && (
-          <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-            <h2 className="text-xl font-semibold mb-4">
+          <div className="modern-card p-8 mb-8 animate-scale-in">
+            <h2 className="text-2xl font-bold mb-6 gradient-text">
               Create New Collection
             </h2>
-            <div className="space-y-4">
+            <div className="space-y-5">
               <div>
-                <label className="block text-gray-700 mb-2" htmlFor="name">
+                <label className="block text-foreground font-semibold mb-2" htmlFor="name">
                   Collection Name
                 </label>
                 <input
@@ -308,13 +316,13 @@ export default function CollectionsPage() {
                   onChange={(e) =>
                     setNewCollection({ ...newCollection, name: e.target.value })
                   }
-                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 border border-[#E5A168]/30 focus:outline-none focus:ring-2 focus:ring-[#5C9BB8]/50 focus:border-transparent transition-all bg-white text-[#2a2a2a]"
                   placeholder="Enter collection name"
                 />
               </div>
               <div>
                 <label
-                  className="block text-gray-700 mb-2"
+                  className="block text-foreground font-semibold mb-2"
                   htmlFor="description"
                 >
                   Description (Optional)
@@ -328,21 +336,21 @@ export default function CollectionsPage() {
                       description: e.target.value,
                     })
                   }
-                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 border border-[#E5A168]/30 focus:outline-none focus:ring-2 focus:ring-[#5C9BB8]/50 focus:border-transparent transition-all bg-white text-[#2a2a2a]"
                   placeholder="Describe your collection"
                   rows={3}
                 />
               </div>
-              <div className="flex justify-end space-x-3">
+              <div className="flex justify-end gap-3 pt-2">
                 <button
                   onClick={() => setIsCreating(false)}
-                  className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100"
+                  className="px-6 py-2.5 border-2 border-[#2a2a2a] text-[#2a2a2a] font-semibold hover:bg-[#2a2a2a] hover:text-white transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleCreateCollection}
-                  className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                  className="px-6 py-2.5 bg-gradient-to-r from-[#5C9BB8] via-[#FC9770] to-[#FBC841] text-white font-semibold shadow-lg shadow-[#5C9BB8]/30 transition-all hover:shadow-xl hover:shadow-[#FC9770]/40 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
                   disabled={!newCollection.name.trim()}
                 >
                   Create Collection
@@ -352,28 +360,38 @@ export default function CollectionsPage() {
           </div>
         )}
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {isLoading ? (
             Array.from({ length: 4 }).map((_, i) => (
               <div
                 key={i}
-                className="bg-gray-100 h-32 rounded-lg animate-pulse"
+                className="modern-card h-48 animate-pulse bg-gradient-to-br from-gray-100 to-gray-200"
               ></div>
             ))
           ) : showActiveOnly && activeCollections.length === 0 ? (
-            <div className="md:col-span-2 lg:col-span-3 p-10 bg-gray-50 rounded-lg text-center">
-              <p className="text-gray-600 mb-2">No active collections.</p>
+            <div className="col-span-full modern-card p-12 text-center animate-fade-in">
+              <div className="flex justify-center mb-4">
+                <svg className="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
+                </svg>
+              </div>
+              <p className="text-[#4a4a4a] mb-2 text-lg font-semibold">No active collections</p>
               <p className="text-gray-500">
-                Mark collections as active by clicking the star icon.
+                Mark collections as active by clicking the star icon
               </p>
             </div>
           ) : collections.length === 0 ? (
-            <div className="md:col-span-2 lg:col-span-3 p-10 bg-gray-50 rounded-lg text-center">
-              <p className="text-gray-600 mb-2">
-                You don&apos;t have any collections yet.
+            <div className="col-span-full modern-card p-12 text-center animate-fade-in">
+              <div className="flex justify-center mb-4">
+                <svg className="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+              </div>
+              <p className="text-[#4a4a4a] mb-2 text-lg font-semibold">
+                No collections yet
               </p>
               <p className="text-gray-500">
-                Create a collection to organize your uploads.
+                Create a collection to organise your uploads
               </p>
             </div>
           ) : (
@@ -382,11 +400,12 @@ export default function CollectionsPage() {
                 (collection) =>
                   !showActiveOnly || activeCollections.includes(collection.id),
               )
-              .map((collection) => (
+              .map((collection, idx) => (
                 <div
                   key={collection.id}
-                  className={`bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg cursor-pointer transition-shadow
-                    ${selectedCollection?.id === collection.id ? "ring-2 ring-blue-500" : ""}`}
+                  className={`modern-card overflow-hidden cursor-pointer group animate-scale-in
+                    ${selectedCollection?.id === collection.id ? "ring-4 ring-purple-500 shadow-purple-500/30" : ""}`}
+                  style={{ animationDelay: `${idx * 50}ms` }}
                   onClick={() => selectCollection(collection)}
                 >
                   <div className="h-28 bg-gray-200 relative">
@@ -424,7 +443,7 @@ export default function CollectionsPage() {
                           onClick={(e) =>
                             toggleActiveCollection(collection.id, e)
                           }
-                          className={`ml-2 p-1 rounded-full ${
+                          className={`ml-2 p-1 ${
                             activeCollections.includes(collection.id)
                               ? "text-yellow-500 bg-yellow-50"
                               : "text-gray-400 hover:text-gray-600 bg-transparent"
@@ -494,7 +513,7 @@ export default function CollectionsPage() {
         </div>
 
         {selectedCollection && (
-          <div className="mt-8 bg-white rounded-lg shadow-lg p-6">
+          <div className="mt-8 modern-card p-8 animate-slide-up">
             <div className="flex justify-between items-center mb-6">
               {isEditingTitle ? (
                 <div className="flex items-center gap-2">
@@ -566,12 +585,12 @@ export default function CollectionsPage() {
                 </div>
               )}
               <button
-                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center text-sm"
+                className="inline-flex items-center gap-2 bg-[#FBC841] text-white px-5 py-2.5 font-semibold shadow-lg shadow-[#FBC841]/30 transition-all hover:shadow-xl hover:shadow-[#FBC841]/40 hover:-translate-y-0.5 hover:bg-[#eab730]"
                 onClick={() => setIsAddItemsModalOpen(true)}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 mr-1"
+                  className="h-5 w-5"
                   viewBox="0 0 20 20"
                   fill="currentColor"
                 >
@@ -590,7 +609,7 @@ export default function CollectionsPage() {
                 <textarea
                   value={editableDescription}
                   onChange={(e) => setEditableDescription(e.target.value)}
-                  className="w-full p-2 text-gray-600 border-2 border-blue-300 rounded-md focus:outline-none focus:border-blue-500"
+                  className="w-full p-2 text-gray-600 border-2 border-blue-300 focus:outline-none focus:border-blue-500"
                   rows={3}
                   placeholder="Add a description"
                   autoFocus
@@ -656,22 +675,31 @@ export default function CollectionsPage() {
               </div>
             )}
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
               {selectedCollection.items.length === 0 ? (
-                <div className="col-span-full p-8 bg-gray-50 rounded-lg text-center">
-                  <p className="text-gray-500">
-                    This collection is empty. Add some items to get started.
+                <div className="col-span-full p-12 bg-gradient-to-br from-gray-50 to-gray-100 text-center">
+                  <div className="flex justify-center mb-3">
+                    <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                    </svg>
+                  </div>
+                  <p className="text-[#4a4a4a] font-semibold">
+                    This collection is empty
+                  </p>
+                  <p className="text-gray-500 text-sm mt-1">
+                    Add some items to get started
                   </p>
                 </div>
               ) : (
-                selectedCollection.items.map((itemId) => {
+                selectedCollection.items.map((itemId, idx) => {
                   const item = availableUploads[itemId];
                   if (!item) return null;
 
                   return (
                     <div
                       key={itemId}
-                      className="bg-white border rounded-md overflow-hidden hover:shadow-md transition-shadow"
+                      className="group bg-gradient-to-br from-white to-gray-50 border border-gray-200 overflow-hidden hover:shadow-lg transition-all hover:-translate-y-1 animate-scale-in"
+                      style={{ animationDelay: `${idx * 30}ms` }}
                     >
                       <div className="h-28 bg-gray-100 relative flex items-center justify-center">
                         {item.type === FILE_TYPE_PNG ? (
