@@ -50,7 +50,7 @@ export default function ScrollIndicator() {
   };
 
   return (
-    <div className="fixed top-8 left-8 z-50 animate-slide-down">
+    <div className="fixed top-28 left-8 z-50 animate-slide-down">
       <div className="relative backdrop-blur-md bg-white/80 border border-[#5C9BB8]/20 shadow-xl overflow-hidden group">
         {/* Gradient accent bar */}
         <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-[#5C9BB8] via-[#FC9770] to-[#FBC841]"></div>
