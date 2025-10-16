@@ -8,9 +8,65 @@ export default function Preview() {
 
   if (!pathname.startsWith("/")) return null;
 
+  const getScrollParent = (element: HTMLElement | null): HTMLElement => {
+    let parent: HTMLElement | null = element?.parentElement ?? null;
+    while (parent) {
+      const style = window.getComputedStyle(parent);
+      const overflowY = style.overflowY;
+      const isScrollable = (overflowY === "auto" || overflowY === "scroll") && parent.scrollHeight > parent.clientHeight;
+      if (isScrollable) return parent;
+      parent = parent.parentElement;
+    }
+    return (document.scrollingElement as HTMLElement) || document.documentElement;
+  };
+
+  const easeInOutQuad = (t: number) => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t);
+
+  const smoothScrollTo = (container: HTMLElement, to: number, duration = 1400) => {
+    return new Promise<void>((resolve) => {
+      const start = container.scrollTop;
+      const change = to - start;
+      const startTime = performance.now();
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const actualDuration = prefersReducedMotion ? 0 : duration;
+
+      const step = (now: number) => {
+        const elapsed = now - startTime;
+        const progress = Math.min(1, elapsed / actualDuration);
+        const eased = actualDuration === 0 ? 1 : easeInOutQuad(progress);
+        container.scrollTop = start + change * eased;
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        } else {
+          resolve();
+        }
+      };
+
+      requestAnimationFrame(step);
+    });
+  };
+
+  const smoothScrollIntoView = async (target: HTMLElement) => {
+    const container = getScrollParent(target);
+    const containerRect = container.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
+    const targetTop = targetRect.top - containerRect.top + container.scrollTop;
+    await smoothScrollTo(container, targetTop, 1400);
+  };
+
   return (
     <Link
-      href="/preview"
+      href={pathname === "/dashboard" ? "#uploads" : "/preview"}
+      onClick={(e) => {
+        if (pathname === "/dashboard") {
+          e.preventDefault();
+          const wrapper = document.getElementById("uploads");
+          const target = (wrapper?.querySelector("section") as HTMLElement) ?? (wrapper as HTMLElement);
+          if (target) {
+            smoothScrollIntoView(target);
+          }
+        }
+      }}
       className="group relative inline-flex items-center justify-center gap-3 w-60 bg-gradient-to-r from-[#FC9770] to-[#fb8659] px-10 py-4 text-base font-bold text-white shadow-xl shadow-[#FC9770]/50 transition-all duration-300 hover:shadow-2xl hover:shadow-[#FC9770]/70 hover:-translate-y-2 hover:scale-105 active:translate-y-0 active:scale-100 overflow-hidden"
     >
       {/* Animated shine effect */}

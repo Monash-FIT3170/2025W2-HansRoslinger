@@ -7,6 +7,7 @@ import { cookies } from "next/headers";
 import UserUploads from "./UserUploads";
 import CollectionsButton from "@/components/CollectionsButton";
 import ScrollIndicator from "@/components/ScrollIndicator";
+import ScrollToUploadsArrow from "@/components/ScrollToUploadsArrow";
 import { Hand, MousePointer2, Move, Maximize2, Pointer, Zap } from "lucide-react";
 
 // Custom Pinch Hand Gesture Icon
@@ -120,15 +121,7 @@ const Dashboard = async () => {
           </div>
           
           {/* Enhanced scroll indicator */}
-          <div className="mt-20 animate-bounce" style={{ animationDelay: '1600ms' }}>
-            <div className="relative inline-block group cursor-pointer">
-              {/* Enhanced glow effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-[#FC9770]/40 via-[#FBC841]/40 to-[#FC9770]/40 blur-xl group-hover:blur-2xl transition-all duration-300"></div>
-              <svg className="w-12 h-12 mx-auto text-[#FC9770] drop-shadow-xl relative transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-              </svg>
-            </div>
-          </div>
+          <ScrollToUploadsArrow />
         </div>
       </section>
 
