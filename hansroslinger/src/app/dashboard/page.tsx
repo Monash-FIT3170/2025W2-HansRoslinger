@@ -6,6 +6,30 @@ import Upload from "@/components/Upload";
 import { cookies } from "next/headers";
 import UserUploads from "./UserUploads";
 import CollectionsButton from "@/components/CollectionsButton";
+import { Hand, MousePointer2, Move, Maximize2, Pointer, Zap } from "lucide-react";
+
+// Custom Pinch Hand Gesture Icon
+const PinchHandIcon = ({ className = "", strokeWidth = 1.5 }: { className?: string; strokeWidth?: number }) => (
+  <svg 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth={strokeWidth}
+    strokeLinecap="round" 
+    strokeLinejoin="round" 
+    className={className}
+  >
+    {/* Thumb */}
+    <path d="M14 10.5c0-1-.5-2-1.5-2s-1.5 1-1.5 2" />
+    {/* Index finger */}
+    <path d="M11 10.5V6c0-1.1-.9-2-2-2s-2 .9-2 2v8" />
+    {/* Palm and other fingers */}
+    <path d="M7 14v-1c0-.6-.4-1-1-1-.6 0-1 .4-1 1v3c0 2.8 2.2 5 5 5h2c2.8 0 5-2.2 5-5v-4c0-.6-.4-1-1-1-.6 0-1 .4-1 1v1" />
+    {/* Pinching motion indicators */}
+    <circle cx="12" cy="9" r="0.5" fill="currentColor" />
+    <circle cx="10" cy="9" r="0.5" fill="currentColor" />
+  </svg>
+);
 
 const Dashboard = async () => {
   // Right now this is hard coded, once we have data base setup, we can fetch instead
@@ -15,24 +39,33 @@ const Dashboard = async () => {
   console.log("Email from cookies:", email);
   const gestures = [
     {
-      img: "/gestures/left-pinch.png",
-      title: "PINCH",
-      description: "Use a pinch gesture to grab and move objects",
-    },
-    {
-      img: ["/gestures/left-pinch.png", "/gestures/right-pinch.png"],
-      title: "DOUBLE PINCH",
-      description: "Use two hands with pinch gestures to zoom in and out",
-    },
-    {
-      img: "/gestures/point.png",
-      title: "POINT",
-      description: "Point to interact with data objects",
-    },
-    {
-      img: "/gestures/palm.png",
+      ActionIcon: Zap,
+      GestureIcon: Hand,
       title: "PALM",
       description: "Hold an open palm and hover to activate interaction mode",
+      iconColor: "bg-[#5C9BB8]",
+    },
+    {
+      ActionIcon: Move,
+      GestureIcon: PinchHandIcon,
+      title: "PINCH",
+      description: "Use a pinch gesture to grab and move objects",
+      iconColor: "bg-[#FC9770]",
+    },
+    {
+      ActionIcon: Maximize2,
+      GestureIcon: PinchHandIcon,
+      isDouble: true,
+      title: "DOUBLE PINCH",
+      description: "Use two hands with pinch gestures to zoom in and out",
+      iconColor: "bg-[#FBC841]",
+    },
+    {
+      ActionIcon: MousePointer2,
+      GestureIcon: Pointer,
+      title: "POINT",
+      description: "Point to interact with data objects",
+      iconColor: "bg-[#E5A168]",
     },
   ];
 
@@ -101,42 +134,53 @@ const Dashboard = async () => {
                 className="w-[260px] bg-white/70 backdrop-blur-sm shadow-xl hover:shadow-2xl hover:bg-white/90 transition-all duration-500 animate-scale-in hover:-translate-y-2 overflow-hidden group"
                 style={{ animationDelay: `${idx * 100}ms` }}
               >
-                {/* Gradient overlay on hover */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#5C9BB8]/5 via-transparent to-[#FC9770]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                {/* Hover overlay */}
+                <div className="absolute inset-0 bg-[#5C9BB8]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
                 
                 {/* Content wrapper */}
                 <div className="relative p-6 flex flex-col items-center text-center">
-                  {/* Icon container with gradient background */}
+                  {/* Action Icon Badge (top-right) */}
+                  <div className="absolute top-4 right-4 z-10">
+                    <div className={`p-2.5 rounded-xl ${g.iconColor} shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110`}>
+                      <g.ActionIcon 
+                        className="w-5 h-5 text-white drop-shadow-md"
+                        strokeWidth={2}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Gesture Icon Container (center) */}
                   <div className="relative w-full aspect-square mb-5 flex items-center justify-center">
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#5C9BB8]/15 via-[#7BAFD4]/10 to-[#D8E4F0]/15 blur-2xl group-hover:blur-3xl transition-all duration-500"></div>
-                    <div className="relative flex justify-center items-center gap-3 w-full h-full bg-gradient-to-br from-[#F5F9FC] via-[#E8F0F7]/50 to-[#D8E4F0]/30 border border-[#5C9BB8]/15 shadow-inner overflow-hidden group-hover:scale-105 transition-transform duration-500">
-                      {/* Shine effect */}
-                      <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                    <div className={`absolute inset-0 ${g.iconColor} opacity-10 blur-2xl group-hover:opacity-20 group-hover:blur-3xl transition-all duration-500`}></div>
+                    <div className="relative flex justify-center items-center gap-4 w-full h-full bg-[#F5F9FC] border border-[#5C9BB8]/15 shadow-inner overflow-hidden group-hover:scale-105 transition-transform duration-500">
                       
-                      {Array.isArray(g.img) ? (
-                        g.img.map((src, i) => (
-                          <Image
-                            key={i}
-                            src={src}
-                            alt={`${g.title} ${i + 1}`}
-                            width={60}
-                            height={60}
-                            className="relative z-10 drop-shadow-lg"
-                          />
-                        ))
+                      {g.isDouble ? (
+                        <>
+                          <div className={`relative z-10 p-3 rounded-2xl ${g.iconColor} shadow-lg transition-all duration-300 group-hover:scale-105`}>
+                            <g.GestureIcon 
+                              className="w-12 h-12 text-white"
+                              strokeWidth={1.5}
+                            />
+                          </div>
+                          <div className={`relative z-10 p-3 rounded-2xl ${g.iconColor} shadow-lg transition-all duration-300 group-hover:scale-105`}>
+                            <g.GestureIcon 
+                              className="w-12 h-12 text-white"
+                              strokeWidth={1.5}
+                            />
+                          </div>
+                        </>
                       ) : (
-                        <Image 
-                          src={g.img} 
-                          alt={g.title} 
-                          width={72} 
-                          height={72}
-                          className="relative z-10 drop-shadow-lg"
-                        />
+                        <div className={`relative z-10 p-4 rounded-2xl ${g.iconColor} shadow-lg transition-all duration-300 group-hover:scale-110`}>
+                          <g.GestureIcon 
+                            className="w-16 h-16 text-white drop-shadow-lg"
+                            strokeWidth={1.5}
+                          />
+                        </div>
                       )}
                     </div>
                   </div>
                   
-                  <h3 className="font-bold text-lg mb-3 bg-gradient-to-r from-[#5C9BB8] via-[#7BAFD4] to-[#5C9BB8] bg-clip-text text-transparent uppercase tracking-wide">
+                  <h3 className="font-bold text-lg mb-3 text-[#5C9BB8] uppercase tracking-wide">
                     {g.title}
                   </h3>
                   <p className="text-sm leading-relaxed text-[#4a4a4a]/80 group-hover:text-[#4a4a4a] transition-colors duration-300">
