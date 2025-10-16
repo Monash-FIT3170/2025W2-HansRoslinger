@@ -1,9 +1,4 @@
-import { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Collections - Hans Roslinger",
-  description: "Manage your collections of uploads",
-};
+"use client";
 
 export default function CollectionsLayout({
   children,
