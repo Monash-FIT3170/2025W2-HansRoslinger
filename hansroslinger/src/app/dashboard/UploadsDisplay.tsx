@@ -30,7 +30,7 @@ const UploadsDisplay = ({ uploads }: UploadsDisplayProps) => {
   const hasUploads = Object.keys(uploads).length > 0;
 
   return (
-    <section className="w-full py-24 px-6 relative overflow-hidden">
+    <section className="w-full py-24 px-6 relative overflow-hidden subtle-glow">
       {/* Background with animated gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#F5F9FC]/50 via-[#E8F0F7]/30 to-transparent"></div>
       
