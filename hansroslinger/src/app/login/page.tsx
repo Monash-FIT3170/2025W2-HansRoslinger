@@ -168,36 +168,45 @@ export default function LoginPage() {
             Experience the future of interaction with gesture-based controls. Yubi transforms how you interact with your data visualisations using just your hands.
           </p>
           <div className="space-y-5">
-            <div className="flex items-start gap-3">
-              <div className="w-14 h-14 bg-[#5C9BB8] flex items-center justify-center flex-shrink-0">
-                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11" />
-                </svg>
+            <div className="flex items-start gap-3 group/feature">
+              <div className="relative">
+                <div className="absolute inset-0 bg-[#5C9BB8] blur-md opacity-0 group-hover/feature:opacity-50 transition-all duration-300"></div>
+                <div className="relative w-14 h-14 bg-[#5C9BB8] flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover/feature:scale-110 group-hover/feature:rotate-3">
+                  <svg className="w-7 h-7 text-white transition-transform duration-300 group-hover/feature:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11" />
+                  </svg>
+                </div>
               </div>
               <div>
-                <h3 className="font-semibold text-foreground mb-1 font-notulen text-lg">Gesture Control</h3>
+                <h3 className="font-semibold text-foreground mb-1 font-notulen text-lg transition-colors duration-300 group-hover/feature:text-[#5C9BB8]">Gesture Control</h3>
                 <p className="text-sm text-[#6a6a6a] font-recursive">Navigate and interact with your content using natural hand gestures</p>
               </div>
             </div>
-            <div className="flex items-start gap-3">
-              <div className="w-14 h-14 bg-[#FBC841] flex items-center justify-center flex-shrink-0">
-                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
+            <div className="flex items-start gap-3 group/feature">
+              <div className="relative">
+                <div className="absolute inset-0 bg-[#FBC841] blur-md opacity-0 group-hover/feature:opacity-50 transition-all duration-300"></div>
+                <div className="relative w-14 h-14 bg-[#FBC841] flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover/feature:scale-110 group-hover/feature:rotate-3">
+                  <svg className="w-7 h-7 text-white transition-transform duration-300 group-hover/feature:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                </div>
               </div>
               <div>
-                <h3 className="font-semibold text-foreground mb-1 font-notulen text-lg">Data Visualisation</h3>
+                <h3 className="font-semibold text-foreground mb-1 font-notulen text-lg transition-colors duration-300 group-hover/feature:text-[#FBC841]">Data Visualisation</h3>
                 <p className="text-sm text-[#6a6a6a] font-recursive">Create and manage beautiful charts and visualisations</p>
               </div>
             </div>
-            <div className="flex items-start gap-3">
-              <div className="w-14 h-14 bg-[#FC9770] flex items-center justify-center flex-shrink-0">
-                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                </svg>
+            <div className="flex items-start gap-3 group/feature">
+              <div className="relative">
+                <div className="absolute inset-0 bg-[#FC9770] blur-md opacity-0 group-hover/feature:opacity-50 transition-all duration-300"></div>
+                <div className="relative w-14 h-14 bg-[#FC9770] flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover/feature:scale-110 group-hover/feature:rotate-3">
+                  <svg className="w-7 h-7 text-white transition-transform duration-300 group-hover/feature:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                  </svg>
+                </div>
               </div>
               <div>
-                <h3 className="font-semibold text-foreground mb-1 font-notulen text-lg">Smart Collections</h3>
+                <h3 className="font-semibold text-foreground mb-1 font-notulen text-lg transition-colors duration-300 group-hover/feature:text-[#FC9770]">Smart Collections</h3>
                 <p className="text-sm text-[#6a6a6a] font-recursive">Organise your work into collections for easy access</p>
               </div>
             </div>
@@ -205,23 +214,31 @@ export default function LoginPage() {
         </div>
 
         {/* Login Form */}
-        <div className="glass p-10 shadow-2xl w-full max-w-md animate-scale-in">
-          {/* Logo */}
-          <div className="flex justify-center mb-6">
-            <div className="flex flex-col items-center gap-2">
-              <Image
-                src="/yubi-logo.png"
-                alt="Yubi Logo"
-                width={56}
-                height={56}
-                style={{ height: "auto" }}
-              />
-              <span className="text-3xl font-bold text-[#5C9BB8] font-notulen">Yubi</span>
+        <div className="relative group">
+          {/* Animated glow border */}
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#5C9BB8]/30 via-[#FC9770]/30 to-[#FBC841]/30 opacity-0 group-hover:opacity-100 blur-lg transition-opacity duration-700"></div>
+          
+          <div className="relative glass p-10 shadow-2xl w-full max-w-md animate-scale-in">
+            {/* Logo */}
+            <div className="flex justify-center mb-6">
+              <div className="flex flex-col items-center gap-2 group/logo">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-[#5C9BB8]/20 blur-xl group-hover/logo:blur-2xl transition-all duration-500"></div>
+                  <Image
+                    src="/yubi-logo.png"
+                    alt="Yubi Logo"
+                    width={56}
+                    height={56}
+                    className="relative transition-transform duration-500 group-hover/logo:scale-110 group-hover/logo:rotate-6"
+                    style={{ height: "auto" }}
+                  />
+                </div>
+                <span className="text-3xl font-bold gradient-text-enhanced font-notulen">Yubi</span>
+              </div>
             </div>
-          </div>
 
-          <h1 className="text-3xl font-bold text-center mb-2 text-foreground font-notulen">Welcome</h1>
-          <p className="text-center text-[#4a4a4a] mb-8 font-recursive">Sign in to access your dashboard</p>
+            <h1 className="text-3xl font-bold text-center mb-2 text-foreground font-notulen">Welcome</h1>
+            <p className="text-center text-[#4a4a4a] mb-8 font-recursive">Sign in to access your dashboard</p>
 
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 mb-6 text-sm animate-fade-in">
@@ -235,32 +252,40 @@ export default function LoginPage() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium mb-2 text-foreground">
+          <div className="relative group/field">
+            <label htmlFor="email" className="block text-sm font-medium mb-2 text-foreground transition-colors duration-300 group-focus-within/field:text-[#5C9BB8]">
               Email Address
             </label>
-            <input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 border border-[#E5A168]/30 focus:outline-none focus:ring-2 focus:ring-[#5C9BB8]/50 focus:border-transparent transition-all bg-white/50 text-[#2a2a2a]"
-            />
+            <div className="relative">
+              <input
+                id="email"
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-3 border border-[#E5A168]/30 focus:outline-none focus:ring-2 focus:ring-[#5C9BB8]/50 focus:border-transparent transition-all duration-300 bg-white/50 text-[#2a2a2a] hover:border-[#5C9BB8]/40 hover:bg-white/70"
+              />
+              {/* Input glow on focus */}
+              <div className="absolute inset-0 bg-gradient-to-r from-[#5C9BB8]/10 to-[#FC9770]/10 opacity-0 group-focus-within/field:opacity-100 blur-sm transition-opacity duration-300 pointer-events-none -z-10"></div>
+            </div>
           </div>
 
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium mb-2 text-foreground">
+          <div className="relative group/field">
+            <label htmlFor="password" className="block text-sm font-medium mb-2 text-foreground transition-colors duration-300 group-focus-within/field:text-[#5C9BB8]">
               Password
             </label>
-            <input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 border border-[#E5A168]/30 focus:outline-none focus:ring-2 focus:ring-[#5C9BB8]/50 focus:border-transparent transition-all bg-white/50 text-[#2a2a2a]"
-            />
+            <div className="relative">
+              <input
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-3 border border-[#E5A168]/30 focus:outline-none focus:ring-2 focus:ring-[#5C9BB8]/50 focus:border-transparent transition-all duration-300 bg-white/50 text-[#2a2a2a] hover:border-[#5C9BB8]/40 hover:bg-white/70"
+              />
+              {/* Input glow on focus */}
+              <div className="absolute inset-0 bg-gradient-to-r from-[#5C9BB8]/10 to-[#FC9770]/10 opacity-0 group-focus-within/field:opacity-100 blur-sm transition-opacity duration-300 pointer-events-none -z-10"></div>
+            </div>
           </div>
 
           <div className="flex items-center">
@@ -276,29 +301,39 @@ export default function LoginPage() {
             </label>
           </div>
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-[#5C9BB8] hover:bg-[#4a89a6] text-white py-3 text-base font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
-          >
-            {isLoading ? (
-              <>
-                <span className="loading-dots">
-                  <span className="dot"></span>
-                  <span className="dot"></span>
-                  <span className="dot"></span>
-                </span>
-                Signing in
-              </>
-            ) : (
-              <>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-                </svg>
-                Sign In
-              </>
-            )}
-          </button>
+          <div className="relative group/button">
+            {/* Button glow effect */}
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#5C9BB8] via-[#FC9770] to-[#FBC841] opacity-0 group-hover/button:opacity-75 blur transition-opacity duration-500"></div>
+            
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="relative w-full bg-[#5C9BB8] hover:bg-[#4a89a6] text-white py-3 text-base font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-1 overflow-hidden"
+            >
+              {/* Shine effect on hover */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/button:translate-x-full transition-transform duration-1000"></div>
+              
+              <span className="relative z-10 flex items-center gap-2">
+                {isLoading ? (
+                  <>
+                    <span className="loading-dots">
+                      <span className="dot"></span>
+                      <span className="dot"></span>
+                      <span className="dot"></span>
+                    </span>
+                    Signing in
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                    </svg>
+                    Sign In
+                  </>
+                )}
+              </span>
+            </button>
+          </div>
         </form>
 
         <div className="mt-6 text-center">
@@ -306,13 +341,14 @@ export default function LoginPage() {
             Don&apos;t have an account?{" "}
             <span
               onClick={() => router.push("/signup")}
-              className="font-semibold text-[#5C9BB8] hover:text-[#4a89a6] cursor-pointer transition-colors"
+              className="font-semibold text-[#5C9BB8] hover:text-[#4a89a6] cursor-pointer transition-colors duration-300 hover:underline underline-offset-4"
             >
               Create account
             </span>
           </p>
         </div>
-      </div>
+          </div>
+        </div>
       </div>
     </main>
   );
