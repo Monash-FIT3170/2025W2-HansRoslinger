@@ -125,7 +125,7 @@ export default function UploadPage() {
   return (
     <main className="flex-1 p-8 relative overflow-hidden">
       {/* Background decoration */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-blue-900/10 dark:via-purple-900/10 dark:to-pink-900/10 -z-10"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-[#F5F9FC] via-[#5C9BB8]/6 to-[#E8F0F7]/15 dark:from-blue-900/10 dark:via-purple-900/10 dark:to-amber-900/10 -z-10"></div>
       
       <div className="max-w-4xl mx-auto relative">
         <div className="mb-8 flex items-center justify-between animate-fade-in">
@@ -171,7 +171,7 @@ export default function UploadPage() {
         >
           <div className="mb-6">
             <div className="flex justify-center mb-4">
-              <div className="p-6 bg-gradient-to-br from-[#5C9BB8]/20 to-[#FED6A6]/30">
+              <div className="p-6 bg-gradient-to-br from-[#5C9BB8]/20 to-[#D8E4F0]/35">
                 <svg className="w-16 h-16 text-[#5C9BB8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                 </svg>

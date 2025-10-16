@@ -30,7 +30,7 @@ const UploadsDisplay = ({ uploads }: UploadsDisplayProps) => {
   const hasUploads = Object.keys(uploads).length > 0;
 
   return (
-    <section className="w-full py-20 px-6 bg-gradient-to-b from-[#FED6A6]/5 via-[#FFEFD5]/20 to-[#FFF8F0]">
+    <section className="w-full py-20 px-6 bg-gradient-to-b from-[#F5F9FC]/40 via-[#F8FAFB]/60 to-[#FAFCFD]">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12 animate-slide-up">
           <h2 className="text-4xl md:text-5xl font-bold mb-4 text-[#2a2a2a]">
@@ -83,7 +83,7 @@ const UploadsDisplay = ({ uploads }: UploadsDisplayProps) => {
                   )}
                   
                   {/* Thumbnail container */}
-                  <div className="relative w-32 h-32 mb-5 flex items-center justify-center bg-gradient-to-br from-[#FED6A6]/30 to-[#E5A168]/20 p-3 group-hover:scale-105 transition-transform shadow-inner border border-[#E5A168]/20">
+                  <div className="relative w-32 h-32 mb-5 flex items-center justify-center bg-gradient-to-br from-[#D8E4F0]/40 to-[#5C9BB8]/15 p-3 group-hover:scale-105 transition-transform shadow-inner border border-[#5C9BB8]/15">
                     {data.type === FILE_TYPE_PNG ? (
                       <Image
                         src={
@@ -106,7 +106,7 @@ const UploadsDisplay = ({ uploads }: UploadsDisplayProps) => {
                       {data.name}
                     </div>
                     <div className="flex items-center justify-center gap-1.5">
-                      <span className="px-3 py-1.5 bg-gradient-to-r from-[#FED6A6]/60 via-[#E5A168]/50 to-[#FC9770]/40 text-[#2a2a2a] font-semibold text-xs uppercase tracking-wide border border-[#E5A168]/30">
+                      <span className="px-3 py-1.5 bg-[#5C9BB8] text-white font-semibold text-xs uppercase tracking-wide">
                         {data.type}
                       </span>
                     </div>

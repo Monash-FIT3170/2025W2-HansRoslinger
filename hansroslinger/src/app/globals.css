@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #FFFBF5; /* Lighter cream */
+  --background: #F8FAFB; /* Very light cool blue-gray */
   --foreground: #1a1a1a; /* Softer black */
   --accent: #5C9BB8; /* Blue */
   --accent-hover: #4a89a6; /* Darker blue */
@@ -54,7 +54,7 @@ h1, h2, h3, h4, h5, h6 {
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #FFF8F0; /* Warm light background */
+    --background: #F8FAFB; /* Very light cool blue-gray background */
     --foreground: #2a2a2a; /* Dark gray text */
     --card-bg: #ffffff; /* White cards */
     --gradient-primary: linear-gradient(135deg, #5C9BB8 0%, #FC9770 100%);
