@@ -327,6 +327,27 @@ a:hover {
   background: linear-gradient(180deg, #FC9770 0%, #5C9BB8 100%);
 }
 
+/* Thin scrollbar variant for horizontal scrolling */
+.scrollbar-thin::-webkit-scrollbar {
+  height: 8px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: rgba(92, 155, 184, 0.05);
+  border-radius: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #5C9BB8 0%, #FC9770 100%);
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(90deg, #FC9770 0%, #5C9BB8 100%);
+  box-shadow: 0 0 8px rgba(92, 155, 184, 0.4);
+}
+
 /* Button base styles */
 .btn-primary {
   background: var(--gradient-primary);
