@@ -1,38 +1,34 @@
 // app/layout.tsx
 import "./globals.css";
-import Image from "next/image";
-import Link from "next/link";
 import { ReactNode } from "react";
-import ReturnToDashboard from "@/components/ReturnToDashboard";
+import localFont from "next/font/local";
+import LayoutContent from "./LayoutContent";
+
+// Primary typeface - Recursive Variable Font
+const recursive = localFont({
+  src: "../../public/fonts/recursive-variable.ttf",
+  variable: "--font-recursive",
+  display: "swap",
+});
+
+// Secondary typeface - Notulen Serif Display
+const notulen = localFont({
+  src: "../../public/fonts/notulen-serif-bold.otf",
+  variable: "--font-notulen",
+  display: "swap",
+  weight: "700",
+});
 
 export const metadata = {
-  title: "Yubi",
-  description: "Gesture-controlled file visualizer",
+  title: "Yubi - Gesture-Controlled Visualisation",
+  description: "Modern gesture-controlled file visualiser for interactive data exploration",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className="h-full">
-      <body className="h-full">
-        <div className="flex flex-col h-full bg-[#fffcee]">
-          <header className="h-20 px-6 flex items-center justify-between">
-            <Link href="/dashboard" className="flex items-center">
-              <Image
-                src="/yubi-logo.png"
-                alt="Yubi Logo"
-                width={65}
-                height={65}
-                style={{ height: "auto" }}
-              />
-              <span className="text-4xl font-bold text-[#1e1e1e]">Yubi</span>
-            </Link>
-            {/* Conditionally rendered return button */}
-            <ReturnToDashboard />
-          </header>
-          <main className="flex-1 overflow-y-auto">
-            {children}
-          </main>
-        </div>
+    <html lang="en" className={`h-full ${recursive.variable} ${notulen.variable}`}>
+      <body className="h-full font-recursive antialiased">
+        <LayoutContent>{children}</LayoutContent>
       </body>
     </html>
   );
