@@ -113,7 +113,7 @@ const Dashboard = async () => {
           </div>
           
           {/* Enhanced Action Buttons */}
-          <div className="flex items-center justify-center gap-6 flex-wrap mb-8 animate-scale-in" style={{ animationDelay: '1200ms' }}>
+          <div className="flex items-center justify-center gap-6 flex-wrap mb-8 w-fit mx-auto animate-scale-in" style={{ animationDelay: '1200ms' }}>
             <Upload />
             <Preview />
             <CollectionsButton />
