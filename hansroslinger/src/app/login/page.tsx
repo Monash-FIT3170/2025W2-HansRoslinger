@@ -94,7 +94,7 @@ export default function LoginPage() {
   return (
     <main className="min-h-screen flex items-center justify-center relative overflow-hidden">
       {/* Multi-layer gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white via-[#FFF8F0] to-[#FFEFD5]/30"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-[#F5F9FC] via-[#F8FAFB] to-[#EBF2F7]/50"></div>
       <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-[#5C9BB8]/5 to-transparent"></div>
       
       {/* Animated gradient orbs - larger and more vibrant */}
