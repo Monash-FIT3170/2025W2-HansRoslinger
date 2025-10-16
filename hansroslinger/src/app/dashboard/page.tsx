@@ -94,39 +94,55 @@ const Dashboard = async () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="flex flex-wrap justify-center gap-8">
             {gestures.map((g, idx) => (
               <div
                 key={idx}
-                className="modern-card-enhanced p-8 flex flex-col items-center text-center group animate-scale-in hover-lift"
+                className="w-[260px] bg-white/70 backdrop-blur-sm shadow-xl hover:shadow-2xl hover:bg-white/90 transition-all duration-500 animate-scale-in hover:-translate-y-2 overflow-hidden group"
                 style={{ animationDelay: `${idx * 100}ms` }}
               >
-                {/* Icon container with gradient background */}
-                <div className="relative mb-6">
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#5C9BB8]/20 via-[#7BAFD4]/15 to-[#D8E4F0]/20 blur-xl group-hover:blur-2xl transition-all"></div>
-                  <div className="relative flex justify-center items-center gap-3 p-6 bg-gradient-to-br from-white to-[#E8F0F7]/40 border border-[#5C9BB8]/20 shadow-sm transform transition-transform group-hover:scale-110">
-                    {Array.isArray(g.img) ? (
-                      g.img.map((src, i) => (
-                        <Image
-                          key={i}
-                          src={src}
-                          alt={`${g.title} ${i + 1}`}
-                          width={72}
-                          height={72}
-                        />
-                      ))
-                    ) : (
-                      <Image src={g.img} alt={g.title} width={72} height={72} />
-                    )}
-                  </div>
-                </div>
+                {/* Gradient overlay on hover */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#5C9BB8]/5 via-transparent to-[#FC9770]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
                 
-                <h3 className="font-bold text-xl mb-3 bg-gradient-to-r from-[#5C9BB8] via-[#7BAFD4] to-[#5C9BB8] bg-clip-text text-transparent">
-                  {g.title}
-                </h3>
-                <p className="text-sm leading-relaxed text-[#4a4a4a]">
-                  {g.description}
-                </p>
+                {/* Content wrapper */}
+                <div className="relative p-6 flex flex-col items-center text-center">
+                  {/* Icon container with gradient background */}
+                  <div className="relative w-full aspect-square mb-5 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#5C9BB8]/15 via-[#7BAFD4]/10 to-[#D8E4F0]/15 blur-2xl group-hover:blur-3xl transition-all duration-500"></div>
+                    <div className="relative flex justify-center items-center gap-3 w-full h-full bg-gradient-to-br from-[#F5F9FC] via-[#E8F0F7]/50 to-[#D8E4F0]/30 border border-[#5C9BB8]/15 shadow-inner overflow-hidden group-hover:scale-105 transition-transform duration-500">
+                      {/* Shine effect */}
+                      <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                      
+                      {Array.isArray(g.img) ? (
+                        g.img.map((src, i) => (
+                          <Image
+                            key={i}
+                            src={src}
+                            alt={`${g.title} ${i + 1}`}
+                            width={60}
+                            height={60}
+                            className="relative z-10 drop-shadow-lg"
+                          />
+                        ))
+                      ) : (
+                        <Image 
+                          src={g.img} 
+                          alt={g.title} 
+                          width={72} 
+                          height={72}
+                          className="relative z-10 drop-shadow-lg"
+                        />
+                      )}
+                    </div>
+                  </div>
+                  
+                  <h3 className="font-bold text-lg mb-3 bg-gradient-to-r from-[#5C9BB8] via-[#7BAFD4] to-[#5C9BB8] bg-clip-text text-transparent uppercase tracking-wide">
+                    {g.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-[#4a4a4a]/80 group-hover:text-[#4a4a4a] transition-colors duration-300">
+                    {g.description}
+                  </p>
+                </div>
               </div>
             ))}
           </div>

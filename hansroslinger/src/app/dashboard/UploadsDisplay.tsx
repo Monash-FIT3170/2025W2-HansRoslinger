@@ -63,52 +63,61 @@ const UploadsDisplay = ({ uploads }: UploadsDisplayProps) => {
               {Object.entries(uploads).map(([assetId, data], idx) => (
                 <div
                   key={assetId}
-                  className={`group relative min-w-[220px] modern-card-enhanced p-6 flex flex-col items-center cursor-pointer transition-all duration-300 animate-scale-in hover-lift overflow-visible
+                  className={`group relative w-[260px] backdrop-blur-sm transition-all duration-500 animate-scale-in overflow-visible
                     ${isVisualExist(assetId) 
-                      ? "ring-4 ring-[#5C9BB8]/60 shadow-lg shadow-[#5C9BB8]/30 scale-105" 
-                      : "hover:ring-2 hover:ring-[#FC9770]/50"
+                      ? "bg-white/90 shadow-2xl shadow-[#5C9BB8]/30 ring-2 ring-[#5C9BB8]/40 scale-105 -translate-y-2" 
+                      : "bg-white/70 shadow-xl hover:shadow-2xl hover:bg-white/90 hover:-translate-y-2 hover:ring-2 hover:ring-[#FC9770]/30"
                     }
                   `}
                   style={{ animationDelay: `${idx * 50}ms` }}
                   role="button"
                   onClick={() => handleCLick(assetId, data)}
                 >
-                  {/* Selection indicator */}
-                  {isVisualExist(assetId) && (
-                    <div className="absolute top-2 right-2 bg-[#5C9BB8] p-2.5 shadow-lg shadow-[#5C9BB8]/50 animate-scale-in z-10">
-                      <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                  )}
+                  {/* Gradient overlay on hover */}
+                  <div className={`absolute inset-0 bg-gradient-to-br from-[#5C9BB8]/5 via-transparent to-[#FC9770]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`}></div>
                   
-                  {/* Thumbnail container */}
-                  <div className="relative w-32 h-32 mb-5 flex items-center justify-center bg-gradient-to-br from-[#D8E4F0]/40 to-[#5C9BB8]/15 p-3 group-hover:scale-105 transition-transform shadow-inner border border-[#5C9BB8]/15">
-                    {data.type === FILE_TYPE_PNG ? (
-                      <Image
-                        src={
-                          data.thumbnailSrc
-                            ? data.thumbnailSrc
-                            : "/uploads/default-thumbnail.png"
-                        }
-                        alt={data.name}
-                        className="object-contain object-center"
-                        fill={true}
-                        sizes="128px"
-                      />
-                    ) : (
-                      <VegaLiteChartDisplay data={data} />
+                  {/* Content wrapper with padding */}
+                  <div className="relative p-6">
+                    {/* Selection indicator */}
+                    {isVisualExist(assetId) && (
+                      <div className="absolute -top-2 -right-2 bg-gradient-to-br from-[#5C9BB8] to-[#7BAFD4] p-2.5 shadow-lg shadow-[#5C9BB8]/50 animate-scale-in z-10 border-4 border-white">
+                        <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </div>
                     )}
-                  </div>
-                  
-                  <div className="w-full">
-                    <div className="font-bold text-base mb-2 truncate text-center text-[#2a2a2a]">
-                      {data.name}
+                    
+                    {/* Thumbnail container */}
+                    <div className="relative w-full aspect-square mb-5 flex items-center justify-center bg-gradient-to-br from-[#F5F9FC] via-[#E8F0F7]/50 to-[#D8E4F0]/30 p-4 overflow-hidden group-hover:scale-[1.02] transition-all duration-500 border border-[#5C9BB8]/10">
+                      {/* Shine effect */}
+                      <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                      
+                      {data.type === FILE_TYPE_PNG ? (
+                        <Image
+                          src={
+                            data.thumbnailSrc
+                              ? data.thumbnailSrc
+                              : "/uploads/default-thumbnail.png"
+                          }
+                          alt={data.name}
+                          className="object-contain object-center relative z-10"
+                          fill={true}
+                          sizes="220px"
+                        />
+                      ) : (
+                        <VegaLiteChartDisplay data={data} />
+                      )}
                     </div>
-                    <div className="flex items-center justify-center gap-1.5">
-                      <span className="px-3 py-1.5 bg-[#5C9BB8] text-white font-semibold text-xs uppercase tracking-wide">
-                        {data.type}
-                      </span>
+                    
+                    <div className="w-full space-y-3">
+                      <div className="font-bold text-base truncate text-center text-[#2a2a2a] group-hover:text-[#5C9BB8] transition-colors duration-300">
+                        {data.name}
+                      </div>
+                      <div className="flex items-center justify-center">
+                        <span className="px-4 py-1.5 bg-gradient-to-r from-[#5C9BB8] to-[#7BAFD4] text-white font-semibold text-xs uppercase tracking-wider shadow-md">
+                          {data.type}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
