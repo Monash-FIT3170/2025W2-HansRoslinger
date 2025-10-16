@@ -11,7 +11,7 @@ export async function POST(
   req: NextRequest,
 ): Promise<NextResponse<LoginResponse>> {
   try {
-    const { email, password } = await req.json();
+    const { email, password, rememberMe } = await req.json();
     const user = await getUser(email);
     const hashedPassword = crypto
       .createHash("sha256")
@@ -25,10 +25,13 @@ export async function POST(
       );
     }
 
-    (await cookies()).set({
+    const cookieStore = await cookies();
+    cookieStore.set({
       name: "email",
       value: email,
       path: "/",
+      // If rememberMe, persist for 30 days; otherwise session cookie
+      ...(rememberMe ? { maxAge: 60 * 60 * 24 * 30 } : {}),
     });
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
