@@ -6,6 +6,7 @@ import Upload from "@/components/Upload";
 import { cookies } from "next/headers";
 import UserUploads from "./UserUploads";
 import CollectionsButton from "@/components/CollectionsButton";
+import ScrollIndicator from "@/components/ScrollIndicator";
 import { Hand, MousePointer2, Move, Maximize2, Pointer, Zap } from "lucide-react";
 
 // Custom Pinch Hand Gesture Icon
@@ -71,8 +72,11 @@ const Dashboard = async () => {
 
   return (
     <main className="flex-1 overflow-y-auto scroll-auto scroll-smooth lg:overflow-hidden">
+      {/* Scroll Position Indicator */}
+      <ScrollIndicator />
+      
       {/* Hero Section */}
-      <section className="relative py-24 px-6 overflow-hidden min-h-[65vh] flex items-center">
+      <section id="hero" className="relative py-24 px-6 overflow-hidden min-h-[65vh] flex items-center">
         {/* Enhanced animated background */}
         <div className="absolute inset-0 bg-gradient-to-br from-[#F5F9FC] via-[#5C9BB8]/10 to-[#E8F0F7]/25"></div>
         
@@ -129,10 +133,12 @@ const Dashboard = async () => {
       </section>
 
       {/* Uploads Section */}
-      <UserUploads initialUploads={uploads} />
+      <div id="uploads">
+        <UserUploads initialUploads={uploads} />
+      </div>
 
       {/* Gestures Guide Section */}
-      <section className="py-24 px-6 mb-8 relative overflow-hidden">
+      <section id="gestures" className="py-24 px-6 mb-8 relative overflow-hidden">
         {/* Enhanced Background decoration */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#5C9BB8]/10 via-[#E8F0F7]/15 to-[#FBC841]/5"></div>
         
