@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import ReturnToDashboard from "@/components/ReturnToDashboard";
+import LogoutButton from "@/components/LogoutButton";
 
 export default function LayoutContent({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -52,8 +53,11 @@ export default function LayoutContent({ children }: { children: ReactNode }) {
               </Link>
             </div>
             
-            {/* Conditionally rendered return button */}
+            {/* Right-side actions */}
+            <div className="flex items-center gap-3">
             <ReturnToDashboard />
+            <LogoutButton />
+            </div>
           </div>
         </header>
       )}
