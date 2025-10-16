@@ -1,6 +1,25 @@
 @import "tailwindcss";
 
+/* Font Face Declarations */
+@font-face {
+  font-family: 'Recursive';
+  src: url('/fonts/recursive-variable.ttf') format('truetype');
+  font-weight: 300 900;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Notulen Serif';
+  src: url('/fonts/notulen-serif-bold.otf') format('opentype');
+  font-weight: 700;
+  font-display: swap;
+  font-style: normal;
+}
+
 :root {
+  --font-recursive: 'Recursive', system-ui, -apple-system, sans-serif;
+  --font-notulen: 'Notulen Serif', serif;
   --background: #F8FAFB; /* Very light cool blue-gray */
   --foreground: #1a1a1a; /* Softer black */
   --accent: #5C9BB8; /* Blue */
@@ -28,28 +47,28 @@
   --color-secondary: var(--secondary);
   --color-success: var(--success);
   --color-card: var(--card-bg);
-  --font-sans: var(--font-recursive);
-  --font-serif: var(--font-notulen);
+  --font-sans: 'Recursive', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Notulen Serif', serif;
 }
 
 /* Apply fonts */
 body {
-  font-family: var(--font-recursive), system-ui, -apple-system, sans-serif;
+  font-family: 'Recursive', system-ui, -apple-system, sans-serif;
 }
 
 /* Use Notulen Serif for headings and special elements */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-notulen), serif;
+  font-family: 'Notulen Serif', serif;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
 
 .font-recursive {
-  font-family: var(--font-recursive), system-ui, -apple-system, sans-serif;
+  font-family: 'Recursive', system-ui, -apple-system, sans-serif;
 }
 
 .font-notulen {
-  font-family: var(--font-notulen), serif;
+  font-family: 'Notulen Serif', serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -256,6 +275,7 @@ body {
   background: linear-gradient(135deg, rgba(92, 155, 184, 0.05) 0%, rgba(252, 151, 112, 0.05) 100%);
   opacity: 0;
   transition: opacity 0.4s ease;
+  pointer-events: none; /* ensure decorative overlay never blocks clicks */
 }
 
 .modern-card-enhanced:hover::before {
