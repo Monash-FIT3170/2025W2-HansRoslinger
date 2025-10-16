@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { InteractionManager } from "./interactionManager";
 import { useVisualStore } from "store/visualsSlice";
 import { Visual } from "types/application";
+import { isPointInTrashZone } from "./trashZone";
 
 const RESIZE_MARGIN = 36;
 
@@ -50,6 +51,10 @@ export const useMouseMockStream = (manager: InteractionManager) => {
   const dragOffset = useRef<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
+    const shouldSkipEvent = (event: MouseEvent) => {
+      const target = event.target as HTMLElement | null;
+      return Boolean(target?.closest("[data-interaction-skip='true']"));
+    };
     /**
      * Converts screen coordinates to canvas-relative pointer coordinates.
      */
@@ -69,6 +74,8 @@ export const useMouseMockStream = (manager: InteractionManager) => {
      * and enters drag or resize mode depending on Shift key and hit area.
      */
     const onMouseDown = (e: MouseEvent) => {
+      if (shouldSkipEvent(e)) return;
+
       const pos = getPointer(e);
       if (!pos) return;
 
@@ -107,6 +114,13 @@ export const useMouseMockStream = (manager: InteractionManager) => {
      * Triggered on mouse move — sends interaction updates to the manager.
      */
     const onMouseMove = (e: MouseEvent) => {
+      if (
+        shouldSkipEvent(e) &&
+        !isDragging.current &&
+        !isResizing.current
+      )
+        return;
+
       const pos = getPointer(e);
       if (!pos) return;
 
@@ -171,7 +185,24 @@ export const useMouseMockStream = (manager: InteractionManager) => {
     /**
      * Resets interaction state when the mouse is released.
      */
-    const onMouseUp = () => {
+    const onMouseUp = (e: MouseEvent) => {
+      const pointer = getPointer(e);
+      const currentId = activeVisualId.current;
+      const wasInteracting =
+        (isDragging.current || isResizing.current) && Boolean(currentId);
+
+      if (wasInteracting && pointer && isPointInTrashZone(pointer)) {
+        useVisualStore.getState().removeVisual(currentId!);
+      }
+
+      if (shouldSkipEvent(e)) {
+        isDragging.current = false;
+        isResizing.current = false;
+        activeVisualId.current = null;
+        dragOffset.current = null;
+        return;
+      }
+
       isDragging.current = false;
       isResizing.current = false;
       activeVisualId.current = null;

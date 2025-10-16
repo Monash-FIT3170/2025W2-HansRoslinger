@@ -41,18 +41,18 @@ const ImageVisual = ({ id, visual }: ImageVisualProp) => {
       }
 
       // Set image property
-      if (containerRef && containerRef.current) {
-        // fit to container
-        img.style.objectFit = "contain";
-        img.style.width = "100%";
-        img.style.height = "100%";
-        // avoid only dragging image
-        img.draggable = false;
+      if (!containerRef.current) return;
 
-        // Clear previous and add image as child
-        containerRef.current.innerHTML = "";
-        containerRef.current.appendChild(img);
-      }
+      // fit image into container and avoid pointer capturing issues
+      img.style.objectFit = "contain";
+      img.style.width = "100%";
+      img.style.height = "100%";
+      img.style.display = "block";
+      img.draggable = false;
+
+      const containerEl = containerRef.current;
+      containerEl.innerHTML = "";
+      containerEl.appendChild(img);
     };
   }, [
     id,
@@ -71,7 +71,6 @@ const ImageVisual = ({ id, visual }: ImageVisualProp) => {
           ? `border-2 border-offset-0 relative ${borderColor}`
           : ""
       }
-      ref={containerRef}
       style={{
         position: "absolute",
         top: visual.position.y,
@@ -82,6 +81,11 @@ const ImageVisual = ({ id, visual }: ImageVisualProp) => {
         zIndex: 10,
       }}
     >
+      <div
+        ref={containerRef}
+        className="h-full w-full"
+        style={{ pointerEvents: "none" }}
+      />
       {(visual?.isHovered || visual?.isDragging) && (
         <>
           <div

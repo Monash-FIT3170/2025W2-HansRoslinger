@@ -74,8 +74,14 @@ export const FeedbackDisplay = ({
                   />
                 ))}
               </div>
+              <p className="text-center text-[10px] font-medium tracking-wide text-gray-600">
+                {g.title}
+              </p>
             </div>
           ))}
+          <p className="mt-2 text-center text-[10px] text-gray-600">
+            Drag to the rubbish bin to delete
+          </p>
         </div>
       )}
     </div>
