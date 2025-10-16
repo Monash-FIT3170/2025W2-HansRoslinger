@@ -155,19 +155,23 @@ body {
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.5s ease-out;
+  animation: fadeIn 0.5s ease-out both; /* hidden during delay, keeps end state */
+  will-change: opacity, transform;
 }
 
 .animate-slide-up {
-  animation: slideUp 0.6s ease-out;
+  animation: slideUp 0.6s ease-out both; /* hidden during delay, keeps end state */
+  will-change: opacity, transform;
 }
 
 .animate-slide-down {
-  animation: slideDown 0.6s ease-out;
+  animation: slideDown 0.6s ease-out both; /* hidden during delay, keeps end state */
+  will-change: opacity, transform;
 }
 
 .animate-scale-in {
-  animation: scaleIn 0.4s ease-out;
+  animation: scaleIn 0.4s ease-out both; /* hidden during delay, keeps end state */
+  will-change: opacity, transform;
 }
 
 .animate-float {

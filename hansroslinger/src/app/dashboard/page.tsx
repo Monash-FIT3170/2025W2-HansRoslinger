@@ -88,16 +88,16 @@ const Dashboard = async () => {
         <div className="relative max-w-7xl mx-auto text-center w-full">
           
           {/* Enhanced title with animation */}
-          <div className="animate-fade-in mb-10">
+          <div className="mb-10">
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight tracking-tight">
-              <div className="relative inline-block mb-3">
+              <div className="relative inline-block mb-3 animate-fade-in">
                 <span className="gradient-text-enhanced drop-shadow-lg">Gesture-Controlled</span>
                 {/* Subtle underline accent */}
                 <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-3/4 h-1 bg-gradient-to-r from-transparent via-[#5C9BB8]/40 to-transparent"></div>
               </div>
               <br />
-              <div className="relative inline-block mt-2">
-                <span className="bg-gradient-to-r from-[#5C9BB8] via-[#FC9770] to-[#FBC841] bg-clip-text text-transparent drop-shadow-lg">Visualisation</span>
+              <div className="relative inline-block mt-2 animate-slide-up" style={{ animationDelay: '400ms' }}>
+                <span className="gradient-text-enhanced drop-shadow-lg">Visualisation</span>
                 {/* Glow effect for second line */}
                 <div className="absolute inset-0 bg-gradient-to-r from-[#5C9BB8]/20 via-[#FC9770]/20 to-[#FBC841]/20 blur-3xl -z-10"></div>
               </div>
@@ -105,22 +105,22 @@ const Dashboard = async () => {
           </div>
           
           {/* Enhanced description */}
-          <div className="animate-slide-up" style={{ animationDelay: '100ms' }}>
-            <p className="text-xl md:text-2xl text-[#4a4a4a]/90 mb-12 max-w-4xl mx-auto leading-relaxed font-light">
+          <div className="animate-slide-up" style={{ animationDelay: '800ms' }}>
+            <p className="text-xl md:text-2xl text-[#4a4a4a]/90 mb-12 max-w-4xl mx-auto leading-relaxed font-bold">
               Interact with your data like never before. Upload, organise, and visualise with{' '}
               <span className="text-[#5C9BB8] font-semibold">intuitive hand gestures</span>.
             </p>
           </div>
           
           {/* Enhanced Action Buttons */}
-          <div className="flex items-center justify-center gap-6 flex-wrap mb-8 animate-scale-in" style={{ animationDelay: '200ms' }}>
+          <div className="flex items-center justify-center gap-6 flex-wrap mb-8 animate-scale-in" style={{ animationDelay: '1200ms' }}>
             <Upload />
             <Preview />
             <CollectionsButton />
           </div>
           
           {/* Enhanced scroll indicator */}
-          <div className="mt-20 animate-bounce" style={{ animationDelay: '400ms' }}>
+          <div className="mt-20 animate-bounce" style={{ animationDelay: '1600ms' }}>
             <div className="relative inline-block group cursor-pointer">
               {/* Enhanced glow effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-[#FC9770]/40 via-[#FBC841]/40 to-[#FC9770]/40 blur-xl group-hover:blur-2xl transition-all duration-300"></div>
