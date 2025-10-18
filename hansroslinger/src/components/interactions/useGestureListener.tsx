@@ -1,14 +1,19 @@
-import { useEffect} from "react";
+import { useEffect, useRef } from "react";
 import { gestureToActionMap } from "./gestureMappings";
 import { InteractionManager } from "./interactionManager";
 import { useGestureStore } from "store/gestureSlice";
-import { HAND_IDS } from "constants/application";
+import { HAND_IDS, LEFT_RIGHT } from "constants/application";
 import { useModeStore } from "store/modeSlice";
 import { paintManager } from "./paintManager";
+import { gestureToClick } from "./gestureToClick";
 
 export const useGestureListener = (interactionManager: InteractionManager) => {
   const gesturePayloads = useGestureStore((s) => s.gesturePayloads);
   const mode = useModeStore((s) => s.mode);
+
+  // Simple debounce for stopping a stroke after a quiet period
+  const emptyFrames = useRef(0);
+  const EMPTY_LIMIT = 3; // frames without gestures before ending stroke
 
   useEffect(() => {
     if (!gesturePayloads) return;
@@ -24,53 +29,39 @@ export const useGestureListener = (interactionManager: InteractionManager) => {
         interactionManager.handleClear();
       }
 
-      // Clear per-hand targets
+      // Clear all per-hand targets when we got nothing this frame
       HAND_IDS.forEach((handId) => interactionManager.clearTargetForHand(handId));
       return;
     }
 
-    // Handle clicking
-    gesturePayloads.forEach((payload) => {
-      if (payload.id !== LEFT_RIGHT) gestureToClick.handleGestureClick(payload);
-    });
-
     // We have gestures this frame
     emptyFrames.current = 0;
 
-    // --- Paint mode ---
-    if (mode === "paint") {
-      // Delegate the entire frame to the PaintManager.
-      paintManager.processFrame(gesturePayloads);
-    } else {
-      // Interaction mode: unchanged routing to InteractionManager.
-      if (gesturePayloads.length === 0) {
-        interactionManager.handleClear();
-      } else {
-        gesturePayloads.forEach((payload) => {
-          const action = gestureToActionMap[payload.name];
-          if (action) {
-            interactionManager.handleAction({
-              handId: payload.id,
-              action,
-              coordinates: Object.values(payload.points),
-            });
-          }
-        });
-      }
-    }
-
+    // Handle clicking (ignore combined LEFT_RIGHT pseudo-id)
     gesturePayloads.forEach((payload) => {
-      const action = gestureToActionMap[payload.name];
-      if (action) {
-        interactionManager.handleAction({
-          handId: payload.id,
-          action,
-          coordinates: Object.values(payload.points),
-        });
+      if (payload.id !== LEFT_RIGHT) {
+        gestureToClick.handleGestureClick(payload);
       }
     });
 
-    // Per-hand cleanup for non-reported hands (clear targets for hands with no gesture this frame.)
+    if (mode === "paint") {
+      // Delegate the whole frame to the paint manager
+      paintManager.processFrame(gesturePayloads);
+    } else {
+      // Interaction mode: map gestures to actions
+      gesturePayloads.forEach((payload) => {
+        const action = gestureToActionMap[payload.name];
+        if (action) {
+          interactionManager.handleAction({
+            handId: payload.id,
+            action,
+            coordinates: Object.values(payload.points),
+          });
+        }
+      });
+    }
+
+    // Per-hand cleanup for hands that didn’t report this frame
     const receivedHands = new Set(gesturePayloads.map((g) => g.id));
     HAND_IDS.forEach((handId) => {
       if (!receivedHands.has(handId)) {
