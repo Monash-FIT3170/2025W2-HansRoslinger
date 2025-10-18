@@ -2,10 +2,9 @@ import { useEffect} from "react";
 import { gestureToActionMap } from "./gestureMappings";
 import { InteractionManager } from "./interactionManager";
 import { useGestureStore } from "store/gestureSlice";
-import { HAND_IDS, LEFT_RIGHT } from "constants/application";
+import { HAND_IDS } from "constants/application";
 import { useModeStore } from "store/modeSlice";
 import { paintManager } from "./paintManager";
-import { gestureToClick } from "./gestureToClick";
 
 export const useGestureListener = (interactionManager: InteractionManager) => {
   const gesturePayloads = useGestureStore((s) => s.gesturePayloads);
