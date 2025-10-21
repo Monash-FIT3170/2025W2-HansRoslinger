@@ -1,15 +1,22 @@
 import { GesturePayload } from "app/detection/Gesture";
-import { paintStart, paintMove, paintEnd, isPainting } from "./actions/handlePaint";
+import {
+  paintStart,
+  paintMove,
+  paintEnd,
+  isPainting,
+} from "./actions/handlePaint";
 import { eraserOverlay } from "./actions/eraserOverlay";
 
 type Tool = "draw" | "erase";
 
-const ERASER_MULTIPLIER = 3;        
-const EMPTY_LIMIT_FRAMES = 5;         // end stroke after N empty frames
-const SWITCH_HYSTERESIS_FRAMES = 3;   // require N frames to switch tools
+const ERASER_MULTIPLIER = 3;
+const EMPTY_LIMIT_FRAMES = 5; // end stroke after N empty frames
+const SWITCH_HYSTERESIS_FRAMES = 3; // require N frames to switch tools
 
 function getCanvas(): HTMLCanvasElement | null {
-  return document.getElementById("annotation-canvas") as HTMLCanvasElement | null;
+  return document.getElementById(
+    "annotation-canvas",
+  ) as HTMLCanvasElement | null;
 }
 function getAttr(name: string): string | null {
   return getCanvas()?.getAttribute(name) ?? null;
@@ -42,7 +49,10 @@ function getEraseRadiusDevicePx(baseDrawWidth: number | null): number {
  */
 export class PaintManager {
   private emptyFrames = 0;
-  private toolState: { current: Tool; vote: number } = { current: "draw", vote: 0 };
+  private toolState: { current: Tool; vote: number } = {
+    current: "draw",
+    vote: 0,
+  };
 
   // Remember the user's brush width so we can restore it after erasing.
   private savedDrawWidth: number | null = null;
@@ -64,7 +74,11 @@ export class PaintManager {
     // Choose target tool for this frame (eraser has priority over draw)
     const fist = payloads.find((p) => p.name === "closed_fist");
     const pinch = payloads.find((p) => p.name === "pinch");
-    const target: Tool = fist ? "erase" : pinch ? "draw" : this.toolState.current;
+    const target: Tool = fist
+      ? "erase"
+      : pinch
+        ? "draw"
+        : this.toolState.current;
 
     // Hysteresis for tool switching
     if (target !== this.toolState.current) {
