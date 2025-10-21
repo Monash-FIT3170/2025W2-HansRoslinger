@@ -1,6 +1,6 @@
 import { Visual } from "types/application";
 import { handleHover } from "./handleHover";
-import { canvasStore } from "store/canvasSlice";
+import { containerStore } from "store/containerSlice";
 
 // Track last simulated pointer position and target to prevent spamming events
 let lastSimulatedPosition: { x: number; y: number } | null = null;
@@ -57,14 +57,14 @@ const simulatePointerEvents = (
   }
 
   // Get the canvas used to detect gesture
-  const { gestureCanvas } = canvasStore.getState();
-  if (!gestureCanvas) {
+  const { container } = containerStore.getState();
+  if (!container) {
     console.warn("Canvas used to detect gesture not found");
     return;
   }
 
   // Get the client area and calculate the x and y respective to the client bounding area
-  const rect = gestureCanvas.getBoundingClientRect();
+  const rect = container.getBoundingClientRect();
   // Map to client coordinates
   const clientX = rect.left + position.x;
   const clientY = rect.top + position.y;
