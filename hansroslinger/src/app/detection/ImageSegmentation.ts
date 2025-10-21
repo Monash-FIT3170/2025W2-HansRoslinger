@@ -123,7 +123,10 @@ export const processBackgroundRemoval = async (
       const maskIndex = (i / 4) | 0;
       const maskValue = mask[maskIndex];
 
-      if (maskValue < 0.5) {
+      // Use a more aggressive threshold for cleaner edges
+      const threshold = 0.1; // Lower threshold for more aggressive background removal
+      
+      if (maskValue < threshold) {
         foregroundPixels++;
         // Foreground pixels (person) - keep original
       } else {
