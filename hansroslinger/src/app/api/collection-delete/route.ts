@@ -23,8 +23,15 @@ export async function DELETE(request: NextRequest) {
         }
         await deleteS3Folder(String(collection.id), user.email);
 
-        return NextResponse.json({ message: 'Collection deleted successfully.' }, { status: 200 });
-    } catch (error) {
-        return NextResponse.json({ error: 'Failed to delete collection.' }, { status: 500 });
-    }
+    return NextResponse.json(
+      { message: "Collection deleted successfully." },
+      { status: 200 },
+    );
+  } catch (error) {
+    console.error("Error deleting collection:", error);
+    return NextResponse.json(
+      { error: "Failed to delete collection." },
+      { status: 500 },
+    );
+  }
 }
