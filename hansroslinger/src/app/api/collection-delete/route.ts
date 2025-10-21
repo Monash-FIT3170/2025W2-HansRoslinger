@@ -8,6 +8,7 @@ export async function DELETE(request: NextRequest) {
   try {
     const { name } = await request.json();
     const email = request.cookies.get("email")?.value || "";
+    const userID: number = +(request.cookies.get("userID")?.value || "");
     if (!name || !email) {
       return NextResponse.json(
         { error: "Missing required fields" },
@@ -24,7 +25,7 @@ export async function DELETE(request: NextRequest) {
     }
     const user = await getUser(email);
     if (!user) {
-      await createCollection(email, name); // Rollback collection deletion
+      await createCollection(userID, name); // Rollback collection deletion
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
     await deleteS3Folder(String(collection.id), user.email);

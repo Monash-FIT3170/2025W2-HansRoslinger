@@ -11,6 +11,7 @@ export async function POST(request: NextRequest) {
   try {
     const { name } = await request.json();
     const email = request.cookies.get("email")?.value || "";
+    const userID: number = +(request.cookies.get("userID")?.value || "");
 
     if (!email || !name) {
       return NextResponse.json(
@@ -19,7 +20,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const collection = await createCollection(email, name);
+    const collection = await createCollection(userID, name);
     if (!collection) {
       return NextResponse.json("Failed to create collection", { status: 500 });
     }

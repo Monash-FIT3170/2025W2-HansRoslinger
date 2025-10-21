@@ -13,6 +13,7 @@ export async function GET(request: NextRequest) {
   try {
     // Get email from request cookies
     const email = request.cookies.get("email")?.value || "";
+    const userID: number = +(request.cookies.get("userID")?.value || "");
     const { collection } = await request.json();
     if (!collection) {
       return NextResponse.json(
@@ -27,7 +28,7 @@ export async function GET(request: NextRequest) {
         { status: 401 },
       );
     }
-    const collectionId = await getCollection(collection, email);
+    const collectionId = await getCollection(collection, userID);
     // Retrieve files from S3
     const files = await retrieveUserFiles(email, String(collectionId?.id));
 
