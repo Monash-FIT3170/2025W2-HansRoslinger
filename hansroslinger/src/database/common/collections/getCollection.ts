@@ -8,7 +8,7 @@ export async function getCollection(collectionToFind: string, email: string) {
       throw new Error(`User with email ${email} not found`);
     }
     const collection = await prisma.collection.findUnique({
-      where: { authorID_name: {name: collectionToFind, authorID: user.id }},
+      where: { authorID_name: { name: collectionToFind, authorID: user.id } },
     });
     return collection;
   } catch (error) {
