@@ -6,6 +6,7 @@ import { canvasRenderer } from "app/detection/canvasRenderer";
 import { useGestureStore } from "store/gestureSlice";
 import AnnotationLayer from "./AnnotationLayer";
 import { useContainerStore } from "store/containerSlice";
+import BackgroundRemovalControls from "@/components/BackgroundRemovalControls";
 import { GestureRecognizerResult } from "@mediapipe/tasks-vision";
 import FloatingDataPanel from "@/components/FloatingDataPanel";
 
@@ -135,7 +136,9 @@ const CameraFeed = () => {
 
       {/* Annotation layer */}
       <AnnotationLayer targetRef={videoRef} />
-      <FloatingDataPanel />
+
+      {/* Background removal controls */}
+      <BackgroundRemovalControls videoRef={videoRef} />
 
       {/* Error banner */}
       {cameraError && (
