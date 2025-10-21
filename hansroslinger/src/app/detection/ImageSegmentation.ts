@@ -79,12 +79,26 @@ const processSegmentationWithBackground = async (
       // Put the processed image data back
       ctx.putImageData(imageData, 0, 0);
       
-      // Mirror the final result to match the video display
-      ctx.save();
-      ctx.scale(-1, 1);
-      ctx.translate(-canvas.width, 0);
-      ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height);
-      ctx.restore();
+      // Create a temporary canvas for mirroring
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = canvas.width;
+      tempCanvas.height = canvas.height;
+      const tempCtx = tempCanvas.getContext('2d');
+      
+      if (tempCtx) {
+        // Copy the processed result to temp canvas
+        tempCtx.putImageData(imageData, 0, 0);
+        
+        // Clear the main canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Mirror the temp canvas to the main canvas
+        ctx.save();
+        ctx.scale(-1, 1);
+        ctx.translate(-canvas.width, 0);
+        ctx.drawImage(tempCanvas, 0, 0, canvas.width, canvas.height);
+        ctx.restore();
+      }
     } else {
       console.warn("No category mask returned from segmentation");
     }
