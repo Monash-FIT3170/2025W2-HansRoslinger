@@ -1,5 +1,4 @@
 import prisma from "../client";
-import { getCollection } from "./getCollection";
 
 export async function createAsset(collectionID: number, name: string) {
   try {
