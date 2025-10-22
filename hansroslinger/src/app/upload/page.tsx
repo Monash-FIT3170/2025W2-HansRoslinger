@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FILE_TYPE_JSON, FILE_TYPE_PNG } from "../../constants/application";
 import ReturnToDashboard from "@/components/ReturnToDashboard";
 import { useRouter } from "next/navigation";
+import CollectionsButton from "@/components/CollectionsButton";
 
 export default function UploadPage() {
   const [isDragging, setIsDragging] = useState(false);
@@ -14,6 +15,43 @@ export default function UploadPage() {
     message: string;
   } | null>(null);
   const router = useRouter();
+  const [collections, setCollections] = useState<Array<{ id: string; name: string }>>([]);
+  const [fileToCollection, setFileToCollection] = useState<Record<number, string | "">>({});
+
+  // Load collections: prefer localStorage (populated by Collections page), fallback to API
+  useEffect(() => {
+    let isMounted = true;
+    try {
+      const raw = window.localStorage.getItem("collections");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && isMounted) {
+          setCollections(parsed);
+        }
+      }
+    } catch (_) {
+      // ignore parse errors
+    }
+
+    (async () => {
+      try {
+        const res = await fetch("/api/collections", { cache: "no-store" });
+        if (!res.ok) return;
+        const data = (await res.json()) as { collections?: Array<{ id: string; name: string }>; };
+        if (isMounted && Array.isArray(data.collections) && data.collections.length > 0) {
+          setCollections(data.collections);
+          try {
+            window.localStorage.setItem("collections", JSON.stringify(data.collections));
+          } catch (_) {}
+        }
+      } catch (_) {
+        // ignore
+      }
+    })();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -64,8 +102,13 @@ export default function UploadPage() {
 
     try {
       const formData = new FormData();
-      files.forEach((file) => {
+      files.forEach((file, index) => {
         formData.append("file", file);
+        const chosenCollection = fileToCollection[index];
+        if (chosenCollection) {
+          // Include the selected collection alongside each file (backend can choose to use or ignore)
+          formData.append(`collectionFor_${file.name}`, chosenCollection);
+        }
       });
 
       console.log(
@@ -262,19 +305,28 @@ export default function UploadPage() {
           </div>
         </div>
 
-        {files.length > 0 && (
-          <div className="modern-card-enhanced p-8 animate-slide-up backdrop-blur-md bg-white/80">
-            <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
-              <span className="gradient-text-enhanced">Selected Files</span>
-              <span className="relative">
-                <div className="absolute inset-0 bg-[#5C9BB8]/30 blur-md"></div>
-                <span className="relative text-base font-bold px-4 py-2 bg-gradient-to-r from-[#5C9BB8] to-[#7BAFD4] text-white shadow-lg">
-                  {files.length}
+        <div className="modern-card-enhanced p-8 animate-slide-up backdrop-blur-md bg-white/80">
+            <div className="mb-6 flex items-start justify-between gap-4 flex-wrap">
+              <h2 className="text-3xl font-bold flex items-center gap-3">
+                <span className="gradient-text-enhanced">Selected Files</span>
+                <span className="relative">
+                  <div className="absolute inset-0 bg-[#5C9BB8]/30 blur-md"></div>
+                  <span className="relative text-base font-bold px-4 py-2 bg-gradient-to-r from-[#5C9BB8] to-[#7BAFD4] text-white shadow-lg">
+                    {files.length}
+                  </span>
                 </span>
-              </span>
-            </h2>
+              </h2>
+              <div className="flex items-center gap-3">
+                <CollectionsButton />
+              </div>
+            </div>
             <div className="space-y-4 mb-8">
-              {files.map((file, index) => (
+              {files.length === 0 ? (
+                <div className="p-5 bg-gradient-to-r from-[#F5F9FC] via-[#E8F0F7]/60 to-[#D8E4F0]/40 border border-[#5C9BB8]/15 text-center text-[#4a4a4a]/80 font-semibold">
+                  No files selected yet
+                </div>
+              ) : (
+                files.map((file, index) => (
                 <div
                   key={index}
                   className="group relative flex items-center justify-between p-5 bg-gradient-to-r from-[#F5F9FC] via-[#E8F0F7]/60 to-[#D8E4F0]/40 border border-[#5C9BB8]/15 hover:shadow-xl hover:-translate-y-1 transition-all duration-500 overflow-hidden"
@@ -312,6 +364,34 @@ export default function UploadPage() {
                       <div className="text-sm text-[#4a4a4a]/80 font-semibold">
                         {Math.round(file.size / 1024)} KB
                       </div>
+                      <div className="mt-2 flex items-center gap-2 flex-wrap">
+                        <label className="text-xs font-semibold text-[#4a4a4a]/80">
+                          Add to collection:
+                        </label>
+                        <select
+                          value={fileToCollection[index] ?? ""}
+                          onChange={(e) =>
+                            setFileToCollection((prev) => ({
+                              ...prev,
+                              [index]: e.target.value,
+                            }))
+                          }
+                          className="px-3 py-2 text-sm border border-[#5C9BB8]/30 bg-white/90 focus:outline-none focus:ring-2 focus:ring-[#5C9BB8]/40 focus:border-transparent"
+                        >
+                          <option value="">No collection</option>
+                          {collections.length === 0 ? (
+                            <option value="" disabled>
+                              No collections available
+                            </option>
+                          ) : (
+                            collections.map((c) => (
+                              <option key={c.id} value={c.id}>
+                                {c.name}
+                              </option>
+                            ))
+                          )}
+                        </select>
+                      </div>
                     </div>
                   </div>
                   <button
@@ -331,13 +411,13 @@ export default function UploadPage() {
                     </svg>
                   </button>
                 </div>
-              ))}
+              )))}
             </div>
 
             <div className="flex justify-end">
               <button
                 onClick={handleUpload}
-                disabled={isUploading}
+                disabled={isUploading || files.length === 0}
                 className="group relative inline-flex items-center gap-3 bg-gradient-to-r from-[#FC9770] to-[#fb8659] text-white px-10 py-4 font-bold shadow-xl shadow-[#FC9770]/50 transition-all duration-300 hover:shadow-2xl hover:shadow-[#FC9770]/70 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 overflow-hidden"
               >
                 {/* Animated shine effect */}
@@ -373,8 +453,7 @@ export default function UploadPage() {
                 )}
               </button>
             </div>
-          </div>
-        )}
+        </div>
       </div>
     </main>
   );

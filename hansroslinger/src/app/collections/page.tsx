@@ -136,6 +136,16 @@ export default function CollectionsPage() {
       setIsLoading(false);
   }, []);
 
+  // Persist a minimal view of collections to localStorage for use on other pages (e.g., Uploads)
+  useEffect(() => {
+    try {
+      const minimal = collections.map((c) => ({ id: c.id, name: c.name }));
+      window.localStorage.setItem("collections", JSON.stringify(minimal));
+    } catch (_) {
+      // ignore storage errors
+    }
+  }, [collections]);
+
   const handleCreateCollection = async () => {
     if (!newCollection.name.trim()) return;
     try {
