@@ -49,7 +49,6 @@ export default function BackgroundRemovalControls({
             videoWidth === canvasWidth &&
             videoHeight === canvasHeight
           ) {
-            console.log("Canvas dimensions match video, processing...");
             try {
               if (backgroundType === "blur") {
                 await processBackgroundBlur(
@@ -64,23 +63,14 @@ export default function BackgroundRemovalControls({
                   backgroundType === "transparent" ? "transparent" : backgroundColor
                 );
               }
-              console.log("Background removal completed successfully");
             } catch (error) {
               console.error("Background removal failed:", error);
             }
           } else {
-            console.log("Canvas dimensions don't match video:", {
-              videoWidth,
-              videoHeight,
-              canvasWidth,
-              canvasHeight
-            });
-            
             // Force resize canvas to match video dimensions
             if (backgroundCanvasRef.current) {
               backgroundCanvasRef.current.width = videoWidth;
               backgroundCanvasRef.current.height = videoHeight;
-              console.log("Force resized canvas to:", backgroundCanvasRef.current.width, "x", backgroundCanvasRef.current.height);
             }
           }
         }
@@ -101,43 +91,24 @@ export default function BackgroundRemovalControls({
     };
   }, [backgroundRemovalEnabled, backgroundType, backgroundColor, blurRadius, videoRef]);
 
-  // Size the background canvas to match the video
+  // Size the background canvas to match the video display (same as overlay canvas)
   useEffect(() => {
     const sizeCanvas = () => {
       const video = videoRef.current;
       const canvas = backgroundCanvasRef.current;
       if (!video || !canvas) return;
 
-      // Use the video's actual dimensions, not the bounding rect
-      const videoWidth = video.videoWidth;
-      const videoHeight = video.videoHeight;
-      
-      if (videoWidth > 0 && videoHeight > 0) {
-        const dpr = window.devicePixelRatio || 1;
-        
-        // Set canvas size to match video dimensions
-        canvas.width = videoWidth;
-        canvas.height = videoHeight;
-        
-        // Set display size to match video display size
-        const rect = video.getBoundingClientRect();
-        canvas.style.width = `${rect.width}px`;
-        canvas.style.height = `${rect.height}px`;
+      const rect = video.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
 
-        const ctx = canvas.getContext("2d");
-        if (ctx) {
-          ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset transform
-        }
-        
-        // Force a re-render to ensure the canvas is properly sized
-        setTimeout(() => {
-          if (backgroundCanvasRef.current) {
-            backgroundCanvasRef.current.width = videoWidth;
-            backgroundCanvasRef.current.height = videoHeight;
-            console.log("Force re-sized canvas to:", backgroundCanvasRef.current.width, "x", backgroundCanvasRef.current.height);
-          }
-        }, 100);
-      }
+      // Set canvas to match video's display dimensions (after CSS object-cover)
+      canvas.style.width = `${rect.width}px`;
+      canvas.style.height = `${rect.height}px`;
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+
+      const ctx = canvas.getContext("2d");
+      if (ctx) ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
     // Size canvas when video loads and on resize

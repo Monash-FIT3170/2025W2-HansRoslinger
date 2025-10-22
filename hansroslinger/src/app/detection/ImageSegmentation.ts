@@ -63,7 +63,7 @@ const processSegmentationWithBackground = async (
       // Clear the canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Draw the original video frame (no mirroring for processing)
+      // Draw the full video frame (no cropping for segmentation)
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
       // Get image data and mask
@@ -79,25 +79,68 @@ const processSegmentationWithBackground = async (
       // Put the processed image data back
       ctx.putImageData(imageData, 0, 0);
       
-      // Create a temporary canvas for mirroring
+      // Apply object-cover cropping to match video display
+      const videoWidth = video.videoWidth;
+      const videoHeight = video.videoHeight;
+      const canvasWidth = canvas.width;
+      const canvasHeight = canvas.height;
+      
+      // Get the video's display dimensions
+      const rect = video.getBoundingClientRect();
+      const displayWidth = rect.width;
+      const displayHeight = rect.height;
+      
+      const videoAspectRatio = videoWidth / videoHeight;
+      const displayAspectRatio = displayWidth / displayHeight;
+      
+      let sourceX = 0, sourceY = 0, sourceWidth = canvasWidth, sourceHeight = canvasHeight;
+      
+      if (videoAspectRatio > displayAspectRatio) {
+        // Video is wider than display - crop sides
+        sourceWidth = canvasHeight * displayAspectRatio;
+        sourceX = (canvasWidth - sourceWidth) / 2;
+      } else {
+        // Video is taller than display - crop top/bottom
+        sourceHeight = canvasWidth / displayAspectRatio;
+        sourceY = (canvasHeight - sourceHeight) / 2;
+      }
+      
+      // Create a temporary canvas for the final cropped result
       const tempCanvas = document.createElement('canvas');
-      tempCanvas.width = canvas.width;
-      tempCanvas.height = canvas.height;
+      tempCanvas.width = canvasWidth;
+      tempCanvas.height = canvasHeight;
       const tempCtx = tempCanvas.getContext('2d');
       
       if (tempCtx) {
-        // Copy the processed result to temp canvas
+        // Copy the full processed result to temp canvas
         tempCtx.putImageData(imageData, 0, 0);
         
         // Clear the main canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        // Mirror the temp canvas to the main canvas
-        ctx.save();
-        ctx.scale(-1, 1);
-        ctx.translate(-canvas.width, 0);
-        ctx.drawImage(tempCanvas, 0, 0, canvas.width, canvas.height);
-        ctx.restore();
+        // Draw the cropped portion to match video display
+        ctx.drawImage(tempCanvas, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, canvasWidth, canvasHeight);
+        
+        // Apply mirroring to match video display
+        const mirrorCanvas = document.createElement('canvas');
+        mirrorCanvas.width = canvasWidth;
+        mirrorCanvas.height = canvasHeight;
+        const mirrorCtx = mirrorCanvas.getContext('2d');
+        
+        if (mirrorCtx) {
+          // Copy current result to mirror canvas
+          mirrorCtx.putImageData(ctx.getImageData(0, 0, canvasWidth, canvasHeight), 0, 0);
+          
+          // Clear main canvas
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          
+          // Mirror the result
+          ctx.save();
+          ctx.scale(-1, 1);
+          ctx.translate(-canvasWidth, 0);
+          ctx.drawImage(mirrorCanvas, 0, 0, canvasWidth, canvasHeight);
+          ctx.restore();
+        }
       }
     } else {
       console.warn("No category mask returned from segmentation");
