@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { ReactNode } from "react";
 import ReturnToDashboard from "@/components/ReturnToDashboard";
-import Logout from "@/components/Logout";
 
 export const metadata = {
   title: "Yubi",
@@ -29,7 +28,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             </Link>
             {/* Conditionally rendered return button */}
             <ReturnToDashboard />
-            <Logout />
           </header>
           <main className="flex-1 overflow-y-auto">
             {children}
