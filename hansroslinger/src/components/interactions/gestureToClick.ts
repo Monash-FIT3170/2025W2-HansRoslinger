@@ -146,9 +146,10 @@ class GestureToMouse {
         clientX,
         clientY
       ) as HTMLElement | null;
+      console.log(el, this.handStateMap[handId].lastHovered);
 
       // Fallback: if nothing under point, use the last hovered element
-      if (!el) {
+      if (!el || !this.isClickable(el)) {
         el = this.handStateMap[handId].lastHovered as HTMLElement | null;
       } else {
         this.handleHover(clientX, clientY, handId);
