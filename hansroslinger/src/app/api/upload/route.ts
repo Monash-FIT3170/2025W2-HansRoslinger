@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const files = formData.getAll("file");
     const collectionName = formData.get("collectionName") as string;
-
+    
     if (!files || files.length === 0) {
       return NextResponse.json({ error: "No files provided" }, { status: 400 });
     }
@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
           { status: 400 },
         );
       }
-    } else {
+    }else{
       collection = await getCollection("Home", email);
       if (!collection) {
         return NextResponse.json(
@@ -45,6 +45,7 @@ export async function POST(request: NextRequest) {
           { status: 400 },
         );
       }
+
     }
     const uploadResults = [];
 
@@ -64,12 +65,7 @@ export async function POST(request: NextRequest) {
         const asset = await createAsset(collection.id, fileName);
 
         // Upload directly to S3
-        const result = await uploadBufferToS3(
-          email,
-          String(asset.id),
-          buffer,
-          String(collection.id),
-        );
+        const result = await uploadBufferToS3(email, String(asset.id), buffer, String(collection.id));
 
         uploadResults.push({
           originalName: file.name,
