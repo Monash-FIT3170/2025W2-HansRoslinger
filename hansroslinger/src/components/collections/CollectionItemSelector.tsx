@@ -82,8 +82,12 @@ export default function CollectionItemSelector({
                 </svg>
               </div>
             </div>
-            <p className="text-[#2a2a2a] font-bold text-lg mb-2">No items found</p>
-            <p className="text-[#4a4a4a]/70 text-sm">Try adjusting your search</p>
+            <p className="text-[#2a2a2a] font-bold text-lg mb-2">
+              No items found
+            </p>
+            <p className="text-[#4a4a4a]/70 text-sm">
+              Try adjusting your search
+            </p>
           </div>
         ) : (
           filteredItems.map(([itemId, item], idx) => {
@@ -103,25 +107,31 @@ export default function CollectionItemSelector({
                 style={{ animationDelay: `${idx * 30}ms` }}
               >
                 {/* Animated gradient overlay on hover */}
-                <div className={`absolute inset-0 bg-gradient-to-br from-[#5C9BB8]/8 via-[#FC9770]/5 to-[#FBC841]/8 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`}></div>
-                
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br from-[#5C9BB8]/8 via-[#FC9770]/5 to-[#FBC841]/8 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`}
+                ></div>
+
                 {/* Animated border glow */}
-                <div className={`absolute -inset-0.5 bg-gradient-to-r from-[#5C9BB8] via-[#FC9770] to-[#FBC841] opacity-0 blur-sm transition-opacity duration-500 pointer-events-none ${
-                  isSelected ? 'opacity-30' : 'group-hover:opacity-20'
-                }`}></div>
+                <div
+                  className={`absolute -inset-0.5 bg-gradient-to-r from-[#5C9BB8] via-[#FC9770] to-[#FBC841] opacity-0 blur-sm transition-opacity duration-500 pointer-events-none ${
+                    isSelected ? "opacity-30" : "group-hover:opacity-20"
+                  }`}
+                ></div>
 
                 {/* Image Container */}
                 <div className="relative w-full aspect-square bg-gradient-to-br from-[#F5F9FC] via-[#E8F0F7]/60 to-[#D8E4F0]/40 flex items-center justify-center overflow-hidden border-b border-[#5C9BB8]/15 shadow-inner p-6">
                   {/* Shine effect */}
                   <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                  
+
                   {/* Corner accents - Dashboard Style */}
                   <div className="absolute top-0 left-0 w-5 h-5 border-t-2 border-l-2 border-[#5C9BB8]/30 group-hover:border-[#5C9BB8]/60 transition-colors duration-300"></div>
                   <div className="absolute bottom-0 right-0 w-5 h-5 border-b-2 border-r-2 border-[#FC9770]/30 group-hover:border-[#FC9770]/60 transition-colors duration-300"></div>
-                  
+
                   {item.type === FILE_TYPE_PNG ? (
                     <Image
-                      src={item.thumbnailSrc || "/uploads/default-thumbnail.png"}
+                      src={
+                        item.thumbnailSrc || "/uploads/default-thumbnail.png"
+                      }
                       alt={item.name}
                       fill
                       className="object-contain p-4 group-hover:scale-105 transition-transform duration-500"
@@ -137,7 +147,6 @@ export default function CollectionItemSelector({
                       />
                     </div>
                   )}
-
                 </div>
 
                 {isSelected && (
@@ -145,8 +154,16 @@ export default function CollectionItemSelector({
                     <div className="relative animate-scale-in">
                       <div className="absolute inset-0 bg-[#5C9BB8] blur-md opacity-60"></div>
                       <div className="relative bg-gradient-to-br from-[#5C9BB8] to-[#4a89a6] p-3 shadow-xl border-4 border-white">
-                        <svg className="w-5 h-5 text-white drop-shadow-md" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        <svg
+                          className="w-5 h-5 text-white drop-shadow-md"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clipRule="evenodd"
+                          />
                         </svg>
                       </div>
                     </div>

@@ -27,7 +27,10 @@ export default function ScrollIndicator() {
       });
     };
 
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
+    const observer = new IntersectionObserver(
+      observerCallback,
+      observerOptions,
+    );
 
     // Observe all sections
     sections.forEach((section) => {
@@ -54,10 +57,10 @@ export default function ScrollIndicator() {
       <div className="relative backdrop-blur-md bg-white/80 border border-[#5C9BB8]/20 shadow-xl overflow-hidden group">
         {/* Gradient accent bar */}
         <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-[#5C9BB8] via-[#FC9770] to-[#FBC841]"></div>
-        
+
         {/* Glow effect */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#5C9BB8]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-        
+
         <div className="relative pl-5 pr-6 py-4">
           <div className="flex items-center gap-3 mb-3">
             <div className="relative">
@@ -69,7 +72,7 @@ export default function ScrollIndicator() {
               Navigation
             </span>
           </div>
-          
+
           <div className="space-y-2">
             {sections.map((section) => (
               <button
@@ -90,7 +93,9 @@ export default function ScrollIndicator() {
                         : "w-4 h-0.5 bg-[#4a4a4a]/30 group-hover/item:w-6 group-hover/item:bg-[#4a4a4a]/50"
                     }`}
                   ></div>
-                  <span className="text-sm whitespace-nowrap">{section.name}</span>
+                  <span className="text-sm whitespace-nowrap">
+                    {section.name}
+                  </span>
                 </div>
               </button>
             ))}
@@ -100,4 +105,3 @@ export default function ScrollIndicator() {
     </div>
   );
 }
-

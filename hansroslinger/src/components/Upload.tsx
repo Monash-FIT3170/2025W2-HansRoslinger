@@ -15,21 +15,21 @@ export default function Upload() {
     >
       {/* Animated shine effect */}
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-      
+
       {/* Glow border */}
       <div className="absolute -inset-0.5 bg-gradient-to-r from-[#5C9BB8] to-[#7BAFD4] opacity-0 group-hover:opacity-75 blur-sm transition-opacity duration-300"></div>
-      
-      <svg 
-        className="w-6 h-6 transition-transform group-hover:scale-110 group-hover:-rotate-12 relative z-10" 
-        fill="none" 
-        stroke="currentColor" 
+
+      <svg
+        className="w-6 h-6 transition-transform group-hover:scale-110 group-hover:-rotate-12 relative z-10"
+        fill="none"
+        stroke="currentColor"
         viewBox="0 0 24 24"
       >
-        <path 
-          strokeLinecap="round" 
-          strokeLinejoin="round" 
-          strokeWidth={2.5} 
-          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" 
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2.5}
+          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
         />
       </svg>
       <span className="relative z-10 tracking-wide">Upload</span>

@@ -137,16 +137,17 @@ class DoublePinch extends Gesture {
 
 class ClosedFist extends Gesture {
   constructor() {
-    super(CLOSED_FIST)
+    super(CLOSED_FIST);
   }
-  
+
   private palmCenter(hand: number, landmarks: GestureRecognizerResult) {
     const lm = landmarks.landmarks?.[hand];
     // Fallback to wrist if landmarks missing
     if (!lm || lm.length < 18) return { x: 0.5, y: 0.5 };
 
     const idx = [0, 5, 9, 13, 17];
-    let sx = 0, sy = 0;
+    let sx = 0,
+      sy = 0;
     for (const i of idx) {
       sx += lm[i].x;
       sy += lm[i].y;

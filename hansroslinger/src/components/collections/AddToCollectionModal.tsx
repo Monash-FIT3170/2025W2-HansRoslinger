@@ -39,9 +39,11 @@ export default function AddToCollectionModal({
         <div className="relative border-b border-[#5C9BB8]/20 px-8 py-6 bg-gradient-to-r from-[#F5F9FC] via-[#E8F0F7]/60 to-[#D8E4F0]/40">
           {/* Subtle background pattern */}
           <div className="absolute inset-0 bg-gradient-to-br from-[#5C9BB8]/5 via-transparent to-[#FC9770]/5 pointer-events-none"></div>
-          
+
           <div className="relative flex justify-between items-center">
-            <h2 className="text-2xl font-bold gradient-text-enhanced">{title}</h2>
+            <h2 className="text-2xl font-bold gradient-text-enhanced">
+              {title}
+            </h2>
             <button
               onClick={onClose}
               className="group relative p-2.5 text-[#4a4a4a] hover:text-[#FC9770] hover:bg-[#FC9770]/10 transition-all duration-300 hover:scale-110 hover:rotate-90"
