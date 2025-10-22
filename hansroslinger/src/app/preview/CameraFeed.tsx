@@ -6,6 +6,7 @@ import { canvasRenderer } from "app/detection/canvasRenderer";
 import { useGestureStore } from "store/gestureSlice";
 import AnnotationLayer from "./AnnotationLayer";
 import { useContainerStore } from "store/containerSlice";
+import { GestureRecognizerResult } from "@mediapipe/tasks-vision";
 
 /**
  * CameraFeed component handles accessing the user's camera and microphone.
@@ -80,7 +81,7 @@ const CameraFeed = () => {
                 canvasRenderer(
                   canvasRef.current,
                   videoRef.current,
-                  payload.gestureRecognitionResult,
+                  payload.gestureRecognitionResult as GestureRecognizerResult,
                 );
                 setGesturePayload(payload.payloads);
               }
