@@ -31,7 +31,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <ReturnToDashboard />
             <Logout />
           </header>
-          <main className="flex-1 overflow-y-auto">{children}</main>
+          <main className="flex-1 overflow-y-auto">
+            {children}
+          </main>
         </div>
       </body>
     </html>

@@ -7,8 +7,7 @@ export default function Logout() {
   const pathname = usePathname();
 
   // Don't show logout on login/signup pages
-  if (pathname.startsWith("/login") || pathname.startsWith("/signup"))
-    return null;
+  if (pathname.startsWith("/login") || pathname.startsWith("/signup")) return null;
 
   const handleLogout = () => {
     // Clear all cookies

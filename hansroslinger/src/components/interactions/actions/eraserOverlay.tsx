@@ -1,4 +1,4 @@
-type Pt = { x: number; y: number };
+type Pt = { x:number; y:number };
 
 const getOverlay = () =>
   document.getElementById("annotation-overlay") as HTMLCanvasElement | null;
@@ -11,7 +11,7 @@ const getAnn = () =>
 function toCssPx(p: Pt): Pt {
   const ann = getAnn();
   if (!ann) return p;
-  const dprX = ann.width / ann.clientWidth;
+  const dprX = ann.width  / ann.clientWidth;
   const dprY = ann.height / ann.clientHeight;
   // usually equal, but keep independent to be safe
   return { x: p.x / dprX, y: p.y / dprY };
@@ -19,19 +19,15 @@ function toCssPx(p: Pt): Pt {
 
 export const eraserOverlay = {
   clear() {
-    const c = getOverlay();
-    if (!c) return;
-    const ctx = c.getContext("2d");
-    if (!ctx) return;
+    const c = getOverlay(); if (!c) return;
+    const ctx = c.getContext("2d"); if (!ctx) return;
     ctx.clearRect(0, 0, c.width, c.height);
   },
 
   // `point` is coming from gestures (device px). We'll convert to CSS px here.
   drawAt(point: Pt, radiusPx: number) {
-    const c = getOverlay();
-    if (!c) return;
-    const ctx = c.getContext("2d");
-    if (!ctx) return;
+    const c = getOverlay(); if (!c) return;
+    const ctx = c.getContext("2d"); if (!ctx) return;
 
     const cssPt = toCssPx(point);
     const cssRadius = (() => {
