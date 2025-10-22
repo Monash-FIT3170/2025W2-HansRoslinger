@@ -48,7 +48,7 @@ export default function SignUpPage() {
         }
         return;
       }
-      router.push("/dashboard");
+      router.push("/login");
     } catch (error) {
       setError(
         "Error creating user. Please try again. If the problem persists, contact support.",
