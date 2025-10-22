@@ -56,7 +56,7 @@ class GestureToMouse {
   handleHover(clientX: number, clientY: number, handId: HandIds) {
     let hoverEl = document.elementFromPoint(
       clientX,
-      clientY
+      clientY,
     ) as HTMLElement | null;
 
     // Walk up until we find something clickable
@@ -81,10 +81,10 @@ class GestureToMouse {
 
     // Dispatch real mouse event for hover
     hoverEl.dispatchEvent(
-      new MouseEvent("mouseenter", { bubbles: true, clientX, clientY })
+      new MouseEvent("mouseenter", { bubbles: true, clientX, clientY }),
     );
     hoverEl.dispatchEvent(
-      new MouseEvent("mouseover", { bubbles: true, clientX, clientY })
+      new MouseEvent("mouseover", { bubbles: true, clientX, clientY }),
     );
 
     state.lastHovered = hoverEl;
@@ -102,13 +102,13 @@ class GestureToMouse {
       new MouseEvent("mouseout", {
         bubbles: true,
         relatedTarget: null,
-      })
+      }),
     );
     el.dispatchEvent(
       new MouseEvent("mouseleave", {
         bubbles: false,
         relatedTarget: null,
-      })
+      }),
     );
   }
 
@@ -144,7 +144,7 @@ class GestureToMouse {
       // Try to get the element under the current hand position
       let el = document.elementFromPoint(
         clientX,
-        clientY
+        clientY,
       ) as HTMLElement | null;
 
       // Fallback: if nothing under point, use the last hovered element
@@ -161,7 +161,7 @@ class GestureToMouse {
             bubbles: true,
             clientX,
             clientY,
-          })
+          }),
         );
       }
     }
@@ -172,13 +172,13 @@ class GestureToMouse {
 
       if (elapsed <= PINCH_MAX_DURATION_MS && state.downTarget) {
         state.downTarget.dispatchEvent(
-          new MouseEvent("mouseup", { bubbles: true, clientX, clientY })
+          new MouseEvent("mouseup", { bubbles: true, clientX, clientY }),
         );
         (state.downTarget as HTMLElement).click?.();
       } else {
         if (state.downTarget) {
           state.downTarget.dispatchEvent(
-            new MouseEvent("mouseup", { bubbles: true, clientX, clientY })
+            new MouseEvent("mouseup", { bubbles: true, clientX, clientY }),
           );
         }
       }

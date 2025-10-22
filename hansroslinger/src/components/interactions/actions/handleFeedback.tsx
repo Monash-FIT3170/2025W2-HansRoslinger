@@ -2,7 +2,6 @@
 import { AcceptedFileType } from "types/application";
 import { Pointer, MoveHorizontal } from "lucide-react";
 
-
 // Custom Pinch Hand Gesture Icon
 const PinchHandIcon = ({
   className = "",
