@@ -5,7 +5,7 @@ import { useGestureStore } from "store/gestureSlice";
 import { HAND_IDS, LEFT_RIGHT } from "constants/application";
 import { useModeStore } from "store/modeSlice";
 import { paintManager } from "./paintManager";
-import { gestureToClick } from "./gestureToClick";
+import { gestureToMouse } from "./gestureToClick";
 import { usePanelStore } from "store/panelSlice";
 
 export const useGestureListener = (interactionManager: InteractionManager) => {
@@ -23,7 +23,14 @@ export const useGestureListener = (interactionManager: InteractionManager) => {
     // Handle clicking (ignore combined LEFT_RIGHT pseudo-id)
     gesturePayloads.forEach((payload) => {
       if (payload.id !== LEFT_RIGHT) {
-        gestureToClick.handleGestureClick(payload);
+        gestureToMouse.handleGestureMouse(payload);
+      }
+    });
+
+    const receivedHandsForClick = new Set(gesturePayloads.map((g) => g.id));
+    HAND_IDS.forEach((handId) => {
+      if (!receivedHandsForClick.has(handId) && handId !== LEFT_RIGHT) {
+        gestureToMouse.clearHover(handId);
       }
     });
 

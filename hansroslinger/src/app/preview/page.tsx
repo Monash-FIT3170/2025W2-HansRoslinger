@@ -2,10 +2,9 @@
 
 import dynamic from "next/dynamic";
 
-import FloatingDataPanel from "@/components/FloatingDataPanel";
-
 import CanvasOverlay from "@/components/KonvaOverlay";
 import ReturnToDashboard from "@/components/ReturnToDashboard";
+import FloatingDataPanel from "@/components/FloatingDataPanel";
 
 const CameraFeed = dynamic(() => import("./CameraFeed"), {
   ssr: false,

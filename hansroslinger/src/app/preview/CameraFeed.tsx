@@ -7,6 +7,7 @@ import { useGestureStore } from "store/gestureSlice";
 import AnnotationLayer from "./AnnotationLayer";
 import { useContainerStore } from "store/containerSlice";
 import { GestureRecognizerResult } from "@mediapipe/tasks-vision";
+import FloatingDataPanel from "@/components/FloatingDataPanel";
 
 /**
  * CameraFeed component handles accessing the user's camera and microphone.
@@ -133,6 +134,7 @@ const CameraFeed = () => {
 
       {/* Annotation layer */}
       <AnnotationLayer targetRef={videoRef} />
+      <FloatingDataPanel />
 
       {/* Error banner */}
       {cameraError && (
