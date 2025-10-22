@@ -30,13 +30,6 @@ export async function POST(
       value: email,
       path: "/",
     });
-
-    (await cookies()).set({
-      name: "userID",
-      value: String(user.id),
-      path: "/",
-    });
-
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
     console.error("Login error:", error);

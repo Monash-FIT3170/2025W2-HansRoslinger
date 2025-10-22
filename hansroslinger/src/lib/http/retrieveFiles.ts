@@ -4,15 +4,13 @@ import type { FileObject } from "./fileInterfaces";
 
 export async function retrieveUserFiles(
   userEmail: string,
-  collection: string
 ): Promise<FileObject[]> {
   try {
     const bucketName = process.env.AWS_BUCKET_NAME;
-    const prefix = collection.endsWith("/") ? collection : `${collection}/`;
 
     const command = new ListObjectsV2Command({
       Bucket: bucketName,
-      Prefix: `${userEmail}/${collection}`,
+      Prefix: `${userEmail}/`,
       MaxKeys: 1000,
     });
 
