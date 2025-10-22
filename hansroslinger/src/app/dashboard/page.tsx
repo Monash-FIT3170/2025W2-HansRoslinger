@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { Uploads } from "types/application";
 import { hardcodedUploads } from "hardcodedData";
 import Preview from "@/components/Preview";
