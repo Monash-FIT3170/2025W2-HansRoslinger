@@ -126,6 +126,9 @@ const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [targetRef.current]);
 
+  // For undo button hovering using gesture
+  const [isUndoButtonHovered, setIsUndoButtonHovered] = useState(false);
+
   return (
     <div className="absolute inset-0" style={{ zIndex }}>
       {/* Annotation canvas */}
@@ -157,7 +160,10 @@ const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
         <div className="pointer-events-auto">
           <button
             onClick={handleUndo}
-            className="absolute top-4 right-4 bg-white text-black p-3 rounded-full shadow-lg hover:bg-gray-200 transition-colors"
+            onMouseEnter={() => setIsUndoButtonHovered(true)}
+            onMouseLeave={() => setIsUndoButtonHovered(false)}
+            className={`absolute top-4 right-4 text-black p-5 rounded-full shadow-lg transition-colors duration-200
+        ${isUndoButtonHovered ? "bg-gray-200" : "bg-white"}`}
             style={{ zIndex: zIndex + 2 }}
             title="Undo"
           >

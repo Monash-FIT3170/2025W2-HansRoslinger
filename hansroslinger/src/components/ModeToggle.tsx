@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useModeStore } from "store/modeSlice";
 
 export default function ModeToggle() {
@@ -18,10 +18,15 @@ export default function ModeToggle() {
     return () => window.removeEventListener("keydown", onKey);
   }, [toggle]);
 
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
     <button
       onClick={toggle}
-      className="z-[9999] rounded-2xl px-6 py-4 shadow bg-black/80 text-white"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className={`z-[9999] rounded-2xl px-6 py-4 shadow text-white transition-all duration-200
+        ${isHovered ? "bg-gray-700" : "bg-black/80"}`}
       aria-pressed={mode === "paint"}
       aria-label={`Switch to ${mode === "paint" ? "Interact" : "Paint"} mode (P)`}
       title={`Press P — ${mode === "paint" ? "Interact" : "Paint"} mode`}
