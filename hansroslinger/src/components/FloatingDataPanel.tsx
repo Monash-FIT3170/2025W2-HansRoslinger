@@ -22,6 +22,7 @@ import { FILE_TYPE_PNG } from "constants/application";
 import VegaLiteChartDisplay from "@/components/VegaLiteChartDisplay";
 import { hardcodedUploads } from "../hardcodedData";
 import { useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 // Panel store state
 const FloatingDataPanel = () => {
@@ -60,25 +61,29 @@ const FloatingDataPanel = () => {
   return (
     <>
       {/* Panel */}
-      {isOpen && (
-        <div className="absolute top-0 left-0 bottom-0 z-40 w-[40rem] h-full bg-gray-400/70 border-r border-gray-500 shadow-lg p-4 flex flex-col text-black">
-          {/* Header */}
-          <div className="bg-gray-300 text-black rounded p-3 mb-4 text-center flex-shrink-0">
-            <h2 className="text-lg font-bold">Uploaded Visuals</h2>
-          </div>
+      <div
+        className={`absolute top-0 left-0 bottom-0 z-40 w-[40rem] h-full 
+  bg-gray-400/70 border-r border-gray-500 shadow-lg p-4 flex flex-col text-black 
+  transform transition-transform duration-300 ease-in-out
+  ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
+      >
+        {/* Header */}
+        <div className="bg-gray-300 text-black rounded p-3 mb-4 text-center flex-shrink-0">
+          <h2 className="text-xl">Uploaded Visuals</h2>
+        </div>
 
-          {/* Visuals section */}
-          <div className="flex-1 overflow-y-auto">
-            <div className="grid grid-cols-2 gap-x-8 gap-y-10 px-4 pb-4">
-              {Object.entries(hardcodedUploads).map(([assetId, uploadData]) => {
-                return (
-                  <div
-                    key={assetId}
-                    data-asset-id={assetId}
-                    onClick={() => handleClick(assetId)}
-                    onMouseEnter={() => setHoveredAsset(assetId)}
-                    onMouseLeave={() => setHoveredAsset(null)}
-                    className={`cursor-pointer flex flex-col items-center p-2 rounded-lg border transition-all duration-200 transform
+        {/* Visuals section */}
+        <div className="flex-1 overflow-y-auto">
+          <div className="grid grid-cols-2 gap-x-8 gap-y-10 px-4 pb-4">
+            {Object.entries(hardcodedUploads).map(([assetId, uploadData]) => {
+              return (
+                <div
+                  key={assetId}
+                  data-asset-id={assetId}
+                  onClick={() => handleClick(assetId)}
+                  onMouseEnter={() => setHoveredAsset(assetId)}
+                  onMouseLeave={() => setHoveredAsset(null)}
+                  className={`cursor-pointer flex flex-col items-center p-2 rounded-lg border transition-all duration-200 transform
                                 ${
                                   isVisualSelected(assetId)
                                     ? "border-green-500 border-2"
@@ -89,42 +94,41 @@ const FloatingDataPanel = () => {
                                     ? "bg-gray-100 shadow-lg scale-105"
                                     : "hover:bg-gray-100 hover:shadow-lg hover:scale-105"
                                 }`}
+                >
+                  {/* === THUMBNAIL / PREVIEW === */}
+                  <div
+                    className={`relative w-52 h-52 rounded bg-white flex items-center justify-center overflow-hidden `}
                   >
-                    {/* === THUMBNAIL / PREVIEW === */}
-                    <div
-                      className={`relative w-52 h-52 rounded bg-white flex items-center justify-center overflow-hidden `}
-                    >
-                      {/* Render image if it's a PNG, otherwise render VegaLite chart */}
-                      {uploadData.type === FILE_TYPE_PNG ? (
-                        <Image
-                          src={
-                            uploadData.thumbnailSrc ||
-                            "/uploads/default-thumbnail.png"
-                          }
-                          alt={uploadData.name}
-                          className="max-w-[90%] max-h-[90%] object-contain"
-                          width={150}
-                          height={150}
-                        />
-                      ) : (
-                        <VegaLiteChartDisplay data={uploadData} />
-                      )}
-                    </div>
-
-                    {/* === LABELS === */}
-                    <p className="mt-3 text-base font-medium text-center w-full">
-                      {uploadData.name}
-                    </p>
-                    <p className="text-xs text-gray-600 uppercase">
-                      {uploadData.type}
-                    </p>
+                    {/* Render image if it's a PNG, otherwise render VegaLite chart */}
+                    {uploadData.type === FILE_TYPE_PNG ? (
+                      <Image
+                        src={
+                          uploadData.thumbnailSrc ||
+                          "/uploads/default-thumbnail.png"
+                        }
+                        alt={uploadData.name}
+                        className="max-w-[90%] max-h-[90%] object-contain"
+                        width={150}
+                        height={150}
+                      />
+                    ) : (
+                      <VegaLiteChartDisplay data={uploadData} />
+                    )}
                   </div>
-                );
-              })}
-            </div>
+
+                  {/* === LABELS === */}
+                  <p className="mt-3 text-base font-medium text-center w-full">
+                    {uploadData.name}
+                  </p>
+                  <p className="text-xs text-gray-600 uppercase">
+                    {uploadData.type}
+                  </p>
+                </div>
+              );
+            })}
           </div>
         </div>
-      )}
+      </div>
 
       {/* toggle button */}
       <button
@@ -132,12 +136,20 @@ const FloatingDataPanel = () => {
         onMouseEnter={() => setIsExpandButtonHovered(true)}
         onMouseLeave={() => setIsExpandButtonHovered(false)}
         className={`absolute top-1/2 -translate-y-1/2 z-50 w-16 h-24 sm:w-16 sm:h-30
-      border border-gray-500 rounded-r shadow flex items-center justify-center text-lg font-bold
-      ${isOpen ? "left-[40rem]" : "left-0 border-l-0"}
-      ${isExpandButtonHovered ? "bg-gray-300" : "bg-gray-400 text-black"}
-    `}
+          flex items-center justify-center text-lg font-bold text-white rounded-r shadow-lg
+          transition-all duration-300 ease-in-out
+          ${isOpen ? "left-[40rem]" : "left-0"}
+          ${
+            isExpandButtonHovered
+              ? "bg-gradient-to-r from-[#6EAED1] to-[#5C9BB8] shadow-[#5C9BB8]/40"
+              : "bg-gradient-to-r from-[#5C9BB8] to-[#4a89a6] shadow-[#5C9BB8]/30"
+          }`}
       >
-        {isOpen ? "<" : ">"}
+        {isOpen ? (
+          <ChevronLeft className="w-8 h-8" />
+        ) : (
+          <ChevronRight className="w-8 h-8" />
+        )}
       </button>
     </>
   );
