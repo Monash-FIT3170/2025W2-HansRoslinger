@@ -67,9 +67,16 @@ export default function Preview() {
 
   return (
     <Link
-      href="/preview"
+      href={pathname === "/dashboard" ? "#uploads" : "/preview"}
       onClick={(e) => {
-        // Removed conditional scrolling behavior - always redirect to /preview
+        if (pathname === "/dashboard") {
+          e.preventDefault();
+          const wrapper = document.getElementById("uploads");
+          const target = (wrapper?.querySelector("section") as HTMLElement) ?? (wrapper as HTMLElement);
+          if (target) {
+            smoothScrollIntoView(target);
+          }
+        }
       }}
       className="group relative inline-flex items-center justify-center gap-3 w-60 bg-gradient-to-r from-[#FC9770] to-[#fb8659] px-10 py-4 text-base font-bold text-white shadow-xl shadow-[#FC9770]/50 transition-all duration-300 hover:shadow-2xl hover:shadow-[#FC9770]/70 hover:-translate-y-2 hover:scale-105 active:translate-y-0 active:scale-100 overflow-hidden"
     >

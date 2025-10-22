@@ -1,7 +1,7 @@
 "use client";
 import { AcceptedFileType } from "types/application";
 import { Pointer, MoveHorizontal } from "lucide-react";
-import { LucideIcon } from "lucide-react";
+
 
 // Custom Pinch Hand Gesture Icon
 const PinchHandIcon = ({
@@ -35,6 +35,7 @@ const PinchHandIcon = ({
 export const getFeedback = () => {
   const gestures: Record<
     string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     Array<{ Icon: any; title: string; iconColor?: string }>
   > = {
     json: [
