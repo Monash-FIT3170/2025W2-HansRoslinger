@@ -30,9 +30,7 @@ export const useGestureListener = (interactionManager: InteractionManager) => {
       }
 
       // Clear all per-hand targets when we got nothing this frame
-      HAND_IDS.forEach((handId) =>
-        interactionManager.clearTargetForHand(handId),
-      );
+      HAND_IDS.forEach((handId) => interactionManager.clearTargetForHand(handId));
       return;
     }
 

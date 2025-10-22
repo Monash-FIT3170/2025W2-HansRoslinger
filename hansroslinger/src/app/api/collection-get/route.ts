@@ -13,12 +13,10 @@ export async function GET(request: NextRequest) {
   try {
     // Get email from request cookies
     const email = request.cookies.get("email")?.value || "";
-    const { collection } = await request.json();
+    const { collection } = await request.json()
     if (!collection) {
       return NextResponse.json(
-        { error: "Missing collection parameter" },
-        { status: 400 },
-      );
+        { error: "Missing collection parameter" },  { status: 400 },)
     }
 
     if (!email) {

@@ -10,7 +10,7 @@ export const PINCH = "pinch";
 export const DOUBLE_PINCH = "double_pinch";
 export const OPEN_PALM = "open_palm";
 export const POINT_UP = "point_up";
-export const CLOSED_FIST = "closed_fist";
+export const CLOSED_FIST = "closed_fist"
 export const GESTURES = [PINCH, DOUBLE_PINCH, OPEN_PALM, POINT_UP, CLOSED_FIST];
 
 // Action constants

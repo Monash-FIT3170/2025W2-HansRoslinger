@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
       await deleteCollection(collection.name, email);
       return NextResponse.json("Failed to create user folder", { status: 500 });
     }
-
+    
     return NextResponse.json({
       success: true,
       results: collection,
