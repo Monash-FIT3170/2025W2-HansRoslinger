@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 import { uploadBufferToS3 } from "../../../lib/http/uploadBuffer";
-import { getCollection } from "database/common/collections/getCollection";
-import { createAsset } from "database/common/collections/createAsset";
 
 // Export configuration for Next.js App Router
 export const dynamic = "force-dynamic";
@@ -12,8 +10,7 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const files = formData.getAll("file");
-    const collectionName = formData.get("collectionName") as string;
-    
+
     if (!files || files.length === 0) {
       return NextResponse.json({ error: "No files provided" }, { status: 400 });
     }
@@ -27,26 +24,7 @@ export async function POST(request: NextRequest) {
         { status: 401 },
       );
     }
-    let collectionID: number;
-    let collection;
-    if (collectionName) {
-      collection = await getCollection(collectionName, email);
-      if (!collection) {
-        return NextResponse.json(
-          { error: "Collection does not exist" },
-          { status: 400 },
-        );
-      }
-    }else{
-      collection = await getCollection("Home", email);
-      if (!collection) {
-        return NextResponse.json(
-          { error: "Collection does not exist" },
-          { status: 400 },
-        );
-      }
 
-    }
     const uploadResults = [];
 
     for (const file of files) {
@@ -62,10 +40,8 @@ export async function POST(request: NextRequest) {
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
-        const asset = await createAsset(collection.id, fileName);
-
         // Upload directly to S3
-        const result = await uploadBufferToS3(email, String(asset.id), buffer, String(collection.id));
+        const result = await uploadBufferToS3(email, fileName, buffer);
 
         uploadResults.push({
           originalName: file.name,
