@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { processBackgroundRemoval, processBackgroundBlur } from "app/detection/ImageSegmentation";
 
 interface BackgroundRemovalControlsProps {
-  videoRef: React.RefObject<HTMLVideoElement>;
+  videoRef: React.RefObject<HTMLVideoElement | null>;
 }
 
 export default function BackgroundRemovalControls({
