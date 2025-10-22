@@ -6,10 +6,12 @@ import { HAND_IDS, LEFT_RIGHT } from "constants/application";
 import { useModeStore } from "store/modeSlice";
 import { paintManager } from "./paintManager";
 import { gestureToClick } from "./gestureToClick";
+import { usePanelStore } from "store/panelSlice";
 
 export const useGestureListener = (interactionManager: InteractionManager) => {
   const gesturePayloads = useGestureStore((s) => s.gesturePayloads);
   const mode = useModeStore((s) => s.mode);
+  const isSideNavOpen = usePanelStore((state) => state.isOpen);
 
   // Simple debounce for stopping a stroke after a quiet period
   const emptyFrames = useRef(0);
@@ -17,6 +19,15 @@ export const useGestureListener = (interactionManager: InteractionManager) => {
 
   useEffect(() => {
     if (!gesturePayloads) return;
+
+    // Handle clicking (ignore combined LEFT_RIGHT pseudo-id)
+    gesturePayloads.forEach((payload) => {
+      if (payload.id !== LEFT_RIGHT) {
+        gestureToClick.handleGestureClick(payload);
+      }
+    });
+
+    if (isSideNavOpen) return;
 
     // No gestures this frame
     if (gesturePayloads.length === 0) {
@@ -38,13 +49,6 @@ export const useGestureListener = (interactionManager: InteractionManager) => {
 
     // We have gestures this frame
     emptyFrames.current = 0;
-
-    // Handle clicking (ignore combined LEFT_RIGHT pseudo-id)
-    gesturePayloads.forEach((payload) => {
-      if (payload.id !== LEFT_RIGHT) {
-        gestureToClick.handleGestureClick(payload);
-      }
-    });
 
     if (mode === "paint") {
       // Delegate the whole frame to the paint manager
@@ -70,7 +74,7 @@ export const useGestureListener = (interactionManager: InteractionManager) => {
         interactionManager.clearTargetForHand(handId);
       }
     });
-  }, [gesturePayloads, interactionManager, mode]);
+  }, [gesturePayloads, interactionManager, mode, isSideNavOpen]);
 
   return null;
 };
