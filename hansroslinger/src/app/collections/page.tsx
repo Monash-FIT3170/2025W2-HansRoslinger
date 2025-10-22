@@ -222,11 +222,11 @@ export default function CollectionsPage() {
     <main className="flex-1 p-8 relative overflow-hidden">
       {/* Enhanced Background decoration to match dashboard */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#F5F9FC] via-[#5C9BB8]/10 to-[#E8F0F7]/25 -z-10"></div>
-      
+
       {/* Floating background orbs */}
       <div className="absolute top-10 left-[10%] w-96 h-96 bg-gradient-to-r from-[#5C9BB8]/10 to-[#FC9770]/10 blur-3xl animate-float-slow opacity-40"></div>
       <div className="absolute bottom-20 right-[15%] w-80 h-80 bg-gradient-to-r from-[#FBC841]/10 to-[#E5A168]/10 blur-3xl animate-float-delayed opacity-40"></div>
-      
+
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="mb-10 flex items-center justify-between animate-fade-in">
           <div>
@@ -281,7 +281,9 @@ export default function CollectionsPage() {
                       d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
                     />
                   </svg>
-                  <span className="relative z-10 tracking-wide">View Active</span>
+                  <span className="relative z-10 tracking-wide">
+                    View Active
+                  </span>
                 </>
               )}
             </button>
@@ -292,7 +294,7 @@ export default function CollectionsPage() {
               {/* Animated shine effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
               <div className="absolute -inset-0.5 bg-gradient-to-r from-[#5C9BB8] to-[#7BAFD4] opacity-0 group-hover:opacity-75 blur-sm transition-opacity duration-300"></div>
-              
+
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5 relative z-10 transition-transform group-hover:scale-110 group-hover:rotate-90"
@@ -305,7 +307,9 @@ export default function CollectionsPage() {
                   clipRule="evenodd"
                 />
               </svg>
-              <span className="relative z-10 tracking-wide">New Collection</span>
+              <span className="relative z-10 tracking-wide">
+                New Collection
+              </span>
             </button>
           </div>
         </div>
@@ -317,7 +321,10 @@ export default function CollectionsPage() {
             </h2>
             <div className="space-y-5">
               <div>
-                <label className="block text-foreground font-semibold mb-2" htmlFor="name">
+                <label
+                  className="block text-foreground font-semibold mb-2"
+                  htmlFor="name"
+                >
                   Collection Name
                 </label>
                 <input
@@ -372,7 +379,10 @@ export default function CollectionsPage() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 animate-slide-up" style={{ animationDelay: '200ms' }}>
+        <div
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 animate-slide-up"
+          style={{ animationDelay: "200ms" }}
+        >
           {isLoading ? (
             Array.from({ length: 4 }).map((_, i) => (
               <div
@@ -393,15 +403,28 @@ export default function CollectionsPage() {
                 <div className="relative">
                   <div className="absolute inset-0 bg-[#FBC841]/30 blur-3xl animate-pulse"></div>
                   <div className="relative bg-gradient-to-br from-[#FBC841]/20 to-[#FC9770]/20 p-8 backdrop-blur-sm">
-                    <svg className="w-24 h-24 text-[#FBC841] relative" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
+                    <svg
+                      className="w-24 h-24 text-[#FBC841] relative"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
+                      />
                     </svg>
                   </div>
                 </div>
               </div>
-              <p className="text-[#2a2a2a] mb-3 text-2xl font-bold">No active collections</p>
+              <p className="text-[#2a2a2a] mb-3 text-2xl font-bold">
+                No active collections
+              </p>
               <p className="text-[#4a4a4a]/80 text-lg leading-relaxed">
-                Mark collections as active by clicking the <span className="text-[#FBC841] font-semibold">star</span> icon
+                Mark collections as active by clicking the{" "}
+                <span className="text-[#FBC841] font-semibold">star</span> icon
               </p>
             </div>
           ) : collections.length === 0 ? (
@@ -410,8 +433,18 @@ export default function CollectionsPage() {
                 <div className="relative">
                   <div className="absolute inset-0 bg-[#5C9BB8]/30 blur-3xl animate-pulse"></div>
                   <div className="relative bg-gradient-to-br from-[#5C9BB8]/20 to-[#FC9770]/20 p-8 backdrop-blur-sm">
-                    <svg className="w-24 h-24 text-[#5C9BB8] relative" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    <svg
+                      className="w-24 h-24 text-[#5C9BB8] relative"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                      />
                     </svg>
                   </div>
                 </div>
@@ -420,7 +453,8 @@ export default function CollectionsPage() {
                 No collections yet
               </p>
               <p className="text-[#4a4a4a]/80 text-lg leading-relaxed">
-                Create a collection to organise your <span className="text-[#5C9BB8] font-semibold">uploads</span>
+                Create a collection to organise your{" "}
+                <span className="text-[#5C9BB8] font-semibold">uploads</span>
               </p>
             </div>
           ) : (
@@ -433,9 +467,10 @@ export default function CollectionsPage() {
                 <div
                   key={collection.id}
                   className={`modern-card-enhanced overflow-hidden cursor-pointer group animate-scale-in backdrop-blur-md transition-all duration-500
-                    ${selectedCollection?.id === collection.id 
-                      ? "bg-white/95 shadow-2xl shadow-[#5C9BB8]/40 ring-2 ring-[#5C9BB8] scale-105" 
-                      : "bg-white/80 hover:bg-white/95 hover:shadow-2xl hover:-translate-y-2"
+                    ${
+                      selectedCollection?.id === collection.id
+                        ? "bg-white/95 shadow-2xl shadow-[#5C9BB8]/40 ring-2 ring-[#5C9BB8] scale-105"
+                        : "bg-white/80 hover:bg-white/95 hover:shadow-2xl hover:-translate-y-2"
                     }`}
                   style={{ animationDelay: `${idx * 50}ms` }}
                   onClick={() => selectCollection(collection)}
@@ -443,11 +478,11 @@ export default function CollectionsPage() {
                   <div className="h-32 bg-gradient-to-br from-[#F5F9FC] via-[#E8F0F7]/60 to-[#D8E4F0]/40 relative overflow-hidden border-b border-[#5C9BB8]/15">
                     {/* Shine effect */}
                     <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                    
+
                     {/* Corner accents */}
                     <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-[#5C9BB8]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-[#5C9BB8]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    
+
                     {collection.thumbnailSrc &&
                     collection.thumbnailSrc.endsWith(".json") ? (
                       <div className="absolute inset-0 flex items-center justify-center">
@@ -544,7 +579,8 @@ export default function CollectionsPage() {
                       <div className="flex items-center gap-1.5">
                         <div className="w-1.5 h-1.5 bg-[#5C9BB8] opacity-60"></div>
                         <span className="text-xs text-[#5C9BB8] font-bold uppercase tracking-wide">
-                          {collection.items.length} {collection.items.length === 1 ? 'item' : 'items'}
+                          {collection.items.length}{" "}
+                          {collection.items.length === 1 ? "item" : "items"}
                         </span>
                       </div>
                       <span className="text-xs text-[#4a4a4a]/60 font-medium">
@@ -558,7 +594,10 @@ export default function CollectionsPage() {
         </div>
 
         {selectedCollection && (
-          <div className="mt-10 modern-card-enhanced p-8 animate-slide-up backdrop-blur-md bg-white/80" style={{ animationDelay: '400ms' }}>
+          <div
+            className="mt-10 modern-card-enhanced p-8 animate-slide-up backdrop-blur-md bg-white/80"
+            style={{ animationDelay: "400ms" }}
+          >
             <div className="flex justify-between items-center mb-6">
               {isEditingTitle ? (
                 <div className="flex items-center gap-3 flex-1">
@@ -637,7 +676,7 @@ export default function CollectionsPage() {
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-[#5C9BB8] to-[#7BAFD4] opacity-0 group-hover:opacity-75 blur-sm transition-opacity duration-300"></div>
-                
+
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5 relative z-10 transition-transform group-hover:scale-110 group-hover:rotate-90"
@@ -733,7 +772,10 @@ export default function CollectionsPage() {
             {/* Items Section Header */}
             <div className="mb-4 pb-3 border-b border-[#5C9BB8]/20">
               <h3 className="text-xl font-bold text-[#2a2a2a]">
-                Collection Items <span className="text-[#5C9BB8]">({selectedCollection.items.length})</span>
+                Collection Items{" "}
+                <span className="text-[#5C9BB8]">
+                  ({selectedCollection.items.length})
+                </span>
               </h3>
             </div>
 
@@ -744,8 +786,18 @@ export default function CollectionsPage() {
                     <div className="relative">
                       <div className="absolute inset-0 bg-[#5C9BB8]/20 blur-2xl"></div>
                       <div className="relative p-6 bg-gradient-to-br from-[#5C9BB8]/10 to-[#FC9770]/10">
-                        <svg className="w-16 h-16 text-[#5C9BB8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                        <svg
+                          className="w-16 h-16 text-[#5C9BB8]"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={1.5}
+                            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+                          />
                         </svg>
                       </div>
                     </div>
@@ -754,7 +806,11 @@ export default function CollectionsPage() {
                     This collection is empty
                   </p>
                   <p className="text-[#4a4a4a]/80 text-base">
-                    Click <span className="text-[#5C9BB8] font-semibold">Add Items</span> to get started
+                    Click{" "}
+                    <span className="text-[#5C9BB8] font-semibold">
+                      Add Items
+                    </span>{" "}
+                    to get started
                   </p>
                 </div>
               ) : (
@@ -771,11 +827,11 @@ export default function CollectionsPage() {
                       <div className="h-32 bg-gradient-to-br from-[#F5F9FC] via-[#E8F0F7]/60 to-[#D8E4F0]/40 relative flex items-center justify-center overflow-hidden">
                         {/* Shine effect */}
                         <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                        
+
                         {/* Corner accents */}
                         <div className="absolute top-0 left-0 w-5 h-5 border-t-2 border-l-2 border-[#5C9BB8]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         <div className="absolute bottom-0 right-0 w-5 h-5 border-b-2 border-r-2 border-[#5C9BB8]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        
+
                         {item.type === FILE_TYPE_PNG ? (
                           <Image
                             src={
@@ -837,7 +893,9 @@ export default function CollectionsPage() {
                             </svg>
                           </button>
                         </div>
-                        <p className="text-xs text-[#4a4a4a]/70 font-medium uppercase tracking-wider">{item.type}</p>
+                        <p className="text-xs text-[#4a4a4a]/70 font-medium uppercase tracking-wider">
+                          {item.type}
+                        </p>
                       </div>
                     </div>
                   );

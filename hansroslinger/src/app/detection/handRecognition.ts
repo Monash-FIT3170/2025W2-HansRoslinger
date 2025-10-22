@@ -13,7 +13,7 @@ export const createGestureRecognizer = async () => {
   if (gestureRecognizer) {
     return; // Already initialized
   }
-  
+
   if (isInitializing && initializationPromise) {
     await initializationPromise; // Wait for ongoing initialization
     return;
@@ -42,7 +42,7 @@ export const createGestureRecognizer = async () => {
       isInitializing = false;
     }
   })();
-  
+
   await initializationPromise;
 };
 
@@ -62,7 +62,10 @@ export const HandRecogniser = async (
 
   if (!gestureRecognizer) {
     console.error("Gesture recognizer failed to initialize");
-    return { payloads: [], gestureRecognitionResult: { gestures: [], worldLandmarks: [] } };
+    return {
+      payloads: [],
+      gestureRecognitionResult: { gestures: [], worldLandmarks: [] },
+    };
   }
 
   const startTimeMs = performance.now();

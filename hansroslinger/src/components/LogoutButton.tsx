@@ -30,23 +30,23 @@ export default function LogoutButton() {
       {/* Glow border */}
       <div className="absolute -inset-0.5 bg-gradient-to-r from-[#5C9BB8] to-[#7BAFD4] opacity-0 group-hover:opacity-75 blur-sm transition-opacity duration-300 rounded-none"></div>
 
-      <svg 
-        className="w-4 h-4 transition-transform group-hover:scale-110 group-hover:-rotate-6 relative z-10" 
-        fill="none" 
-        stroke="currentColor" 
+      <svg
+        className="w-4 h-4 transition-transform group-hover:scale-110 group-hover:-rotate-6 relative z-10"
+        fill="none"
+        stroke="currentColor"
         viewBox="0 0 24 24"
         aria-hidden
       >
-        <path 
-          strokeLinecap="round" 
-          strokeLinejoin="round" 
-          strokeWidth={2.5} 
-          d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5m0 0l-5-5m5 5H3" 
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2.5}
+          d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5m0 0l-5-5m5 5H3"
         />
       </svg>
-      <span className="relative z-10 tracking-wide">{loading ? "Logging out..." : "Log out"}</span>
+      <span className="relative z-10 tracking-wide">
+        {loading ? "Logging out..." : "Log out"}
+      </span>
     </button>
   );
 }
-
-

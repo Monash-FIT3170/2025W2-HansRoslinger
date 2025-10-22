@@ -16,7 +16,10 @@ import ClearButton from "./ClearButton";
 const CanvasOverlay = () => {
   const visuals = useVisualStore((state) => state.visuals);
 
-  const [dimensions, setDimensions] = useState<{ width: number; height: number } | null>(null);
+  const [dimensions, setDimensions] = useState<{
+    width: number;
+    height: number;
+  } | null>(null);
 
   // NEW refs for sizing
   const rootRef = useRef<HTMLDivElement>(null);
@@ -49,8 +52,10 @@ const CanvasOverlay = () => {
       const rect = el.getBoundingClientRect();
       setDimensions({ width: rect.width, height: rect.height });
 
-      if (annCanvasRef.current) sizeCanvasTo(annCanvasRef.current, rect.width, rect.height);
-      if (hudCanvasRef.current) sizeCanvasTo(hudCanvasRef.current, rect.width, rect.height);
+      if (annCanvasRef.current)
+        sizeCanvasTo(annCanvasRef.current, rect.width, rect.height);
+      if (hudCanvasRef.current)
+        sizeCanvasTo(hudCanvasRef.current, rect.width, rect.height);
     });
 
     ro.observe(el);
@@ -94,7 +99,8 @@ const CanvasOverlay = () => {
                       className="absolute z-20"
                       style={{
                         top: visual.position.y + visual.size?.height,
-                        left: visual.position.x + (visual.size?.width || 0) + 10,
+                        left:
+                          visual.position.x + (visual.size?.width || 0) + 10,
                       }}
                     >
                       <FeedbackDisplay
@@ -121,7 +127,8 @@ const CanvasOverlay = () => {
                       className="absolute z-20"
                       style={{
                         top: visual.position.y + visual.size?.height,
-                        left: visual.position.x + (visual.size?.width || 0) + 10,
+                        left:
+                          visual.position.x + (visual.size?.width || 0) + 10,
                       }}
                     >
                       <FeedbackDisplay

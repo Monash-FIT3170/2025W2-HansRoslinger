@@ -107,7 +107,7 @@ const FloatingDataPanel = () => {
                         <VegaLiteChartDisplay data={uploadData} />
                       )}
                     </div>
-                    
+
                     {/* === LABELS === */}
                     <p className="mt-3 text-base font-medium text-center w-full">
                       {uploadData.name}
