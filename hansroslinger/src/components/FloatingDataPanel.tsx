@@ -21,11 +21,7 @@ import { useVisualStore } from "store/visualsSlice";
 import { FILE_TYPE_PNG } from "constants/application";
 import VegaLiteChartDisplay from "@/components/VegaLiteChartDisplay";
 import { hardcodedUploads } from "../hardcodedData";
-
-// allow hardcoded uploads accessible
-// if (typeof window !== "undefined") {
-//   (window as any).hardcodedUploads = hardcodedUploads;
-// }
+import { useState } from "react";
 
 // Panel store state
 const FloatingDataPanel = () => {
@@ -39,7 +35,7 @@ const FloatingDataPanel = () => {
 
   //Function to check if a visual is already selected
   //Input: assetId, ID of asset
-  const isVisualExist = (assetId: string) => {
+  const isVisualSelected = (assetId: string) => {
     return visuals.some((visual) => visual.assetId === assetId);
   };
 
@@ -48,7 +44,7 @@ const FloatingDataPanel = () => {
   const handleClick = (assetId: string) => {
     const uploadData = hardcodedUploads[assetId];
     if (!uploadData) return;
-    if (isVisualExist(assetId)) {
+    if (isVisualSelected(assetId)) {
       // If already selected, remove it
       removeSelectedUpload(assetId);
     } else {
@@ -57,39 +53,46 @@ const FloatingDataPanel = () => {
     }
   };
 
+  // To use for hover simulations
+  const [isExpandButtonHovered, setIsExpandButtonHovered] = useState(false);
+  const [hoveredAsset, setHoveredAsset] = useState<string | null>(null);
+
   return (
     <>
       {/* Panel */}
       {isOpen && (
-        <div className="absolute top-0 left-0 bottom-0 z-40 w-[40rem] h-full overflow-y-auto bg-gray-400/70 border-r border-gray-500 shadow-lg p-4 flex flex-col text-black">
+        <div className="absolute top-0 left-0 bottom-0 z-40 w-[40rem] h-full bg-gray-400/70 border-r border-gray-500 shadow-lg p-4 flex flex-col text-black">
           {/* Header */}
-          <div className="bg-gray-300 text-black rounded p-3 mb-4 text-center">
+          <div className="bg-gray-300 text-black rounded p-3 mb-4 text-center flex-shrink-0">
             <h2 className="text-lg font-bold">Uploaded Visuals</h2>
           </div>
 
           {/* Visuals section */}
           <div className="flex-1 overflow-y-auto">
-            <div className="grid grid-cols-2 gap-x-8 gap-y-10 px-4">
+            <div className="grid grid-cols-2 gap-x-8 gap-y-10 px-4 pb-4">
               {Object.entries(hardcodedUploads).map(([assetId, uploadData]) => {
-                // find visual object that corresponds to assetId
-                const visual = visuals.find((v) => v.assetId === assetId);
-                //check if visual currently hovered for highlighting
-                const isHovered = visual?.isHovered;
-
                 return (
                   <div
                     key={assetId}
                     data-asset-id={assetId}
                     onClick={() => handleClick(assetId)}
-                    className={`cursor-pointer flex flex-col items-center p-2 rounded ${isHovered ? "ring-2 ring-green-400" : ""}`}
+                    onMouseEnter={() => setHoveredAsset(assetId)}
+                    onMouseLeave={() => setHoveredAsset(null)}
+                    className={`cursor-pointer flex flex-col items-center p-2 rounded-lg border transition-all duration-200 transform
+                                ${
+                                  isVisualSelected(assetId)
+                                    ? "border-green-500 border-2"
+                                    : "border-gray-300"
+                                }
+                                ${
+                                  hoveredAsset === assetId
+                                    ? "bg-gray-100 shadow-lg scale-105"
+                                    : "hover:bg-gray-100 hover:shadow-lg hover:scale-105"
+                                }`}
                   >
                     {/* === THUMBNAIL / PREVIEW === */}
                     <div
-                      className={`relative w-52 h-52 border-2 rounded bg-white flex items-center justify-center overflow-hidden ${
-                        isVisualExist(assetId)
-                          ? "border-green-400"
-                          : "border-gray-300"
-                      }`}
+                      className={`relative w-52 h-52 rounded bg-white flex items-center justify-center overflow-hidden `}
                     >
                       {/* Render image if it's a PNG, otherwise render VegaLite chart */}
                       {uploadData.type === FILE_TYPE_PNG ? (
@@ -126,10 +129,13 @@ const FloatingDataPanel = () => {
       {/* toggle button */}
       <button
         onClick={toggle}
-        className={`absolute top-1/2 -translate-y-1/2 z-50 w-14 h-24 sm:w-16 sm:h-28 
-  bg-gray-400 text-black border border-gray-500 rounded-r shadow hover:bg-gray-300 
-  flex items-center justify-center text-lg font-bold 
-  ${isOpen ? "left-[40rem]" : "left-0 border-l-0"}`}
+        onMouseEnter={() => setIsExpandButtonHovered(true)}
+        onMouseLeave={() => setIsExpandButtonHovered(false)}
+        className={`absolute top-1/2 -translate-y-1/2 z-50 w-14 h-24 sm:w-16 sm:h-28
+      border border-gray-500 rounded-r shadow flex items-center justify-center text-lg font-bold
+      ${isOpen ? "left-[40rem]" : "left-0 border-l-0"}
+      ${isExpandButtonHovered ? "bg-gray-300" : "bg-gray-400 text-black"}
+    `}
       >
         {isOpen ? "<" : ">"}
       </button>
