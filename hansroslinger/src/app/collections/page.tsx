@@ -125,9 +125,30 @@ export default function CollectionsPage() {
   
   }, []);
 
-  const handleCreateCollection = () => {
+  const handleCreateCollection = async () => {
     if (!newCollection.name.trim()) return;
 
+    try {
+      const res = await fetch("/api/collection-add", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+      },
+        body: JSON.stringify({
+          name: newCollection.name,
+          description: newCollection.description,
+        }),
+      });
+      const data = await res.json();
+      console.log("Collection created:", data);
+
+      if (!res.ok) {
+      console.error("Failed to create collection:", data);
+      return;
+    }
+
+  
     const newCol: Collection = {
       id: `col-${Date.now()}`,
       name: newCollection.name,
@@ -139,6 +160,11 @@ export default function CollectionsPage() {
     setCollections([...collections, newCol]);
     setNewCollection({ name: "", description: "" });
     setIsCreating(false);
+
+  } catch (error) {
+    console.error("Error creating collection:", error);
+    setIsCreating(false);
+  }
   };
 
   const handleDeleteCollection = (id: string) => {
