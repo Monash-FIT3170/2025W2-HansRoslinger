@@ -44,14 +44,10 @@ const processSegmentationWithBackground = async (
   const startTimeMs = performance.now();
   
   try {
-    console.log("Processing segmentation...", { videoWidth: video.videoWidth, videoHeight: video.videoHeight, canvasWidth: canvas.width, canvasHeight: canvas.height });
-    
     const segmentationResult = imageSegmenter.segmentForVideo(
       video,
       startTimeMs,
     );
-
-    console.log("Segmentation result:", segmentationResult);
 
     if (segmentationResult.categoryMask) {
       const ctx = canvas.getContext("2d");
@@ -70,8 +66,6 @@ const processSegmentationWithBackground = async (
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const data = imageData.data;
       const mask = segmentationResult.categoryMask.getAsFloat32Array();
-
-      console.log("Mask data length:", mask.length, "Image data length:", data.length, "Canvas size:", canvas.width, "x", canvas.height);
 
       // Apply background processing
       backgroundProcessor(data, mask, imageData);
@@ -190,13 +184,6 @@ export const processBackgroundRemoval = async (
       }
     }
     console.log("Background removal complete:", { backgroundPixels, foregroundPixels });
-    
-    // Debug: check mask value distribution
-    const maskValues = mask.slice(0, 100); // Sample first 100 values
-    const minMask = Math.min(...maskValues);
-    const maxMask = Math.max(...maskValues);
-    const avgMask = maskValues.reduce((a, b) => a + b, 0) / maskValues.length;
-    console.log("Mask value stats:", { minMask, maxMask, avgMask, sampleValues: maskValues.slice(0, 10) });
   });
 };
 
