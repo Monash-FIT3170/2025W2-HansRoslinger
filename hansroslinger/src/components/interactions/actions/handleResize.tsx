@@ -1,3 +1,4 @@
+import { containerStore } from "store/containerSlice";
 import { useVisualStore } from "store/visualsSlice";
 import { VisualPosition } from "types/application";
 
@@ -39,6 +40,18 @@ export const handleResize = (
     newHeight = newWidth / aspectRatio;
   } else {
     newWidth = newHeight * aspectRatio;
+  }
+
+  const container = containerStore.getState().container;
+  if (container) {
+    const containerHeight = container.clientHeight;
+
+    // Clamp height to container
+    if (newHeight > containerHeight) {
+      newHeight = containerHeight;
+      // keep ratio consistent
+      newWidth = newHeight * aspectRatio;
+    }
   }
 
   store.setVisualSize(id, {
