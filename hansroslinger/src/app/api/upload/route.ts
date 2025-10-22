@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
         { status: 401 },
       );
     }
-    //let collectionID: number;
+    let collectionID: number;
     let collection;
     if (collectionName) {
       collection = await getCollection(collectionName, email);

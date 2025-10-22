@@ -8,7 +8,7 @@ export async function retrieveUserFiles(
 ): Promise<FileObject[]> {
   try {
     const bucketName = process.env.AWS_BUCKET_NAME;
-    //const prefix = collection.endsWith("/") ? collection : `${collection}/`;
+    const prefix = collection.endsWith("/") ? collection : `${collection}/`;
 
     const command = new ListObjectsV2Command({
       Bucket: bucketName,
