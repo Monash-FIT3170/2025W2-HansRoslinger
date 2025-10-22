@@ -15,8 +15,9 @@ import {
   Pointer,
   Zap,
 } from "lucide-react";
+import Image from "next/image";
 
-// Custom Pinch Hand Gesture Icon
+// Custom Pinch Hand Gesture Icon (uses image from public/gestures)
 const PinchHandIcon = ({
   className = "",
   strokeWidth = 1.5,
@@ -24,25 +25,13 @@ const PinchHandIcon = ({
   className?: string;
   strokeWidth?: number;
 }) => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth={strokeWidth}
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className={className}
-  >
-    {/* Thumb */}
-    <path d="M14 10.5c0-1-.5-2-1.5-2s-1.5 1-1.5 2" />
-    {/* Index finger */}
-    <path d="M11 10.5V6c0-1.1-.9-2-2-2s-2 .9-2 2v8" />
-    {/* Palm and other fingers */}
-    <path d="M7 14v-1c0-.6-.4-1-1-1-.6 0-1 .4-1 1v3c0 2.8 2.2 5 5 5h2c2.8 0 5-2.2 5-5v-4c0-.6-.4-1-1-1-.6 0-1 .4-1 1v1" />
-    {/* Pinching motion indicators */}
-    <circle cx="12" cy="9" r="0.5" fill="currentColor" />
-    <circle cx="10" cy="9" r="0.5" fill="currentColor" />
-  </svg>
+  <Image
+    src="/gestures/pinch.png"
+    alt="Pinch gesture"
+    width={64}
+    height={64}
+    className={`${className} brightness-0 invert`}
+  />
 );
 
 const Dashboard = async () => {
@@ -242,7 +231,7 @@ const Dashboard = async () => {
                             className={`relative z-10 p-3.5 ${g.iconColor} shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:-rotate-3`}
                           >
                             <g.GestureIcon
-                              className="w-14 h-14 text-white drop-shadow-lg"
+                              className="w-14 h-14 text-white drop-shadow-lg scale-x-[-1]"
                               strokeWidth={1.5}
                             />
                           </div>
