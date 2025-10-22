@@ -131,7 +131,7 @@ const FloatingDataPanel = () => {
         onClick={toggle}
         onMouseEnter={() => setIsExpandButtonHovered(true)}
         onMouseLeave={() => setIsExpandButtonHovered(false)}
-        className={`absolute top-1/2 -translate-y-1/2 z-50 w-14 h-24 sm:w-16 sm:h-28
+        className={`absolute top-1/2 -translate-y-1/2 z-50 w-16 h-24 sm:w-16 sm:h-30
       border border-gray-500 rounded-r shadow flex items-center justify-center text-lg font-bold
       ${isOpen ? "left-[40rem]" : "left-0 border-l-0"}
       ${isExpandButtonHovered ? "bg-gray-300" : "bg-gray-400 text-black"}
