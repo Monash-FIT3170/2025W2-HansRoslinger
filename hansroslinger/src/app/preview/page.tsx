@@ -72,6 +72,7 @@ const Preview = () => {
                   {/* Interaction Mode Indicator removed to avoid overlap with ModeToggle in AnnotationLayer */}
 
                   {/* Camera Feed and Overlays */}
+                  <FloatingDataPanel />
                   <CameraFeed />
                   <CanvasOverlay />
                 </div>
