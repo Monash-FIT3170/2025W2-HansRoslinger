@@ -4,14 +4,20 @@ import { Pointer, MoveHorizontal } from "lucide-react";
 import { LucideIcon } from "lucide-react";
 
 // Custom Pinch Hand Gesture Icon
-const PinchHandIcon = ({ className = "", strokeWidth = 1.5 }: { className?: string; strokeWidth?: number }) => (
-  <svg 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
+const PinchHandIcon = ({
+  className = "",
+  strokeWidth = 1.5,
+}: {
+  className?: string;
+  strokeWidth?: number;
+}) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
     strokeWidth={strokeWidth}
-    strokeLinecap="round" 
-    strokeLinejoin="round" 
+    strokeLinecap="round"
+    strokeLinejoin="round"
     className={className}
   >
     {/* Thumb */}
@@ -27,7 +33,10 @@ const PinchHandIcon = ({ className = "", strokeWidth = 1.5 }: { className?: stri
 );
 
 export const getFeedback = () => {
-  const gestures: Record<string, Array<{ Icon: any; title: string; iconColor?: string }>> = {
+  const gestures: Record<
+    string,
+    Array<{ Icon: any; title: string; iconColor?: string }>
+  > = {
     json: [
       {
         Icon: PinchHandIcon,
@@ -88,7 +97,9 @@ export const FeedbackDisplay = ({
         <div className="flex gap-2">
           {gestures.map((g, idx) => (
             <div key={idx} className="flex justify-center items-center">
-              <div className={`p-1.5 rounded-lg ${g.iconColor || 'bg-gray-400'} shadow-md`}>
+              <div
+                className={`p-1.5 rounded-lg ${g.iconColor || "bg-gray-400"} shadow-md`}
+              >
                 <g.Icon className="w-4 h-4 text-white" strokeWidth={2} />
               </div>
             </div>

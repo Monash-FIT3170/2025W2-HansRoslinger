@@ -126,11 +126,11 @@ export default function UploadPage() {
     <main className="flex-1 p-8 relative overflow-hidden">
       {/* Enhanced Background decoration to match dashboard */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#F5F9FC] via-[#5C9BB8]/10 to-[#E8F0F7]/25 -z-10"></div>
-      
+
       {/* Floating background orbs */}
       <div className="absolute top-10 left-[10%] w-96 h-96 bg-gradient-to-r from-[#5C9BB8]/10 to-[#FC9770]/10 blur-3xl animate-float-slow opacity-40"></div>
       <div className="absolute bottom-20 right-[15%] w-80 h-80 bg-gradient-to-r from-[#FBC841]/10 to-[#E5A168]/10 blur-3xl animate-float-delayed opacity-40"></div>
-      
+
       <div className="max-w-4xl mx-auto relative z-10">
         <div className="mb-8 flex items-center justify-between animate-fade-in">
           <div>
@@ -153,12 +153,28 @@ export default function UploadPage() {
             }`}
           >
             {uploadStatus.success ? (
-              <svg className="w-6 h-6 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              <svg
+                className="w-6 h-6 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
+                />
               </svg>
             ) : (
-              <svg className="w-6 h-6 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              <svg
+                className="w-6 h-6 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
               </svg>
             )}
             <span className="font-medium">{uploadStatus.message}</span>
@@ -167,9 +183,10 @@ export default function UploadPage() {
 
         <div
           className={`modern-card-enhanced p-12 mb-6 text-center transition-all duration-500 animate-scale-in backdrop-blur-md overflow-hidden
-            ${isDragging 
-              ? "ring-4 ring-[#5C9BB8] bg-white/95 shadow-2xl shadow-[#5C9BB8]/40 scale-105" 
-              : "bg-white/80 hover:bg-white/90"
+            ${
+              isDragging
+                ? "ring-4 ring-[#5C9BB8] bg-white/95 shadow-2xl shadow-[#5C9BB8]/40 scale-105"
+                : "bg-white/80 hover:bg-white/90"
             }
           `}
           onDragOver={handleDragOver}
@@ -177,15 +194,29 @@ export default function UploadPage() {
           onDrop={handleDrop}
         >
           {/* Animated gradient overlay */}
-          <div className={`absolute inset-0 bg-gradient-to-br from-[#5C9BB8]/8 via-[#FC9770]/5 to-[#FBC841]/8 transition-opacity duration-500 pointer-events-none ${isDragging ? "opacity-100" : "opacity-0"}`}></div>
-          
+          <div
+            className={`absolute inset-0 bg-gradient-to-br from-[#5C9BB8]/8 via-[#FC9770]/5 to-[#FBC841]/8 transition-opacity duration-500 pointer-events-none ${isDragging ? "opacity-100" : "opacity-0"}`}
+          ></div>
+
           <div className="mb-6 relative z-10">
             <div className="flex justify-center mb-6">
               <div className="relative">
-                <div className={`absolute inset-0 bg-[#5C9BB8]/30 blur-3xl transition-opacity duration-500 ${isDragging ? "opacity-100 animate-pulse" : "opacity-0"}`}></div>
+                <div
+                  className={`absolute inset-0 bg-[#5C9BB8]/30 blur-3xl transition-opacity duration-500 ${isDragging ? "opacity-100 animate-pulse" : "opacity-0"}`}
+                ></div>
                 <div className="relative p-8 bg-gradient-to-br from-[#5C9BB8]/20 to-[#FC9770]/20 backdrop-blur-sm">
-                  <svg className="w-20 h-20 text-[#5C9BB8] relative" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                  <svg
+                    className="w-20 h-20 text-[#5C9BB8] relative"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                    />
                   </svg>
                 </div>
               </div>
@@ -194,7 +225,9 @@ export default function UploadPage() {
               {isDragging ? "Drop files here!" : "Drag and drop files here"}
             </p>
             <p className="text-base text-[#4a4a4a]/80 mb-6 leading-relaxed">
-              Supported formats: <span className="font-bold text-[#FC9770]">PNG</span>, <span className="font-bold text-[#5C9BB8]">JSON</span>
+              Supported formats:{" "}
+              <span className="font-bold text-[#FC9770]">PNG</span>,{" "}
+              <span className="font-bold text-[#5C9BB8]">JSON</span>
             </p>
           </div>
 
@@ -203,9 +236,19 @@ export default function UploadPage() {
               {/* Animated shine effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
               <div className="absolute -inset-0.5 bg-gradient-to-r from-[#5C9BB8] to-[#7BAFD4] opacity-0 group-hover:opacity-75 blur-sm transition-opacity duration-300"></div>
-              
-              <svg className="w-6 h-6 relative z-10 transition-transform group-hover:scale-110 group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+
+              <svg
+                className="w-6 h-6 relative z-10 transition-transform group-hover:scale-110 group-hover:rotate-90"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2.5}
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                />
               </svg>
               <span className="relative z-10 tracking-wide">Browse Files</span>
               <input
@@ -235,22 +278,37 @@ export default function UploadPage() {
                 <div
                   key={index}
                   className="group relative flex items-center justify-between p-5 bg-gradient-to-r from-[#F5F9FC] via-[#E8F0F7]/60 to-[#D8E4F0]/40 border border-[#5C9BB8]/15 hover:shadow-xl hover:-translate-y-1 transition-all duration-500 overflow-hidden"
-                  style={{ animationDelay: `${index * 50}ms`, animation: 'scaleIn 0.5s ease-out backwards' }}
+                  style={{
+                    animationDelay: `${index * 50}ms`,
+                    animation: "scaleIn 0.5s ease-out backwards",
+                  }}
                 >
                   {/* Shine effect */}
                   <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                  
+
                   <div className="flex items-center gap-4 flex-1 relative z-10">
                     <div className="relative">
                       <div className="absolute inset-0 bg-[#5C9BB8]/20 blur-md"></div>
                       <div className="relative p-3 bg-gradient-to-br from-[#5C9BB8]/20 to-[#FC9770]/20 backdrop-blur-sm">
-                        <svg className="w-7 h-7 text-[#5C9BB8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        <svg
+                          className="w-7 h-7 text-[#5C9BB8]"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          />
                         </svg>
                       </div>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="font-bold text-lg truncate text-[#2a2a2a] group-hover:text-[#5C9BB8] transition-colors">{file.name}</div>
+                      <div className="font-bold text-lg truncate text-[#2a2a2a] group-hover:text-[#5C9BB8] transition-colors">
+                        {file.name}
+                      </div>
                       <div className="text-sm text-[#4a4a4a]/80 font-semibold">
                         {Math.round(file.size / 1024)} KB
                       </div>
@@ -260,8 +318,16 @@ export default function UploadPage() {
                     onClick={() => removeFile(index)}
                     className="relative z-10 p-2.5 text-red-500 hover:text-red-700 hover:bg-red-50 transition-all duration-300 group-hover:scale-110"
                   >
-                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                    <svg
+                      className="w-6 h-6"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
                     </svg>
                   </button>
                 </div>
@@ -277,18 +343,32 @@ export default function UploadPage() {
                 {/* Animated shine effect */}
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FC9770] to-[#FBC841] opacity-0 group-hover:opacity-75 blur-sm transition-opacity duration-300"></div>
-                
+
                 {isUploading ? (
                   <>
                     <div className="spinner w-6 h-6 border-2 relative z-10"></div>
-                    <span className="relative z-10 tracking-wide">Uploading...</span>
+                    <span className="relative z-10 tracking-wide">
+                      Uploading...
+                    </span>
                   </>
                 ) : (
                   <>
-                    <svg className="w-6 h-6 relative z-10 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3v-6" />
+                    <svg
+                      className="w-6 h-6 relative z-10 transition-transform group-hover:scale-110"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2.5}
+                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3v-6"
+                      />
                     </svg>
-                    <span className="relative z-10 tracking-wide">Upload Files</span>
+                    <span className="relative z-10 tracking-wide">
+                      Upload Files
+                    </span>
                   </>
                 )}
               </button>

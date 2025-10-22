@@ -175,7 +175,10 @@ const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
               <path d="m21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13" />
             </svg>
           </button>
-          <div className="absolute bottom-6 right-6" style={{ zIndex: zIndex + 2 }}>
+          <div
+            className="absolute bottom-6 right-6"
+            style={{ zIndex: zIndex + 2 }}
+          >
             <ClearButton variant="relative" />
           </div>
         </div>

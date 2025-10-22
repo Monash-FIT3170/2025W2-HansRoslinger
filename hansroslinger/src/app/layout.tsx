@@ -6,7 +6,8 @@ import LayoutContent from "./LayoutContent";
 
 export const metadata: Metadata = {
   title: "Yubi - Gesture-Controlled Visualisation",
-  description: "Modern gesture-controlled file visualiser for interactive data exploration",
+  description:
+    "Modern gesture-controlled file visualiser for interactive data exploration",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
