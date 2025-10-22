@@ -1,15 +1,18 @@
 import prisma from "../client";
 
-export async function createCollection(userID: number, name: string = "Home") {
+export async function createCollection(userID: number, name: string = "Home", description?: string) {
   try {
     const collection = await prisma.collection.create({
       data: {
         name: name,
         authorID: userID,
+        ...(description 
+          && {description}),
       },
       select: {
         id: true,
         name: true,
+        description: true,
       },
     });
 

@@ -9,7 +9,9 @@ export const runtime = "nodejs";
 
 export async function POST(request: NextRequest) {
   try {
-    const { name } = await request.json();
+    const body = await request.json();
+    const name: string = body.name;
+    const description: string | undefined = body.description;
     const email = request.cookies.get("email")?.value || "";
     const userID: number = +(request.cookies.get("userID")?.value || "");
 
@@ -20,7 +22,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const collection = await createCollection(userID, name);
+    const collection = await createCollection(userID, name, description);
     if (!collection) {
       return NextResponse.json("Failed to create collection", { status: 500 });
     }

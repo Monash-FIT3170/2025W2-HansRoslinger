@@ -36,6 +36,7 @@ export default function SignUpPage() {
       });
       const data: SignupResponse = await res.json();
 
+
       if (!data.user) {
         console.log(data.error);
         if (
@@ -48,7 +49,7 @@ export default function SignUpPage() {
         }
         return;
       }
-      router.push("/dashboard");
+      router.push("/login");
     } catch (error) {
       setError(
         "Error creating user. Please try again. If the problem persists, contact support.",

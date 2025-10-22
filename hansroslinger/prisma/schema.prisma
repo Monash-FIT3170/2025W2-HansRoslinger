@@ -22,7 +22,9 @@ model User {
 model Collection {
   id Int @id @default(autoincrement())
   name String
+  description String?
   isSelected Boolean @default(false)
+  createdAt    DateTime @default(now())
   author User @relation(fields: [authorID], references: [id])
   authorID Int
   assets Asset[]

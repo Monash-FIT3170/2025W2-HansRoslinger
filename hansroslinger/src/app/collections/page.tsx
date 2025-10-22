@@ -37,83 +37,92 @@ export default function CollectionsPage() {
 
   // Mock data for demonstration
   useEffect(() => {
-    // Simulating API call
-    setTimeout(() => {
-      setCollections([
-        {
-          id: "col-1",
-          name: "Line Charts",
-          description: "Collection of line chart visualizations",
-          items: ["chart-1", "chart-2"],
-          createdAt: "2025-10-01",
-          thumbnailSrc: "/uploads/line-chart.json",
-        },
-        {
-          id: "col-2",
-          name: "Bar Charts",
-          description: "Collection of bar chart visualizations",
-          items: ["chart-3", "chart-4"],
-          createdAt: "2025-10-05",
-          thumbnailSrc: "/uploads/bar-chart.json",
-        },
-        {
-          id: "col-3",
-          name: "User Photos",
-          description: "Collection of user photos",
-          items: ["img-1", "img-2", "img-3"],
-          createdAt: "2025-10-08",
-          thumbnailSrc: "/uploads/ian.png",
-        },
-      ]);
+    const fetchCollections = async () => {
+      const res = await fetch("/api/collection-getAll",{
+      method: "GET",
+      credentials: "include"
+    })
+    const data = await res.json();
+    console.log(data)
 
-      // Mock available uploads
-      setAvailableUploads({
-        "chart-1": {
-          name: "Stock Trends",
-          type: "json",
-          src: "/uploads/line-chart.json",
-          thumbnailSrc: "/uploads/chart-icon.png",
-        },
-        "chart-2": {
-          name: "Revenue Growth",
-          type: "json",
-          src: "/uploads/line-chart.json",
-          thumbnailSrc: "/uploads/chart-icon.png",
-        },
-        "chart-3": {
-          name: "Sales by Region",
-          type: "json",
-          src: "/uploads/bar-chart.json",
-          thumbnailSrc: "/uploads/chart-icon.png",
-        },
-        "chart-4": {
-          name: "Quarterly Results",
-          type: "json",
-          src: "/uploads/bar-chart.json",
-          thumbnailSrc: "/uploads/chart-icon.png",
-        },
-        "img-1": {
-          name: "Profile Photo",
-          type: "png",
-          src: "/uploads/ian.png",
-          thumbnailSrc: "/uploads/ian.png",
-        },
-        "img-2": {
-          name: "Team Photo",
-          type: "png",
-          src: "/uploads/default-thumbnail.png",
-          thumbnailSrc: "/uploads/default-thumbnail.png",
-        },
-        "img-3": {
-          name: "Project Logo",
-          type: "png",
-          src: "/uploads/default-thumbnail.png",
-          thumbnailSrc: "/uploads/default-thumbnail.png",
-        },
-      });
+    }
+    fetchCollections();
 
-      setIsLoading(false);
-    }, 1000);
+    setCollections([
+      {
+        id: "col-1",
+        name: "Line Charts",
+        description: "Collection of line chart visualizations",
+        items: ["chart-1", "chart-2"],
+        createdAt: "2025-10-01",
+        thumbnailSrc: "/uploads/line-chart.json",
+      },
+      {
+        id: "col-2",
+        name: "Bar Charts",
+        description: "Collection of bar chart visualizations",
+        items: ["chart-3", "chart-4"],
+        createdAt: "2025-10-05",
+        thumbnailSrc: "/uploads/bar-chart.json",
+      },
+      {
+        id: "col-3",
+        name: "User Photos",
+        description: "Collection of user photos",
+        items: ["img-1", "img-2", "img-3"],
+        createdAt: "2025-10-08",
+        thumbnailSrc: "/uploads/ian.png",
+      },
+    ]);
+
+    // Mock available uploads
+    setAvailableUploads({
+      "chart-1": {
+        name: "Stock Trends",
+        type: "json",
+        src: "/uploads/line-chart.json",
+        thumbnailSrc: "/uploads/chart-icon.png",
+      },
+      "chart-2": {
+        name: "Revenue Growth",
+        type: "json",
+        src: "/uploads/line-chart.json",
+        thumbnailSrc: "/uploads/chart-icon.png",
+      },
+      "chart-3": {
+        name: "Sales by Region",
+        type: "json",
+        src: "/uploads/bar-chart.json",
+        thumbnailSrc: "/uploads/chart-icon.png",
+      },
+      "chart-4": {
+        name: "Quarterly Results",
+        type: "json",
+        src: "/uploads/bar-chart.json",
+        thumbnailSrc: "/uploads/chart-icon.png",
+      },
+      "img-1": {
+        name: "Profile Photo",
+        type: "png",
+        src: "/uploads/ian.png",
+        thumbnailSrc: "/uploads/ian.png",
+      },
+      "img-2": {
+        name: "Team Photo",
+        type: "png",
+        src: "/uploads/default-thumbnail.png",
+        thumbnailSrc: "/uploads/default-thumbnail.png",
+      },
+      "img-3": {
+        name: "Project Logo",
+        type: "png",
+        src: "/uploads/default-thumbnail.png",
+        thumbnailSrc: "/uploads/default-thumbnail.png",
+      },
+    });
+
+    setIsLoading(false);
+  
   }, []);
 
   const handleCreateCollection = () => {
