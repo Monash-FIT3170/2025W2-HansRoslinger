@@ -11,7 +11,7 @@ export default function LogoutButton() {
     try {
       await fetch("/api/logout", { method: "POST" });
     } catch (e) {
-      console.log(e)
+      console.log(e);
       // ignore
     } finally {
       // Redirect regardless; middleware will enforce auth state
