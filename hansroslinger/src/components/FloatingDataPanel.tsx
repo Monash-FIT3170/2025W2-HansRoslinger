@@ -126,9 +126,11 @@ const FloatingDataPanel = () => {
       {/* toggle button */}
       <button
         onClick={toggle}
-        className="absolute top-1/2 left-0 -translate-y-1/2 z-50 w-6 h-16 bg-gray-400 text-black border border-l-0 border-gray-500 rounded-r shadow hover:bg-gray-300 flex items-center justify-center text-sm font-bold"
+        className={`absolute top-1/2 -translate-y-1/2 z-50 w-14 h-24 sm:w-16 sm:h-28 
+  bg-gray-400 text-black border border-gray-500 rounded-r shadow hover:bg-gray-300 
+  flex items-center justify-center text-lg font-bold 
+  ${isOpen ? "left-[40rem]" : "left-0 border-l-0"}`}
       >
-        {/* Collapse or expand indicator */}
         {isOpen ? "<" : ">"}
       </button>
     </>

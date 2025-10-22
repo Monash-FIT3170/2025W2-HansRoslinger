@@ -148,7 +148,7 @@ const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
       />
       {/* Paint mode button */}
       <div
-        className="absolute bottom-4 right-4 pointer-events-auto"
+        className="absolute top-4 left-4 pointer-events-auto"
         style={{ zIndex: zIndex + 2 }}
       >
         <ModeToggle />
