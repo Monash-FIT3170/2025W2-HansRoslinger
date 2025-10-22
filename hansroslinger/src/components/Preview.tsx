@@ -72,7 +72,9 @@ export default function Preview() {
         if (pathname === "/dashboard") {
           e.preventDefault();
           const wrapper = document.getElementById("uploads");
-          const target = (wrapper?.querySelector("section") as HTMLElement) ?? (wrapper as HTMLElement);
+          const target =
+            (wrapper?.querySelector("section") as HTMLElement) ??
+            (wrapper as HTMLElement);
           if (target) {
             smoothScrollIntoView(target);
           }
