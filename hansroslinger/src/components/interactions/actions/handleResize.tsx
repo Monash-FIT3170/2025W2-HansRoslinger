@@ -1,6 +1,9 @@
 import { useVisualStore } from "store/visualsSlice";
 import { VisualPosition } from "types/application";
 
+// To reduce resize sensitivity. The scale will be multiply by the factor
+const RESIZE_FACTOR = 0.3;
+
 /**
  * @param id visual id
  * @param pointerA
@@ -13,7 +16,7 @@ export const handleResize = (
   pointerA: VisualPosition,
   pointerB: VisualPosition,
   pinchStartDistance: number,
-  pinchStartSize: { width: number; height: number },
+  pinchStartSize: { width: number; height: number }
 ) => {
   const store = useVisualStore.getState();
   const visual = store.getVisual(id);
@@ -23,9 +26,9 @@ export const handleResize = (
   const dy = pointerA.y - pointerB.y;
   const distance = Math.hypot(dx, dy);
 
-  const scale = distance / pinchStartDistance;
+  const scale = (distance / pinchStartDistance) * RESIZE_FACTOR;
 
-  const minWidth = 50;
+  const minWidth = 100;
   const minHeight = minWidth / (pinchStartSize.width / pinchStartSize.height);
 
   let newWidth = Math.max(minWidth, pinchStartSize.width * scale);
