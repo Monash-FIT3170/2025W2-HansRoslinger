@@ -16,7 +16,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
   try {
     // Retrieve files from S3
-    const files = await retrieveUserFiles(email);
+    const files = await retrieveUserFiles(email, "");
 
     // Convert to the format expected by UploadsDisplay
     const uploads: Uploads = {};
