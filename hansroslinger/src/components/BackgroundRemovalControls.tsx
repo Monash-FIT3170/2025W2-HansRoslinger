@@ -113,13 +113,28 @@ export default function BackgroundRemovalControls({
 
     // Size canvas when video loads and on resize
     if (videoRef.current) {
-      requestAnimationFrame(sizeCanvas);
+      // Use a small delay to ensure video is fully loaded and sized
+      const timeoutId = setTimeout(() => {
+        requestAnimationFrame(sizeCanvas);
+      }, 100);
+      
+      // Also listen for video dimension changes
+      const video = videoRef.current;
+      const handleVideoResize = () => {
+        requestAnimationFrame(sizeCanvas);
+      };
+      
+      video.addEventListener('loadedmetadata', handleVideoResize);
+      video.addEventListener('resize', handleVideoResize);
       window.addEventListener("resize", sizeCanvas);
+      
+      return () => {
+        clearTimeout(timeoutId);
+        video.removeEventListener('loadedmetadata', handleVideoResize);
+        video.removeEventListener('resize', handleVideoResize);
+        window.removeEventListener("resize", sizeCanvas);
+      };
     }
-
-    return () => {
-      window.removeEventListener("resize", sizeCanvas);
-    };
   }, [videoRef]);
 
   return (
@@ -130,6 +145,7 @@ export default function BackgroundRemovalControls({
         className={`absolute top-0 left-0 w-full h-full pointer-events-none ${
           backgroundRemovalEnabled ? "block" : "hidden"
         }`}
+        style={{ zIndex: 1 }}
       />
 
       {/* Background removal controls */}
