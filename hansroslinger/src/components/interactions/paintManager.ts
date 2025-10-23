@@ -137,7 +137,10 @@ export class PaintManager {
 
     // If already painting, check for large jump
     if (isPainting() && this.lastPaintPoint) {
-      const jump = Math.hypot(p.x - this.lastPaintPoint.x, p.y - this.lastPaintPoint.y);
+      const jump = Math.hypot(
+        p.x - this.lastPaintPoint.x,
+        p.y - this.lastPaintPoint.y,
+      );
       if (jump > JUMP_DISTANCE_THRESHOLD) {
         // Treat as a new stroke
         paintEnd();
@@ -163,7 +166,10 @@ export class PaintManager {
     eraserOverlay?.drawAt?.(p, getEraseRadiusDevicePx(this.savedDrawWidth));
 
     if (isPainting() && this.lastPaintPoint) {
-      const jump = Math.hypot(p.x - this.lastPaintPoint.x, p.y - this.lastPaintPoint.y);
+      const jump = Math.hypot(
+        p.x - this.lastPaintPoint.x,
+        p.y - this.lastPaintPoint.y,
+      );
       if (jump > JUMP_DISTANCE_THRESHOLD) {
         paintEnd();
         paintStart(p);
