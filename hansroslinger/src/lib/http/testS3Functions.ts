@@ -1,6 +1,6 @@
 import { uploadFile } from "./uploadFile";
 import { retrieveUserFiles } from "./retrieveFiles";
-import { createS3UserBucket } from "./createUserBucket";
+import { createUserBucket } from "./createUserBucket";
 import { getObject } from "./getObject";
 import { downloadFile } from "./downloadFile";
 import { deleteFile } from "./deleteFile";
@@ -20,7 +20,7 @@ const testS3Functions = async () => {
 
     // Step 1: Create S3 "folder" for user
     console.log('--- Step 1: Create S3 "folder" for user ---');
-    const folderUrl = await createS3UserBucket(testEmail);
+    const folderUrl = await createUserBucket(testEmail);
     console.log("Folder created at:", folderUrl);
 
     // Step 2: Upload file to S3
