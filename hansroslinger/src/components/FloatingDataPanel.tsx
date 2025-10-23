@@ -3,24 +3,25 @@
  *
  * This component renders a floating side panel that displays uploaded visuals (images or charts).
  * - It uses Zustand stores (`usePanelStore`, `useVisualStore`) to manage open/close state and selected visuals.
- * - The panel shows a grid of "uploads" from `hardcodedUploads`, which can be toggled (added/removed) when clicked.
+ * - The panel shows a grid of "uploads" from starred collections, which can be toggled (added/removed) when clicked.
  * - Each visual is displayed as either an image thumbnail (for PNGs) or a VegaLite chart.
  * - A toggle button is always visible on the left side of the screen to open/close the panel.
  *
  * Key responsibilities:
- * - Display uploaded visuals in a scrollable, interactive grid.
+ * - Display uploaded visuals from starred collections in a scrollable, interactive grid.
  * - Allow users to select/deselect visuals via click.
  * - Manage UI feedback (highlighting selected/hovered visuals).
  * - Provide a collapsible panel UI that overlays the page.
  */
 "use client";
 
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { usePanelStore } from "store/panelSlice";
 import { useVisualStore } from "store/visualsSlice";
 import { FILE_TYPE_PNG } from "constants/application";
 import VegaLiteChartDisplay from "@/components/VegaLiteChartDisplay";
-import { hardcodedUploads } from "../hardcodedData";
+import { Uploads } from "types/application";
 
 // Panel store state
 const FloatingDataPanel = () => {
@@ -32,6 +33,93 @@ const FloatingDataPanel = () => {
   const removeSelectedUpload = useVisualStore((state) => state.removeVisual); //remove visual from selection
   const visuals = useVisualStore((state) => state.visuals); //currently selected visuals
 
+  // State for uploads from starred collections
+  const [uploads, setUploads] = useState<Uploads>({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [starredCollections, setStarredCollections] = useState<Array<{ id: string; name: string }>>([]);
+  const [collectionFilter, setCollectionFilter] = useState<string>("__all__");
+  const [sourceMode, setSourceMode] = useState<"collections" | "assets">("collections");
+
+  // Fetch starred collections and their assets
+  const fetchStarredCollectionAssets = useCallback(async (filterName?: string) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      // If viewing raw assets (no collections), use user-files endpoint
+      if (sourceMode === "assets") {
+        const res = await fetch("/api/user-files", { method: "GET", credentials: "include" });
+        if (!res.ok) {
+          throw new Error("Failed to fetch assets");
+        }
+        const data = await res.json();
+        setUploads(data.uploads || {});
+        return;
+      }
+
+      // Otherwise, fetch starred/selected collections
+      const collectionsRes = await fetch("/api/collection-getSelected", {
+        method: "GET",
+        credentials: "include",
+      });
+
+      if (!collectionsRes.ok) {
+        throw new Error("Failed to fetch selected collections");
+      }
+
+      const collectionsData = await collectionsRes.json();
+      const selectedCollections = collectionsData.collections || [];
+      // Update local state for dropdown options
+      setStarredCollections(
+        selectedCollections.map((c: { id: number; name: string }) => ({ id: String(c.id), name: c.name }))
+      );
+
+      const activeFilter = typeof filterName === "string" ? filterName : collectionFilter;
+
+      // Fetch assets for each selected collection
+      const allUploads: Uploads = {};
+
+      const collectionsToFetch =
+        activeFilter && activeFilter !== "__all__"
+          ? selectedCollections.filter((c: { name: string }) => c.name === activeFilter)
+          : selectedCollections;
+
+      for (const collection of collectionsToFetch) {
+        try {
+          const assetsRes = await fetch(
+            `/api/assets-getAll?collection=${encodeURIComponent(collection.name)}`,
+            {
+              method: "GET",
+              credentials: "include",
+            }
+          );
+
+          if (assetsRes.ok) {
+            const assetsData = await assetsRes.json();
+            if (assetsData.success && assetsData.uploads) {
+              // Merge uploads from this collection
+              Object.assign(allUploads, assetsData.uploads);
+            }
+          }
+        } catch (err) {
+          console.error(`Error fetching assets for collection ${collection.name}:`, err);
+        }
+      }
+
+      setUploads(allUploads);
+    } catch (err) {
+      console.error("Error fetching starred collection assets:", err);
+      setError(err instanceof Error ? err.message : "Failed to load assets");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [collectionFilter, sourceMode]);
+
+  useEffect(() => {
+    fetchStarredCollectionAssets();
+  }, [fetchStarredCollectionAssets]);
+
   //Function to check if a visual is already selected
   //Input: assetId, ID of asset
   const isVisualSelected = (assetId: string) => {
@@ -41,7 +129,7 @@ const FloatingDataPanel = () => {
   //Function to Handle user clicking on a visual tile
   // Input: assetId, ID of asset
   const handleClick = (assetId: string) => {
-    const uploadData = hardcodedUploads[assetId];
+    const uploadData = uploads[assetId];
     if (!uploadData) return;
     if (isVisualSelected(assetId)) {
       // If already selected, remove it
@@ -61,7 +149,29 @@ const FloatingDataPanel = () => {
           <div className="sticky top-0 z-10 bg-white/80 backdrop-blur px-6 pt-4 pb-3 border-b border-[rgba(229,161,104,0.25)]">
             <div className="relative text-center">
               <div className="absolute inset-x-0 -top-[1px] h-1 bg-gradient-to-r from-[#5C9BB8] via-[#FC9770] to-[#FBC841]"></div>
-              <h2 className="text-lg font-bold tracking-wide">Uploaded Visuals</h2>
+              <button
+                onClick={() => fetchStarredCollectionAssets()}
+                aria-label="Refresh collections"
+                className="absolute left-0 top-1/2 -translate-y-1/2 text-[#5C9BB8] hover:text-[#4a89a6] p-1 hover:bg-[#5C9BB8]/10 rounded transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isLoading}
+                title="Refresh starred collections"
+              >
+                <svg
+                  className={`w-5 h-5 ${isLoading ? "animate-spin" : ""}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                  />
+                </svg>
+              </button>
+              <h2 className="text-lg font-bold tracking-wide">Live Preview</h2>
+              
               <button
                 onClick={toggle}
                 aria-label="Close uploads panel"
@@ -70,12 +180,99 @@ const FloatingDataPanel = () => {
                 ×
               </button>
             </div>
+            {/* Source mode + collection filter */}
+            <div className="mt-3 flex items-center justify-between gap-3">
+              <div className="inline-flex rounded border border-[#5C9BB8]/30 overflow-hidden">
+                <button
+                  className={`px-3 py-1.5 text-xs font-semibold ${sourceMode === "collections" ? "bg-[#5C9BB8]/15 text-[#1f2937]" : "bg-white/90"}`}
+                  onClick={() => {
+                    setSourceMode("collections");
+                    fetchStarredCollectionAssets();
+                  }}
+                >
+                  Collections
+                </button>
+                <button
+                  className={`px-3 py-1.5 text-xs font-semibold border-l border-[#5C9BB8]/30 ${sourceMode === "assets" ? "bg-[#5C9BB8]/15 text-[#1f2937]" : "bg-white/90"}`}
+                  onClick={() => {
+                    setSourceMode("assets");
+                    fetchStarredCollectionAssets();
+                  }}
+                >
+                  Assets
+                </button>
+              </div>
+
+              {sourceMode === "collections" && (
+                <select
+                  value={collectionFilter}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setCollectionFilter(value);
+                    fetchStarredCollectionAssets(value);
+                  }}
+                  className="ml-auto px-3 py-1.5 border border-[#5C9BB8]/30 bg-white/90 focus:outline-none focus:ring-2 focus:ring-[#5C9BB8]/40 focus:border-transparent text-sm font-semibold"
+                >
+                  <option value="__all__">All starred</option>
+                  {starredCollections.map((c) => (
+                    <option key={c.id} value={c.name}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </div>
           </div>
 
           {/* Visuals section */}
           <div className="flex-1 overflow-y-auto px-6 py-4">
-            <div className="flex flex-col gap-4">
-              {Object.entries(hardcodedUploads).map(([assetId, uploadData], idx) => {
+            {isLoading ? (
+              <div className="flex flex-col items-center justify-center py-12 space-y-4">
+                <div className="w-12 h-12 border-4 border-[#5C9BB8] border-t-transparent rounded-full animate-spin"></div>
+                <p className="text-[#4a4a4a] text-sm font-medium">Loading starred collections...</p>
+              </div>
+            ) : error ? (
+              <div className="flex flex-col items-center justify-center py-12 space-y-3">
+                <svg
+                  className="w-16 h-16 text-[#FC9770]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <p className="text-[#FC9770] text-sm font-medium">{error}</p>
+              </div>
+            ) : Object.keys(uploads).length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 space-y-3">
+                <svg
+                  className="w-16 h-16 text-[#5C9BB8]/50"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+                  />
+                </svg>
+                <p className="text-[#4a4a4a] text-sm font-medium text-center px-4">
+                  No assets found in starred collections
+                </p>
+                <p className="text-[#4a4a4a]/70 text-xs text-center px-4">
+                  Star a collection to see its assets here
+                </p>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-4">
+                {Object.entries(uploads).map(([assetId, uploadData], idx) => {
                 // find visual object that corresponds to assetId
                 const visual = visuals.find((v) => v.assetId === assetId);
                 //check if visual currently hovered for highlighting
@@ -170,7 +367,8 @@ const FloatingDataPanel = () => {
                   </div>
                 );
               })}
-            </div>
+              </div>
+            )}
           </div>
         </div>
       )}

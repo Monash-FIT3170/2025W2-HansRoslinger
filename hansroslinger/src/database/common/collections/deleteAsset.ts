@@ -2,16 +2,35 @@ import prisma from "../client";
 import { getCollection } from "./getCollection";
 
 
-export async function deleteAsset(assetName: string, collectionName: string, email: string) {
+export async function deleteAsset(assetId: number, collectionName: string, email: string) {
   try {
-    const foundCollection = await getCollection(collectionName, email);
+    // First get the user to obtain userID
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+    if (!user) {
+      throw new Error(`User with email ${email} not found`);
+    }
+
+    const foundCollection = await getCollection(collectionName, user.id);
     if (!foundCollection) {
       throw new Error(`Collection with name ${collectionName} not found for user ${email}`);
     }
-    const asset = await prisma.asset.delete({
-      where: { collectionID_name: {name: assetName, collectionID: foundCollection.id }},
+    
+    // Verify the asset belongs to this collection
+    const asset = await prisma.asset.findUnique({
+      where: { id: assetId },
     });
-    return asset;
+    
+    if (!asset || asset.collectionID !== foundCollection.id) {
+      throw new Error(`Asset with id ${assetId} not found in collection ${collectionName}`);
+    }
+    
+    // Delete the asset
+    const deletedAsset = await prisma.asset.delete({
+      where: { id: assetId },
+    });
+    return deletedAsset;
   } catch (error) {
     console.error("Error deleting asset:", error);
     throw error;
