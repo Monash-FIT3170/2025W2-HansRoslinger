@@ -35,6 +35,8 @@ export default function CollectionsPage() {
   const [editableTitle, setEditableTitle] = useState("");
   const [editableDescription, setEditableDescription] = useState("");
 
+  const showAddItemsButton = false;
+
   // Mock data for demonstration
   useEffect(() => {
     const fetchCollections = async () => {
@@ -135,6 +137,16 @@ export default function CollectionsPage() {
 
       setIsLoading(false);
   }, []);
+
+  // Persist a minimal view of collections to localStorage for use on other pages (e.g., Uploads)
+  useEffect(() => {
+    try {
+      const minimal = collections.map((c) => ({ id: c.id, name: c.name }));
+      window.localStorage.setItem("collections", JSON.stringify(minimal));
+    } catch (_) {
+      // ignore storage errors
+    }
+  }, [collections]);
 
   const handleCreateCollection = async () => {
     if (!newCollection.name.trim()) return;
@@ -301,6 +313,52 @@ export default function CollectionsPage() {
       setIsEditingDescription(false);
     }
   };
+
+  // Full-screen loader before content renders
+  if (isLoading) {
+    return (
+      <main className="flex-1 p-8 relative overflow-hidden">
+        {/* Enhanced Background decoration to match dashboard */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#F5F9FC] via-[#5C9BB8]/10 to-[#E8F0F7]/25 -z-10"></div>
+
+        {/* Floating background orbs */}
+        <div className="absolute top-10 left-[10%] w-96 h-96 bg-gradient-to-r from-[#5C9BB8]/10 to-[#FC9770]/10 blur-3xl animate-float-slow opacity-40"></div>
+        <div className="absolute bottom-20 right-[15%] w-80 h-80 bg-gradient-to-r from-[#FBC841]/10 to-[#E5A168]/10 blur-3xl animate-float-delayed opacity-40"></div>
+
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="mb-10 flex items-center justify-between animate-fade-in">
+            <div>
+              <h1 className="text-5xl md:text-6xl font-bold mb-3 leading-tight">
+                My <span className="gradient-text-enhanced">Collections</span>
+              </h1>
+              <p className="text-lg text-[#4a4a4a]/90 font-medium">
+                Preparing your collections...
+              </p>
+            </div>
+          </div>
+
+          <div
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 animate-slide-up"
+            style={{ animationDelay: "200ms" }}
+          >
+            {Array.from({ length: 12 }).map((_, i) => (
+              <div
+                key={i}
+                className="h-48 bg-gradient-to-br from-[#F5F9FC] via-[#E8F0F7]/60 to-[#D8E4F0]/40 border border-[#5C9BB8]/15 overflow-hidden relative animate-pulse"
+                style={{ animationDelay: `${i * 60}ms` }}
+              >
+                <div className="h-28 bg-gradient-to-br from-[#5C9BB8]/10 to-[#FC9770]/10"></div>
+                <div className="p-3 space-y-2">
+                  <div className="h-4 bg-[#5C9BB8]/20 w-3/4"></div>
+                  <div className="h-3 bg-[#5C9BB8]/10 w-1/2"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="flex-1 p-8 relative overflow-hidden">
@@ -634,43 +692,12 @@ export default function CollectionsPage() {
                           </svg>
                         </button>
                       </div>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteCollection(collection.id);
-                        }}
-                        className="relative p-1.5 text-[#FC9770] hover:text-[#fb8659] hover:bg-[#FC9770]/10 transition-all duration-300 hover:scale-110"
-                        title="Delete collection"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </button>
+                        {/* Delete collection button hidden */}
                     </div>
                     <p className="text-[#4a4a4a]/70 text-xs mt-1 line-clamp-1 leading-relaxed">
                       {collection.description || "No description"}
                     </p>
-                    <div className="flex justify-between items-center mt-3 pt-2 border-t border-[#5C9BB8]/10">
-                      <div className="flex items-center gap-1.5">
-                        <div className="w-1.5 h-1.5 bg-[#5C9BB8] opacity-60"></div>
-                        <span className="text-xs text-[#5C9BB8] font-bold uppercase tracking-wide">
-                          {collection.items.length}{" "}
-                          {collection.items.length === 1 ? "item" : "items"}
-                        </span>
-                      </div>
-                      <span className="text-xs text-[#4a4a4a]/60 font-medium">
-                        {collection.createdAt}
-                      </span>
-                    </div>
+                      {/* Items count and collection date hidden */}
                   </div>
                 </div>
               ))
@@ -737,44 +764,32 @@ export default function CollectionsPage() {
                   <h2 className="text-3xl md:text-4xl font-bold gradient-text-enhanced">
                     {selectedCollection.name}
                   </h2>
-                  <button
-                    onClick={startEditingTitle}
-                    className="p-2.5 text-[#5C9BB8] hover:text-[#4a89a6] hover:bg-[#5C9BB8]/10 transition-all duration-300 hover:scale-110"
-                    title="Edit title"
-                    aria-label="Edit collection title"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                    </svg>
-                  </button>
+                  {/* Edit title pencil hidden */}
                 </div>
               )}
-              <button
-                className="group relative inline-flex items-center gap-2 bg-gradient-to-r from-[#5C9BB8] to-[#4a89a6] text-white px-6 py-3 font-bold shadow-lg shadow-[#5C9BB8]/30 transition-all duration-300 hover:shadow-xl hover:shadow-[#5C9BB8]/40 hover:-translate-y-0.5 overflow-hidden"
-                onClick={() => setIsAddItemsModalOpen(true)}
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-[#5C9BB8] to-[#7BAFD4] opacity-0 group-hover:opacity-75 blur-sm transition-opacity duration-300"></div>
-
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 relative z-10 transition-transform group-hover:scale-110 group-hover:rotate-90"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
+              {showAddItemsButton && (
+                <button
+                  className="group relative inline-flex items-center gap-2 bg-gradient-to-r from-[#5C9BB8] to-[#4a89a6] text-white px-6 py-3 font-bold shadow-lg shadow-[#5C9BB8]/30 transition-all duration-300 hover:shadow-xl hover:shadow-[#5C9BB8]/40 hover:-translate-y-0.5 overflow-hidden"
+                  onClick={() => setIsAddItemsModalOpen(true)}
                 >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="relative z-10 tracking-wide">Add Items</span>
-              </button>
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                  <div className="absolute -inset-0.5 bg-gradient-to-r from-[#5C9BB8] to-[#7BAFD4] opacity-0 group-hover:opacity-75 blur-sm transition-opacity duration-300"></div>
+
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 relative z-10 transition-transform group-hover:scale-110 group-hover:rotate-90"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <span className="relative z-10 tracking-wide">Add Items</span>
+                </button>
+              )}
             </div>
 
             {isEditingDescription ? (
@@ -834,21 +849,7 @@ export default function CollectionsPage() {
                   <p className="text-base md:text-lg text-[#4a4a4a]/90 leading-relaxed">
                     {selectedCollection.description || "No description"}
                   </p>
-                  <button
-                    onClick={startEditingDescription}
-                    className="p-2.5 text-[#5C9BB8] hover:text-[#4a89a6] hover:bg-[#5C9BB8]/10 transition-all duration-300 hover:scale-110"
-                    title="Edit description"
-                    aria-label="Edit collection description"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                    </svg>
-                  </button>
+                  {/* Edit description pencil hidden */}
                 </div>
               </div>
             )}
@@ -942,40 +943,7 @@ export default function CollectionsPage() {
                           <h4 className="text-sm font-semibold text-[#2a2a2a] truncate flex-1">
                             {item.name}
                           </h4>
-                          <button
-                            onClick={() => {
-                              // Remove item from collection
-                              const updatedCollection = {
-                                ...selectedCollection,
-                                items: selectedCollection.items.filter(
-                                  (id) => id !== itemId,
-                                ),
-                              };
-                              setSelectedCollection(updatedCollection);
-                              setCollections(
-                                collections.map((c) =>
-                                  c.id === updatedCollection.id
-                                    ? updatedCollection
-                                    : c,
-                                ),
-                              );
-                            }}
-                            className="ml-2 p-1.5 text-[#FC9770] hover:text-[#fb8659] hover:bg-[#FC9770]/10 transition-all duration-300 hover:scale-110"
-                            title="Remove from collection"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-4 w-4"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                          </button>
+                          {/* Remove item button hidden */}
                         </div>
                         <p className="text-xs text-[#4a4a4a]/70 font-medium uppercase tracking-wider">
                           {item.type}

@@ -21,8 +21,6 @@ import { useVisualStore } from "store/visualsSlice";
 import { FILE_TYPE_PNG } from "constants/application";
 import VegaLiteChartDisplay from "@/components/VegaLiteChartDisplay";
 import { hardcodedUploads } from "../hardcodedData";
-import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
 // Panel store state
 const FloatingDataPanel = () => {
@@ -54,102 +52,138 @@ const FloatingDataPanel = () => {
     }
   };
 
-  // To use for hover simulations
-  const [isExpandButtonHovered, setIsExpandButtonHovered] = useState(false);
-  const [hoveredAsset, setHoveredAsset] = useState<string | null>(null);
-
   return (
     <>
       {/* Panel */}
-      <div
-        className={`absolute top-0 left-0 bottom-0 z-40 w-[40rem] h-full 
-  bg-gray-400/70 border-r border-gray-500 shadow-lg p-4 flex flex-col text-black 
-  transform transition-transform duration-300 ease-in-out
-  ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
-      >
-        {/* Header */}
-        <div className="bg-gray-300 text-black rounded p-3 mb-4 text-center flex-shrink-0">
-          <h2 className="text-xl">Uploaded Visuals</h2>
-        </div>
+      {isOpen && (
+        <div className="absolute top-0 left-0 bottom-0 z-40 h-full w-1/3 overflow-y-auto glass bg-white/75 border-r border-[rgba(229,161,104,0.35)] shadow-2xl flex flex-col text-[#1f2937] scrollbar-thin">
+          {/* Header */}
+          <div className="sticky top-0 z-10 bg-white/80 backdrop-blur px-6 pt-4 pb-3 border-b border-[rgba(229,161,104,0.25)]">
+            <div className="relative text-center">
+              <div className="absolute inset-x-0 -top-[1px] h-1 bg-gradient-to-r from-[#5C9BB8] via-[#FC9770] to-[#FBC841]"></div>
+              <h2 className="text-lg font-bold tracking-wide">Uploaded Visuals</h2>
+              <button
+                onClick={toggle}
+                aria-label="Close uploads panel"
+                className="absolute right-0 top-1/2 -translate-y-1/2 text-[#4b5563] hover:text-[#111827] px-2"
+              >
+                ×
+              </button>
+            </div>
+          </div>
 
-        {/* Visuals section */}
-        <div className="flex-1 overflow-y-auto">
-          <div className="grid grid-cols-2 gap-x-8 gap-y-10 px-4 pb-4">
-            {Object.entries(hardcodedUploads).map(([assetId, uploadData]) => {
-              return (
-                <div
-                  key={assetId}
-                  data-asset-id={assetId}
-                  onClick={() => handleClick(assetId)}
-                  onMouseEnter={() => setHoveredAsset(assetId)}
-                  onMouseLeave={() => setHoveredAsset(null)}
-                  className={`cursor-pointer flex flex-col items-center p-2 rounded-lg border transition-all duration-200 transform
-                                ${
-                                  isVisualSelected(assetId)
-                                    ? "border-green-500 border-2"
-                                    : "border-gray-300"
-                                }
-                                ${
-                                  hoveredAsset === assetId
-                                    ? "bg-gray-100 shadow-lg scale-105"
-                                    : "hover:bg-gray-100 hover:shadow-lg hover:scale-105"
-                                }`}
-                >
-                  {/* === THUMBNAIL / PREVIEW === */}
+          {/* Visuals section */}
+          <div className="flex-1 overflow-y-auto px-6 py-4">
+            <div className="flex flex-col gap-4">
+              {Object.entries(hardcodedUploads).map(([assetId, uploadData], idx) => {
+                // find visual object that corresponds to assetId
+                const visual = visuals.find((v) => v.assetId === assetId);
+                //check if visual currently hovered for highlighting
+                const isHovered = visual?.isHovered;
+                const isSelected = isVisualSelected(assetId);
+
+                return (
                   <div
-                    className={`relative w-52 h-52 rounded bg-white flex items-center justify-center overflow-hidden `}
+                    key={assetId}
+                    data-asset-id={assetId}
+                    onClick={() => handleClick(assetId)}
+                    className={`group relative backdrop-blur-md transition-all duration-500 cursor-pointer p-4 animate-scale-in ${
+                      isSelected
+                        ? "bg-white/95 shadow-2xl shadow-[#5C9BB8]/40 ring-2 ring-[#5C9BB8] scale-[1.02] -translate-y-1"
+                        : "bg-white/80 shadow-lg hover:shadow-2xl hover:bg-white/95 hover:-translate-y-1 hover:ring-2 hover:ring-[#FC9770]/40"
+                    } ${isHovered ? "ring-2 ring-[#5C9BB8]" : ""}`}
+                    style={{
+                      animationDelay: `${idx * 80}ms`,
+                    }}
                   >
-                    {/* Render image if it's a PNG, otherwise render VegaLite chart */}
-                    {uploadData.type === FILE_TYPE_PNG ? (
-                      <Image
-                        src={
-                          uploadData.thumbnailSrc ||
-                          "/uploads/default-thumbnail.png"
-                        }
-                        alt={uploadData.name}
-                        className="max-w-[90%] max-h-[90%] object-contain"
-                        width={150}
-                        height={150}
-                      />
-                    ) : (
-                      <VegaLiteChartDisplay data={uploadData} />
+                    {/* Gradient border accent on top */}
+                    <div
+                      className={`absolute top-0 left-0 right-0 h-1 transition-all duration-500 ${
+                        isSelected
+                          ? "bg-gradient-to-r from-[#5C9BB8] via-[#FC9770] to-[#FBC841] opacity-100"
+                          : "bg-gradient-to-r from-[#FC9770]/40 to-[#FBC841]/40 opacity-0 group-hover:opacity-100"
+                      }`}
+                    ></div>
+
+                    <div className="flex items-center gap-4">
+                      {/* === THUMBNAIL / PREVIEW === */}
+                      <div
+                        className={`relative w-24 h-24 border bg-white flex items-center justify-center overflow-hidden shrink-0 transition-all duration-300 ${
+                          isSelected
+                            ? "border-[#5C9BB8] shadow-md"
+                            : "border-gray-200 group-hover:border-[#FC9770]/50"
+                        }`}
+                      >
+                        {/* Render image if it's a PNG, otherwise render VegaLite chart */}
+                        {uploadData.type === FILE_TYPE_PNG ? (
+                          <Image
+                            src={
+                              uploadData.thumbnailSrc ||
+                              "/uploads/default-thumbnail.png"
+                            }
+                            alt={uploadData.name}
+                            className="max-w-[85%] max-h-[85%] object-contain"
+                            width={80}
+                            height={80}
+                          />
+                        ) : (
+                          <div className="w-full h-full scale-75">
+                            <VegaLiteChartDisplay data={uploadData} />
+                          </div>
+                        )}
+                      </div>
+
+                      {/* === LABELS === */}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-base font-semibold text-[#2a2a2a] truncate mb-1.5">
+                          {uploadData.name}
+                        </p>
+                        <span className="inline-block text-[10px] uppercase tracking-wider text-[#5C9BB8] bg-[#5C9BB8]/10 px-2 py-0.5 font-medium">
+                          {uploadData.type}
+                        </span>
+                      </div>
+
+                      {/* Selection indicator */}
+                      {isSelected && (
+                        <div className="shrink-0 w-8 h-8 bg-gradient-to-br from-[#5C9BB8] to-[#4a89a6] rounded-full flex items-center justify-center shadow-lg animate-scale-in">
+                          <svg
+                            className="w-5 h-5 text-white"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={3}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Hover glow effect */}
+                    {!isSelected && (
+                      <div className="absolute inset-0 bg-gradient-to-r from-[#FC9770]/5 to-[#FBC841]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
                     )}
                   </div>
-
-                  {/* === LABELS === */}
-                  <p className="mt-3 text-base font-medium text-center w-full">
-                    {uploadData.name}
-                  </p>
-                  <p className="text-xs text-gray-600 uppercase">
-                    {uploadData.type}
-                  </p>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* toggle button */}
       <button
         onClick={toggle}
-        onMouseEnter={() => setIsExpandButtonHovered(true)}
-        onMouseLeave={() => setIsExpandButtonHovered(false)}
-        className={`absolute top-1/2 -translate-y-1/2 z-50 w-16 h-24 sm:w-16 sm:h-30
-          flex items-center justify-center text-lg font-bold text-white rounded-r shadow-lg
-          transition-all duration-300 ease-in-out
-          ${isOpen ? "left-[40rem]" : "left-0"}
-          ${
-            isExpandButtonHovered
-              ? "bg-gradient-to-r from-[#6EAED1] to-[#5C9BB8] shadow-[#5C9BB8]/40"
-              : "bg-gradient-to-r from-[#5C9BB8] to-[#4a89a6] shadow-[#5C9BB8]/30"
-          }`}
+        aria-label={isOpen ? "Collapse uploads panel" : "Expand uploads panel"}
+        className="absolute -translate-y-1/2 z-50 w-8 h-20 bg-gradient-to-b from-[#5C9BB8] to-[#FC9770] text-white rounded-r shadow-xl hover:opacity-95 flex items-center justify-center text-base font-bold top-1/2"
+        style={{ left: isOpen ? "33.3333%" : "0px" }}
       >
-        {isOpen ? (
-          <ChevronLeft className="w-8 h-8" />
-        ) : (
-          <ChevronRight className="w-8 h-8" />
-        )}
+        {/* Collapse or expand indicator */}
+        {isOpen ? "‹" : "›"}
       </button>
     </>
   );
