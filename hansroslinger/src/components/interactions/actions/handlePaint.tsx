@@ -2,12 +2,10 @@ type Point = { x: number; y: number };
 
 let isDrawing = false;
 let lastPoint: Point | null = null;
+let hasActivePath = false;
 
-const getCanvas = (): HTMLCanvasElement | null => {
-  return document.getElementById(
-    "annotation-canvas",
-  ) as HTMLCanvasElement | null;
-};
+const getCanvas = (): HTMLCanvasElement | null =>
+  document.getElementById("annotation-canvas") as HTMLCanvasElement | null;
 
 const getCtx = (): CanvasRenderingContext2D | null => {
   const canvas = getCanvas();
@@ -34,26 +32,48 @@ const applyStyleFromCanvas = (ctx: CanvasRenderingContext2D) => {
 export const paintStart = (point: Point) => {
   const ctx = getCtx();
   if (!ctx) return;
+
+  // Reset any dangling path
+  ctx.beginPath();
   applyStyleFromCanvas(ctx);
+
+  // Move first to avoid accidental line jump
+  ctx.moveTo(point.x, point.y);
+  hasActivePath = true;
   isDrawing = true;
   lastPoint = { ...point };
 };
 
 export const paintMove = (point: Point) => {
   const ctx = getCtx();
-  if (!ctx || !isDrawing) return;
+  if (!ctx || !isDrawing || !hasActivePath) return;
+
   applyStyleFromCanvas(ctx);
-  if (lastPoint) {
+
+  // Defensive check: ensure large jump = new path (avoid connecting distant points)
+  if (
+    lastPoint &&
+    Math.hypot(point.x - lastPoint.x, point.y - lastPoint.y) > 200
+  ) {
     ctx.beginPath();
-    ctx.moveTo(lastPoint.x, lastPoint.y);
-    ctx.lineTo(point.x, point.y);
-    ctx.stroke();
+    ctx.moveTo(point.x, point.y);
   }
+
+  ctx.lineTo(point.x, point.y);
+  ctx.stroke();
+
   lastPoint = { ...point };
 };
 
 export const paintEnd = () => {
+  const ctx = getCtx();
+  if (ctx && hasActivePath) {
+    ctx.closePath();
+  }
+
+  // Full reset of drawing state
   isDrawing = false;
+  hasActivePath = false;
   lastPoint = null;
 };
 
