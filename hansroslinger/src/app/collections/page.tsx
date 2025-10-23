@@ -34,6 +34,7 @@ export default function CollectionsPage() {
   const [isEditingDescription, setIsEditingDescription] = useState(false);
   const [editableTitle, setEditableTitle] = useState("");
   const [editableDescription, setEditableDescription] = useState("");
+  const [isLoadingItems, setIsLoadingItems] = useState(false);
 
   const showAddItemsButton = false;
 
@@ -135,7 +136,6 @@ export default function CollectionsPage() {
         },
       });
 
-      setIsLoading(false);
   }, []);
 
   // Persist a minimal view of collections to localStorage for use on other pages (e.g., Uploads)
@@ -188,10 +188,35 @@ export default function CollectionsPage() {
   }
   };
 
-  const handleDeleteCollection = (id: string) => {
-    setCollections(collections.filter((col) => col.id !== id));
-    if (selectedCollection?.id === id) {
-      setSelectedCollection(null);
+  const handleDeleteCollection = async (id: string, name: string) => {
+    try {
+      const res = await fetch("/api/collection-delete", {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        console.error("Failed to delete collection:", data);
+        alert(`Failed to delete collection: ${data.error || 'Unknown error'}`);
+        return;
+      }
+
+      // Update local state
+      setCollections(collections.filter((col) => col.id !== id));
+      if (selectedCollection?.id === id) {
+        setSelectedCollection(null);
+      }
+      
+      // Remove from active collections if present
+      setActiveCollections((prev) => prev.filter((colId) => colId !== id));
+    } catch (error) {
+      console.error("Error deleting collection:", error);
+      alert(`Error deleting collection: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
@@ -210,6 +235,7 @@ export default function CollectionsPage() {
       setIsEditingDescription(false);
       setEditableTitle(collection.name);
       setEditableDescription(collection.description || "");
+      setIsLoadingItems(true);
       try {
       // Use query parameter for GET request
       const res = await fetch(
@@ -234,6 +260,8 @@ export default function CollectionsPage() {
       }
     } catch (error) {
       console.error("Error fetching collection assets:", error);
+    } finally {
+      setIsLoadingItems(false);
     }
   }};
 
@@ -314,6 +342,68 @@ export default function CollectionsPage() {
         ),
       );
       setIsEditingDescription(false);
+    }
+  };
+
+  const handleDeleteItem = async (itemId: string) => {
+    if (!selectedCollection) return;
+    
+    const item = availableUploads[itemId];
+    if (!item) return;
+
+    // Check if item has an id property
+    if (!item.id) {
+      console.error("Item missing id:", item);
+      alert("Cannot delete item: Missing asset ID");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/asset-delete", {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          assetId: item.id,
+          collectionName: selectedCollection.name,
+        }),
+      });
+
+      const data = await res.json();
+      
+      if (!res.ok) {
+        console.error("Failed to delete asset:", data);
+        console.error("Request was:", {
+          assetId: item.id,
+          collectionName: selectedCollection.name,
+        });
+        alert(`Failed to delete asset: ${data.error || 'Unknown error'}`);
+        return;
+      }
+
+      console.log("Asset deleted successfully:", data);
+
+      // Update local state
+      const updatedCollection = {
+        ...selectedCollection,
+        items: selectedCollection.items.filter((id) => id !== itemId),
+      };
+      setSelectedCollection(updatedCollection);
+      setCollections(
+        collections.map((c) =>
+          c.id === updatedCollection.id ? updatedCollection : c,
+        ),
+      );
+
+      // Remove from available uploads
+      const newUploads = { ...availableUploads };
+      delete newUploads[itemId];
+      setAvailableUploads(newUploads);
+    } catch (error) {
+      console.error("Error deleting asset:", error);
+      alert(`Error deleting asset: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
@@ -529,16 +619,20 @@ export default function CollectionsPage() {
           style={{ animationDelay: "200ms" }}
         >
           {isLoading ? (
-            Array.from({ length: 4 }).map((_, i) => (
+            Array.from({ length: 8 }).map((_, i) => (
               <div
                 key={i}
-                className="h-48 bg-gradient-to-br from-[#F5F9FC] via-[#E8F0F7]/60 to-[#D8E4F0]/40 animate-pulse border border-[#5C9BB8]/15 overflow-hidden"
-                style={{ animationDelay: `${i * 100}ms` }}
+                className="h-48 bg-white/80 backdrop-blur-md border border-[#5C9BB8]/15 overflow-hidden shadow-lg animate-pulse"
+                style={{ animationDelay: `${i * 80}ms` }}
               >
-                <div className="h-28 bg-gradient-to-br from-[#5C9BB8]/10 to-[#FC9770]/10 animate-pulse"></div>
+                <div className="h-32 bg-gradient-to-br from-[#F5F9FC] via-[#E8F0F7]/60 to-[#D8E4F0]/40 relative">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-12 h-12 bg-[#5C9BB8]/20 rounded-full"></div>
+                  </div>
+                </div>
                 <div className="p-3 space-y-2">
-                  <div className="h-4 bg-[#5C9BB8]/20 w-3/4 animate-pulse"></div>
-                  <div className="h-3 bg-[#5C9BB8]/10 w-1/2 animate-pulse"></div>
+                  <div className="h-4 bg-[#5C9BB8]/20 w-3/4 rounded"></div>
+                  <div className="h-3 bg-[#5C9BB8]/10 w-1/2 rounded"></div>
                 </div>
               </div>
             ))
@@ -695,7 +789,29 @@ export default function CollectionsPage() {
                           </svg>
                         </button>
                       </div>
-                        {/* Delete collection button hidden */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteCollection(collection.id, collection.name);
+                        }}
+                        className="relative p-1.5 text-gray-400 hover:text-[#FC9770] hover:bg-[#FC9770]/10 transition-all duration-300 hover:scale-110"
+                        title="Delete collection"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={2}
+                          stroke="currentColor"
+                          className="w-5 h-5"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                          />
+                        </svg>
+                      </button>
                     </div>
                     <p className="text-[#4a4a4a]/70 text-xs mt-1 line-clamp-1 leading-relaxed">
                       {collection.description || "No description"}
@@ -868,7 +984,26 @@ export default function CollectionsPage() {
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-              {selectedCollection.items.length === 0 ? (
+              {isLoadingItems ? (
+                // Loading state with animation
+                Array.from({ length: 5 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="bg-white/80 backdrop-blur-md border border-[#5C9BB8]/15 overflow-hidden shadow-lg animate-pulse"
+                    style={{ animationDelay: `${i * 100}ms` }}
+                  >
+                    <div className="h-32 bg-gradient-to-br from-[#F5F9FC] via-[#E8F0F7]/60 to-[#D8E4F0]/40 relative">
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-12 h-12 bg-[#5C9BB8]/20 rounded-full animate-pulse"></div>
+                      </div>
+                    </div>
+                    <div className="p-3">
+                      <div className="h-4 bg-[#5C9BB8]/20 w-3/4 mb-2 animate-pulse"></div>
+                      <div className="h-3 bg-[#5C9BB8]/10 w-1/2 animate-pulse"></div>
+                    </div>
+                  </div>
+                ))
+              ) : selectedCollection.items.length === 0 ? (
                 <div className="col-span-full p-16 bg-gradient-to-br from-[#F5F9FC] via-[#E8F0F7]/60 to-[#D8E4F0]/40 text-center border border-[#5C9BB8]/15">
                   <div className="flex justify-center mb-6">
                     <div className="relative">
@@ -946,7 +1081,26 @@ export default function CollectionsPage() {
                           <h4 className="text-sm font-semibold text-[#2a2a2a] truncate flex-1">
                             {item.name}
                           </h4>
-                          {/* Remove item button hidden */}
+                          <button
+                            onClick={() => handleDeleteItem(itemId)}
+                            className="relative p-1 text-gray-400 hover:text-[#FC9770] hover:bg-[#FC9770]/10 transition-all duration-300 hover:scale-110"
+                            title="Remove item"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={2}
+                              stroke="currentColor"
+                              className="w-4 h-4"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                              />
+                            </svg>
+                          </button>
                         </div>
                         <p className="text-xs text-[#4a4a4a]/70 font-medium uppercase tracking-wider">
                           {item.type}
