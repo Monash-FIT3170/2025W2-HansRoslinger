@@ -14,6 +14,7 @@ interface Collection {
   items: string[];
   createdAt: string;
   thumbnailSrc?: string;
+  isSelected?: boolean;
 }
 
 export default function CollectionsPage() {
@@ -55,8 +56,13 @@ export default function CollectionsPage() {
         items: [],
         createdAt: new Date(collection.createdAt).toISOString().split("T")[0],
         thumbnailSrc: "/uploads/default-thumbnail.png",
+        isSelected: Boolean(collection.isSelected),
     }));
     setCollections(formattedCollections);
+    // initialize active collections from persisted selection
+    setActiveCollections(
+      formattedCollections.filter((c: Collection) => c.isSelected).map((c: Collection) => c.id),
+    );
     setIsLoading(false);
     }
     fetchCollections();
@@ -268,7 +274,18 @@ export default function CollectionsPage() {
   const toggleActiveCollection = async (collectionId: string, e: React.MouseEvent) => {
   e.stopPropagation(); // Prevent triggering selectCollection
   const isCurrentlyActive = activeCollections.includes(collectionId);
-  console.log(`Toggling collection ${collectionId} to ${!isCurrentlyActive}`);
+
+  // Optimistic UI update
+  const prevActive = activeCollections;
+  const nextActive = isCurrentlyActive
+    ? activeCollections.filter((id) => id !== collectionId)
+    : [...activeCollections, collectionId];
+  setActiveCollections(nextActive);
+  const prevCollections = collections;
+  setCollections((prev) =>
+    prev.map((c) => (c.id === collectionId ? { ...c, isSelected: !isCurrentlyActive } : c)),
+  );
+
   try {
     const res = await fetch("/api/collection-toggle", {
       method: "POST",
@@ -278,24 +295,18 @@ export default function CollectionsPage() {
       },
       body: JSON.stringify({
         collectionID: collectionId,
-        state: !isCurrentlyActive, 
+        state: !isCurrentlyActive,
       }),
     });
-    const data = await res.json();
-    if (res.ok && data.success) {
-      // Update frontend state
-      setActiveCollections((prev) => {
-        if (isCurrentlyActive) {
-          return prev.filter((id) => id !== collectionId);
-        } else {
-          return [...prev, collectionId];
-        }
-      });
-    } else {
-      console.error("Failed to update collection selection:", data.error);
+    if (!res.ok) {
+      // rollback on server error
+      setActiveCollections(prevActive);
+      setCollections(prevCollections);
     }
-  } catch (error) {
-    console.error("Error toggling collection selection:", error);
+  } catch (_) {
+    // rollback on network error
+    setActiveCollections(prevActive);
+    setCollections(prevCollections);
   }
 };
 
