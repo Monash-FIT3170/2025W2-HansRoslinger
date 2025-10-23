@@ -1,9 +1,14 @@
 # 2025W2-HansRoslinger 🚀
 
-Welcome to the **HansRoslinger** repository! This project is dedicated to designing and implementing scalable AI systems, ensuring seamless integration and deployment.
+Welcome to the **HansRoslinger** repository! This project is dedicated to designing and implementing a gesture-based presentation tool called **Yubi**, which integrates the presenter into the experience. **Yubi** uses natural hand movements to control slides and highlight content, making online presentations more expressive, engaging, and human-centered.
+
+**Yubi** is currently hosted at: https://hans-roslinger.vercel.app/
+
 
 ## Table of Content
 
+- [Overview of repository](#overview-of-repository)
+  - [Repository Layout](#repository-layout)
 - [Project Requirements](#project-requirements)
   - [Hardware](#hardware)
   - [Software](#software)
@@ -23,6 +28,32 @@ Welcome to the **HansRoslinger** repository! This project is dedicated to design
   - [Systems Architects](#️-systems-architects)
   - [Project Managers](#️-project-managers)
   - [Release Train Engineers](#-release-train-engineers)
+
+## Overview of repository
+This repository follows a mono-repo structure that includes both frontend and backend components for the **HansRoslinger (Yubi)** application.  
+It uses **Next.js** and **TypeScript** for the frontend, with **Prisma** for database management and **Vercel** for deployment.  
+The setup supports development inside a **Dev Container** for consistent environment management.
+
+### Repository Layout
+```
+2025W2-HansRoslinger/
+├── .devcontainer/ # VS Code Dev Container configuration (Next.js + TypeScript)
+├── .github/ # GitHub configuration (CI/CD workflows)
+├── .vscode/ # VS Code settings and workspace configurations
+├── documentation/ # Project documentation and setup guides
+├── hansroslinger/ # Main application code
+│ ├── cache/ # Cached assets
+│ ├── prisma/ # Prisma schema and migration files
+│ ├── public/ # Static assets (images, icons, etc.)
+│ ├── src/ # Source code (components, pages, hooks, utils)
+│ ├── next.config.ts # Next.js configuration
+│ ├── package.json # Application dependencies
+│ └── tsconfig.json # TypeScript configuration
+├── technology_tutorial/ # Technology spikes, experimental work by team members to explore and learn the tech stack
+├── DEPENDENCIES.md # Documentation of external dependencies
+├── package.json # Root-level dependencies
+└── README.md # Project overview and setup instructions
+```
 
 ## Project Requirements
 
@@ -45,6 +76,20 @@ The project is a client-side heavy application, so most hardware requirements ap
 - Vercel for deployment
 - Prisma for database management
 - AWS S3 for storing user files
+
+## Suggested Tutorials
+
+To help contributors and new developers become familiar with the technologies used in this project, we recommend exploring the following resources:
+
+- [Next.js Documentation:](https://nextjs.org/docs) Official guide to the Next.js framework.
+- [TypeScript Handbook:](https://www.typescriptlang.org/docs/handbook/intro.html) The fundamentals of TypeScript.
+- [Prisma Docs:](https://www.prisma.io/docs) ORM setup, schema, and database interaction guide.
+- [Vercel Deployment Guide:](https://vercel.com/docs) Steps for deploying and managing projects on Vercel.
+- [AWS S3 Documentation:](https://docs.aws.amazon.com/s3/) AWS S3 configuration and permissions.
+- [Docker Getting Started:](https://docs.docker.com/get-started/) Basics of Docker and containerized development.
+- [Dev Containers in VS Code:](https://code.visualstudio.com/docs/devcontainers/containers) Guide to setting up and using Dev Containers.
+
+
 
 ## Project Setup
 
