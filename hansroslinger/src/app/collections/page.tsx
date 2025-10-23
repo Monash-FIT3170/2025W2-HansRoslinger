@@ -45,35 +45,49 @@ export default function CollectionsPage() {
     const data = await res.json();
     console.log(data)
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const formattedCollections = data.collections.map((collection: any) => ({
+        id: String(collection.id),
+        name: collection.name,
+        description: collection.description || "No description",
+        items: [],
+        createdAt: new Date(collection.createdAt).toISOString().split("T")[0],
+        thumbnailSrc: "/uploads/default-thumbnail.png",
+    }));
+    setCollections(formattedCollections);
+    setIsLoading(false);
+
+  
+
     }
     fetchCollections();
 
-    setCollections([
-      {
-        id: "col-1",
-        name: "Line Charts",
-        description: "Collection of line chart visualizations",
-        items: ["chart-1", "chart-2"],
-        createdAt: "2025-10-01",
-        thumbnailSrc: "/uploads/line-chart.json",
-      },
-      {
-        id: "col-2",
-        name: "Bar Charts",
-        description: "Collection of bar chart visualizations",
-        items: ["chart-3", "chart-4"],
-        createdAt: "2025-10-05",
-        thumbnailSrc: "/uploads/bar-chart.json",
-      },
-      {
-        id: "col-3",
-        name: "User Photos",
-        description: "Collection of user photos",
-        items: ["img-1", "img-2", "img-3"],
-        createdAt: "2025-10-08",
-        thumbnailSrc: "/uploads/ian.png",
-      },
-    ]);
+    // setCollections([
+    //   {
+    //     id: "col-1",
+    //     name: "Line Charts",
+    //     description: "Collection of line chart visualizations",
+    //     items: ["chart-1", "chart-2"],
+    //     createdAt: "2025-10-01",
+    //     thumbnailSrc: "/uploads/line-chart.json",
+    //   },
+    //   {
+    //     id: "col-2",
+    //     name: "Bar Charts",
+    //     description: "Collection of bar chart visualizations",
+    //     items: ["chart-3", "chart-4"],
+    //     createdAt: "2025-10-05",
+    //     thumbnailSrc: "/uploads/bar-chart.json",
+    //   },
+    //   {
+    //     id: "col-3",
+    //     name: "User Photos",
+    //     description: "Collection of user photos",
+    //     items: ["img-1", "img-2", "img-3"],
+    //     createdAt: "2025-10-08",
+    //     thumbnailSrc: "/uploads/ian.png",
+    //   },
+    // ]);
 
     // Mock available uploads
     setAvailableUploads({
@@ -124,6 +138,7 @@ export default function CollectionsPage() {
     setIsLoading(false);
   
   }, []);
+
 
   const handleCreateCollection = async () => {
     if (!newCollection.name.trim()) return;
@@ -178,7 +193,8 @@ export default function CollectionsPage() {
     setIsCreating(!isCreating);
   };
 
-  const selectCollection = (collection: Collection) => {
+
+  const selectCollection = async (collection: Collection) => {
     // Toggle selection - if clicking the already selected collection, unselect it
     if (selectedCollection && selectedCollection.id === collection.id) {
       setSelectedCollection(null);
@@ -189,23 +205,73 @@ export default function CollectionsPage() {
       setIsEditingDescription(false);
       setEditableTitle(collection.name);
       setEditableDescription(collection.description || "");
+      try {
+      // Use query parameter for GET request
+      const res = await fetch(
+        `/api/assets-getAll?collection=${encodeURIComponent(
+          collection.name
+        )}`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+
+      const data = await res.json();
+
+      if (data.success) {
+        setAvailableUploads(data.uploads);
+
+        const itemIds = Object.keys(data.uploads);
+        setSelectedCollection((prev) =>
+          prev ? { ...prev, items: itemIds } : null
+        );
+      } else {
+        console.error("Failed to load collection assets:", data.error);
+      }
+    } catch (error) {
+      console.error("Error fetching collection assets:", error);
+    }
+      
     }
   };
 
-  const toggleActiveCollection = (
-    collectionId: string,
-    e: React.MouseEvent,
-  ) => {
-    e.stopPropagation(); // Prevent triggering selectCollection
+const toggleActiveCollection = async (collectionId: string, e: React.MouseEvent) => {
+  e.stopPropagation(); // Prevent triggering selectCollection
 
-    setActiveCollections((prev) => {
-      if (prev.includes(collectionId)) {
-        return prev.filter((id) => id !== collectionId);
-      } else {
-        return [...prev, collectionId];
-      }
+
+  const isCurrentlyActive = activeCollections.includes(collectionId);
+
+  try {
+    const res = await fetch("/api/collection-toggle", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        collectionID: collectionId,
+        state: !isCurrentlyActive, 
+      }),
     });
-  };
+
+    const data = await res.json();
+    if (res.ok && data.success) {
+      // Update frontend state
+      setActiveCollections((prev) => {
+        if (isCurrentlyActive) {
+          return prev.filter((id) => id !== collectionId);
+        } else {
+          return [...prev, collectionId];
+        }
+      });
+    } else {
+      console.error("Failed to update collection selection:", data.error);
+    }
+  } catch (error) {
+    console.error("Error toggling collection selection:", error);
+  }
+};
 
   const startEditingTitle = () => {
     if (selectedCollection) {

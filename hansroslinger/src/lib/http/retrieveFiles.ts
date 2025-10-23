@@ -2,6 +2,7 @@ import { ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { s3Client } from "./s3Client";
 import type { FileObject } from "./fileInterfaces";
 
+
 export async function retrieveUserFiles(
   userEmail: string,
   collection: string = "Home",
