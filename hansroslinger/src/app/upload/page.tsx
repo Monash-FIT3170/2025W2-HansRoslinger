@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { FILE_TYPE_JSON, FILE_TYPE_PNG } from "../../constants/application";
 import ReturnToDashboard from "@/components/ReturnToDashboard";
 import { useRouter } from "next/navigation";
-import CollectionsButton from "@/components/CollectionsButton";
 
 export default function UploadPage() {
   const [isDragging, setIsDragging] = useState(false);
@@ -316,9 +315,6 @@ export default function UploadPage() {
                   </span>
                 </span>
               </h2>
-              <div className="flex items-center gap-3">
-                <CollectionsButton />
-              </div>
             </div>
             <div className="space-y-4 mb-8">
               {files.length === 0 ? (
