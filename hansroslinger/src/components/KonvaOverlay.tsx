@@ -16,7 +16,9 @@ import ClearButton from "./ClearButton";
 
 const CanvasOverlay = () => {
   const visuals = useVisualStore((state) => state.visuals);
-  const layerBehindPerson = useBackgroundStore((state) => state.layerBehindPerson);
+  const layerBehindPerson = useBackgroundStore(
+    (state) => state.layerBehindPerson,
+  );
 
   const [dimensions, setDimensions] = useState<{
     width: number;
@@ -65,8 +67,8 @@ const CanvasOverlay = () => {
   }, []);
 
   return (
-    <div 
-      ref={rootRef} 
+    <div
+      ref={rootRef}
       className="absolute inset-0"
       style={{ zIndex: layerBehindPerson ? 0 : 10 }}
     >

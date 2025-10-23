@@ -37,84 +37,103 @@ const FloatingDataPanel = () => {
   const [uploads, setUploads] = useState<Uploads>({});
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [starredCollections, setStarredCollections] = useState<Array<{ id: string; name: string }>>([]);
+  const [starredCollections, setStarredCollections] = useState<
+    Array<{ id: string; name: string }>
+  >([]);
   const [collectionFilter, setCollectionFilter] = useState<string>("__all__");
-  const [sourceMode, setSourceMode] = useState<"collections" | "assets">("collections");
+  const [sourceMode, setSourceMode] = useState<"collections" | "assets">(
+    "collections",
+  );
 
   // Fetch starred collections and their assets
-  const fetchStarredCollectionAssets = useCallback(async (filterName?: string) => {
-    try {
-      setIsLoading(true);
-      setError(null);
+  const fetchStarredCollectionAssets = useCallback(
+    async (filterName?: string) => {
+      try {
+        setIsLoading(true);
+        setError(null);
 
-      // If viewing raw assets (no collections), use user-files endpoint
-      if (sourceMode === "assets") {
-        const res = await fetch("/api/user-files", { method: "GET", credentials: "include" });
-        if (!res.ok) {
-          throw new Error("Failed to fetch assets");
-        }
-        const data = await res.json();
-        setUploads(data.uploads || {});
-        return;
-      }
-
-      // Otherwise, fetch starred/selected collections
-      const collectionsRes = await fetch("/api/collection-getSelected", {
-        method: "GET",
-        credentials: "include",
-      });
-
-      if (!collectionsRes.ok) {
-        throw new Error("Failed to fetch selected collections");
-      }
-
-      const collectionsData = await collectionsRes.json();
-      const selectedCollections = collectionsData.collections || [];
-      // Update local state for dropdown options
-      setStarredCollections(
-        selectedCollections.map((c: { id: number; name: string }) => ({ id: String(c.id), name: c.name }))
-      );
-
-      const activeFilter = typeof filterName === "string" ? filterName : collectionFilter;
-
-      // Fetch assets for each selected collection
-      const allUploads: Uploads = {};
-
-      const collectionsToFetch =
-        activeFilter && activeFilter !== "__all__"
-          ? selectedCollections.filter((c: { name: string }) => c.name === activeFilter)
-          : selectedCollections;
-
-      for (const collection of collectionsToFetch) {
-        try {
-          const assetsRes = await fetch(
-            `/api/assets-getAll?collection=${encodeURIComponent(collection.name)}`,
-            {
-              method: "GET",
-              credentials: "include",
-            }
-          );
-
-          if (assetsRes.ok) {
-            const assetsData = await assetsRes.json();
-            if (assetsData.success && assetsData.uploads) {
-              // Merge uploads from this collection
-              Object.assign(allUploads, assetsData.uploads);
-            }
+        // If viewing raw assets (no collections), use user-files endpoint
+        if (sourceMode === "assets") {
+          const res = await fetch("/api/user-files", {
+            method: "GET",
+            credentials: "include",
+          });
+          if (!res.ok) {
+            throw new Error("Failed to fetch assets");
           }
-        } catch (err) {
-          console.error(`Error fetching assets for collection ${collection.name}:`, err);
+          const data = await res.json();
+          setUploads(data.uploads || {});
+          return;
         }
-      }
 
-      setUploads(allUploads);
-    } catch (err) {
-      console.error("Error fetching starred collection assets:", err);
-      setError(err instanceof Error ? err.message : "Failed to load assets");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [collectionFilter, sourceMode]);
+        // Otherwise, fetch starred/selected collections
+        const collectionsRes = await fetch("/api/collection-getSelected", {
+          method: "GET",
+          credentials: "include",
+        });
+
+        if (!collectionsRes.ok) {
+          throw new Error("Failed to fetch selected collections");
+        }
+
+        const collectionsData = await collectionsRes.json();
+        const selectedCollections = collectionsData.collections || [];
+        // Update local state for dropdown options
+        setStarredCollections(
+          selectedCollections.map((c: { id: number; name: string }) => ({
+            id: String(c.id),
+            name: c.name,
+          })),
+        );
+
+        const activeFilter =
+          typeof filterName === "string" ? filterName : collectionFilter;
+
+        // Fetch assets for each selected collection
+        const allUploads: Uploads = {};
+
+        const collectionsToFetch =
+          activeFilter && activeFilter !== "__all__"
+            ? selectedCollections.filter(
+                (c: { name: string }) => c.name === activeFilter,
+              )
+            : selectedCollections;
+
+        for (const collection of collectionsToFetch) {
+          try {
+            const assetsRes = await fetch(
+              `/api/assets-getAll?collection=${encodeURIComponent(collection.name)}`,
+              {
+                method: "GET",
+                credentials: "include",
+              },
+            );
+
+            if (assetsRes.ok) {
+              const assetsData = await assetsRes.json();
+              if (assetsData.success && assetsData.uploads) {
+                // Merge uploads from this collection
+                Object.assign(allUploads, assetsData.uploads);
+              }
+            }
+          } catch (err) {
+            console.error(
+              `Error fetching assets for collection ${collection.name}:`,
+              err,
+            );
+          }
+        }
+
+        setUploads(allUploads);
+      } catch (err) {
+        console.error("Error fetching starred collection assets:", err);
+        setError(err instanceof Error ? err.message : "Failed to load assets");
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [collectionFilter, sourceMode],
+  );
 
   useEffect(() => {
     fetchStarredCollectionAssets();
@@ -171,7 +190,7 @@ const FloatingDataPanel = () => {
                 </svg>
               </button>
               <h2 className="text-lg font-bold tracking-wide">Live Preview</h2>
-              
+
               <button
                 onClick={toggle}
                 aria-label="Close uploads panel"
@@ -229,7 +248,9 @@ const FloatingDataPanel = () => {
             {isLoading ? (
               <div className="flex flex-col items-center justify-center py-12 space-y-4">
                 <div className="w-12 h-12 border-4 border-[#5C9BB8] border-t-transparent rounded-full animate-spin"></div>
-                <p className="text-[#4a4a4a] text-sm font-medium">Loading starred collections...</p>
+                <p className="text-[#4a4a4a] text-sm font-medium">
+                  Loading starred collections...
+                </p>
               </div>
             ) : error ? (
               <div className="flex flex-col items-center justify-center py-12 space-y-3">
@@ -273,100 +294,100 @@ const FloatingDataPanel = () => {
             ) : (
               <div className="flex flex-col gap-4">
                 {Object.entries(uploads).map(([assetId, uploadData], idx) => {
-                // find visual object that corresponds to assetId
-                const visual = visuals.find((v) => v.assetId === assetId);
-                //check if visual currently hovered for highlighting
-                const isHovered = visual?.isHovered;
-                const isSelected = isVisualExist(assetId);
+                  // find visual object that corresponds to assetId
+                  const visual = visuals.find((v) => v.assetId === assetId);
+                  //check if visual currently hovered for highlighting
+                  const isHovered = visual?.isHovered;
+                  const isSelected = isVisualSelected(assetId);
 
-                return (
-                  <div
-                    key={assetId}
-                    data-asset-id={assetId}
-                    onClick={() => handleClick(assetId)}
-                    className={`group relative backdrop-blur-md transition-all duration-500 cursor-pointer p-4 animate-scale-in ${
-                      isSelected
-                        ? "bg-white/95 shadow-2xl shadow-[#5C9BB8]/40 ring-2 ring-[#5C9BB8] scale-[1.02] -translate-y-1"
-                        : "bg-white/80 shadow-lg hover:shadow-2xl hover:bg-white/95 hover:-translate-y-1 hover:ring-2 hover:ring-[#FC9770]/40"
-                    } ${isHovered ? "ring-2 ring-[#5C9BB8]" : ""}`}
-                    style={{
-                      animationDelay: `${idx * 80}ms`,
-                    }}
-                  >
-                    {/* Gradient border accent on top */}
+                  return (
                     <div
-                      className={`absolute top-0 left-0 right-0 h-1 transition-all duration-500 ${
+                      key={assetId}
+                      data-asset-id={assetId}
+                      onClick={() => handleClick(assetId)}
+                      className={`group relative backdrop-blur-md transition-all duration-500 cursor-pointer p-4 animate-scale-in ${
                         isSelected
-                          ? "bg-gradient-to-r from-[#5C9BB8] via-[#FC9770] to-[#FBC841] opacity-100"
-                          : "bg-gradient-to-r from-[#FC9770]/40 to-[#FBC841]/40 opacity-0 group-hover:opacity-100"
-                      }`}
-                    ></div>
-
-                    <div className="flex items-center gap-4">
-                      {/* === THUMBNAIL / PREVIEW === */}
+                          ? "bg-white/95 shadow-2xl shadow-[#5C9BB8]/40 ring-2 ring-[#5C9BB8] scale-[1.02] -translate-y-1"
+                          : "bg-white/80 shadow-lg hover:shadow-2xl hover:bg-white/95 hover:-translate-y-1 hover:ring-2 hover:ring-[#FC9770]/40"
+                      } ${isHovered ? "ring-2 ring-[#5C9BB8]" : ""}`}
+                      style={{
+                        animationDelay: `${idx * 80}ms`,
+                      }}
+                    >
+                      {/* Gradient border accent on top */}
                       <div
-                        className={`relative w-24 h-24 border bg-white flex items-center justify-center overflow-hidden shrink-0 transition-all duration-300 ${
+                        className={`absolute top-0 left-0 right-0 h-1 transition-all duration-500 ${
                           isSelected
-                            ? "border-[#5C9BB8] shadow-md"
-                            : "border-gray-200 group-hover:border-[#FC9770]/50"
+                            ? "bg-gradient-to-r from-[#5C9BB8] via-[#FC9770] to-[#FBC841] opacity-100"
+                            : "bg-gradient-to-r from-[#FC9770]/40 to-[#FBC841]/40 opacity-0 group-hover:opacity-100"
                         }`}
-                      >
-                        {/* Render image if it's a PNG, otherwise render VegaLite chart */}
-                        {uploadData.type === FILE_TYPE_PNG ? (
-                          <Image
-                            src={
-                              uploadData.thumbnailSrc ||
-                              "/uploads/default-thumbnail.png"
-                            }
-                            alt={uploadData.name}
-                            className="max-w-[85%] max-h-[85%] object-contain"
-                            width={80}
-                            height={80}
-                          />
-                        ) : (
-                          <div className="w-full h-full scale-75">
-                            <VegaLiteChartDisplay data={uploadData} />
+                      ></div>
+
+                      <div className="flex items-center gap-4">
+                        {/* === THUMBNAIL / PREVIEW === */}
+                        <div
+                          className={`relative w-24 h-24 border bg-white flex items-center justify-center overflow-hidden shrink-0 transition-all duration-300 ${
+                            isSelected
+                              ? "border-[#5C9BB8] shadow-md"
+                              : "border-gray-200 group-hover:border-[#FC9770]/50"
+                          }`}
+                        >
+                          {/* Render image if it's a PNG, otherwise render VegaLite chart */}
+                          {uploadData.type === FILE_TYPE_PNG ? (
+                            <Image
+                              src={
+                                uploadData.thumbnailSrc ||
+                                "/uploads/default-thumbnail.png"
+                              }
+                              alt={uploadData.name}
+                              className="max-w-[85%] max-h-[85%] object-contain"
+                              width={80}
+                              height={80}
+                            />
+                          ) : (
+                            <div className="w-full h-full scale-75">
+                              <VegaLiteChartDisplay data={uploadData} />
+                            </div>
+                          )}
+                        </div>
+
+                        {/* === LABELS === */}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-base font-semibold text-[#2a2a2a] truncate mb-1.5">
+                            {uploadData.name}
+                          </p>
+                          <span className="inline-block text-[10px] uppercase tracking-wider text-[#5C9BB8] bg-[#5C9BB8]/10 px-2 py-0.5 font-medium">
+                            {uploadData.type}
+                          </span>
+                        </div>
+
+                        {/* Selection indicator */}
+                        {isSelected && (
+                          <div className="shrink-0 w-8 h-8 bg-gradient-to-br from-[#5C9BB8] to-[#4a89a6] rounded-full flex items-center justify-center shadow-lg animate-scale-in">
+                            <svg
+                              className="w-5 h-5 text-white"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={3}
+                                d="M5 13l4 4L19 7"
+                              />
+                            </svg>
                           </div>
                         )}
                       </div>
 
-                      {/* === LABELS === */}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-base font-semibold text-[#2a2a2a] truncate mb-1.5">
-                          {uploadData.name}
-                        </p>
-                        <span className="inline-block text-[10px] uppercase tracking-wider text-[#5C9BB8] bg-[#5C9BB8]/10 px-2 py-0.5 font-medium">
-                          {uploadData.type}
-                        </span>
-                      </div>
-
-                      {/* Selection indicator */}
-                      {isSelected && (
-                        <div className="shrink-0 w-8 h-8 bg-gradient-to-br from-[#5C9BB8] to-[#4a89a6] rounded-full flex items-center justify-center shadow-lg animate-scale-in">
-                          <svg
-                            className="w-5 h-5 text-white"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={3}
-                              d="M5 13l4 4L19 7"
-                            />
-                          </svg>
-                        </div>
+                      {/* Hover glow effect */}
+                      {!isSelected && (
+                        <div className="absolute inset-0 bg-gradient-to-r from-[#FC9770]/5 to-[#FBC841]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
                       )}
                     </div>
-
-                    {/* Hover glow effect */}
-                    {!isSelected && (
-                      <div className="absolute inset-0 bg-gradient-to-r from-[#FC9770]/5 to-[#FBC841]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-                    )}
-                  </div>
-                );
-              })}
+                  );
+                })}
               </div>
             )}
           </div>

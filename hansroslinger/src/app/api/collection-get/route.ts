@@ -15,10 +15,12 @@ export async function GET(request: NextRequest) {
     const email = request.cookies.get("email")?.value || "";
     const userID: number = +(request.cookies.get("userID")?.value || "");
 
-    const { collection } = await request.json()
+    const { collection } = await request.json();
     if (!collection) {
       return NextResponse.json(
-        { error: "Missing collection parameter" },  { status: 400 },)
+        { error: "Missing collection parameter" },
+        { status: 400 },
+      );
     }
 
     if (!email) {

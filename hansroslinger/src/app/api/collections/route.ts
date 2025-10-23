@@ -16,9 +16,17 @@ export async function GET(req: NextRequest) {
     // Fetch collections for this user via user include to avoid relation filter edge cases
     const user = await prisma.user.findUnique({
       where: { email },
-      include: { collections: { select: { id: true, name: true }, orderBy: { id: "asc" } } },
+      include: {
+        collections: {
+          select: { id: true, name: true },
+          orderBy: { id: "asc" },
+        },
+      },
     });
-    const normalized = (user?.collections || []).map((c) => ({ id: String(c.id), name: c.name }));
+    const normalized = (user?.collections || []).map((c) => ({
+      id: String(c.id),
+      name: c.name,
+    }));
 
     return NextResponse.json({ collections: normalized });
   } catch (error) {
@@ -29,5 +37,3 @@ export async function GET(req: NextRequest) {
     );
   }
 }
-
-

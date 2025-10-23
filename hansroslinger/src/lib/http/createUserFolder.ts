@@ -1,7 +1,10 @@
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "./s3Client";
 
-export async function createUserFolder(user_email: string, folder?: string): Promise<string> {
+export async function createUserFolder(
+  user_email: string,
+  folder?: string,
+): Promise<string> {
   const bucketName = process.env.AWS_BUCKET_NAME;
 
   const s3BucketUrl = `s3://${bucketName}/${user_email}/`;
