@@ -15,7 +15,7 @@ export default function UploadPage() {
   } | null>(null);
   const router = useRouter();
   const [collections, setCollections] = useState<Array<{ id: string; name: string }>>([]);
-  const [fileToCollection, setFileToCollection] = useState<Record<number, string | "">>({});
+  const [selectedCollection, setSelectedCollection] = useState<string>("");
 
   // Load collections: prefer localStorage (populated by Collections page), fallback to API
   useEffect(() => {
@@ -101,18 +101,21 @@ export default function UploadPage() {
 
     try {
       const formData = new FormData();
-      files.forEach((file, index) => {
+      
+      files.forEach((file) => {
         formData.append("file", file);
-        const chosenCollection = fileToCollection[index];
-        if (chosenCollection) {
-          // Include the selected collection alongside each file (backend can choose to use or ignore)
-          formData.append(`collectionFor_${file.name}`, chosenCollection);
-        }
       });
+      
+      // Send the collection name to the backend
+      if (selectedCollection) {
+        formData.append("collectionName", selectedCollection);
+      }
 
       console.log(
         "Uploading files...",
         files.map((f) => f.name),
+        "to collection:",
+        selectedCollection || "Home (default)"
       );
 
       const response = await fetch("/api/upload", {
@@ -315,6 +318,25 @@ export default function UploadPage() {
                   </span>
                 </span>
               </h2>
+              {files.length > 0 && (
+                <div className="flex items-center gap-3">
+                  <label className="text-sm font-semibold text-[#4a4a4a]">
+                    Add all files to:
+                  </label>
+                  <select
+                    value={selectedCollection}
+                    onChange={(e) => setSelectedCollection(e.target.value)}
+                    className="px-4 py-2 border border-[#5C9BB8]/30 bg-white/90 focus:outline-none focus:ring-2 focus:ring-[#5C9BB8]/40 focus:border-transparent font-semibold"
+                  >
+                    <option value="">Home (default)</option>
+                    {collections.map((c) => (
+                      <option key={c.id} value={c.name}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
             </div>
             <div className="space-y-4 mb-8">
               {files.length === 0 ? (
@@ -359,34 +381,6 @@ export default function UploadPage() {
                       </div>
                       <div className="text-sm text-[#4a4a4a]/80 font-semibold">
                         {Math.round(file.size / 1024)} KB
-                      </div>
-                      <div className="mt-2 flex items-center gap-2 flex-wrap">
-                        <label className="text-xs font-semibold text-[#4a4a4a]/80">
-                          Add to collection:
-                        </label>
-                        <select
-                          value={fileToCollection[index] ?? ""}
-                          onChange={(e) =>
-                            setFileToCollection((prev) => ({
-                              ...prev,
-                              [index]: e.target.value,
-                            }))
-                          }
-                          className="px-3 py-2 text-sm border border-[#5C9BB8]/30 bg-white/90 focus:outline-none focus:ring-2 focus:ring-[#5C9BB8]/40 focus:border-transparent"
-                        >
-                          <option value="">No collection</option>
-                          {collections.length === 0 ? (
-                            <option value="" disabled>
-                              No collections available
-                            </option>
-                          ) : (
-                            collections.map((c) => (
-                              <option key={c.id} value={c.id}>
-                                {c.name}
-                              </option>
-                            ))
-                          )}
-                        </select>
                       </div>
                     </div>
                   </div>
