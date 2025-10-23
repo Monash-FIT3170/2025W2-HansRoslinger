@@ -23,10 +23,10 @@ export default function BackgroundRemovalControls({
   const [backgroundColor, setBackgroundColor] = useState("#00ff88");
   const [blurRadius, setBlurRadius] = useState(10);
   const layerBehindPerson = useBackgroundStore(
-    (state) => state.layerBehindPerson,
+    (state) => state.layerBehindPerson
   );
   const setLayerBehindPerson = useBackgroundStore(
-    (state) => state.setLayerBehindPerson,
+    (state) => state.setLayerBehindPerson
   );
   const intervalRef = useRef<number | null>(null);
 
@@ -44,11 +44,11 @@ export default function BackgroundRemovalControls({
       videoRef.current &&
       backgroundCanvasRef.current
     ) {
-      console.log("Starting background removal processing...", {
-        backgroundType,
-        backgroundColor,
-        blurRadius,
-      });
+      // console.log("Starting background removal processing...", {
+      //   backgroundType,
+      //   backgroundColor,
+      //   blurRadius,
+      // });
 
       intervalRef.current = window.setInterval(async () => {
         if (videoRef.current && backgroundCanvasRef.current) {
@@ -71,7 +71,7 @@ export default function BackgroundRemovalControls({
                 await processBackgroundBlur(
                   videoRef.current,
                   backgroundCanvasRef.current,
-                  blurRadius,
+                  blurRadius
                 );
               } else {
                 await processBackgroundRemoval(
@@ -79,7 +79,7 @@ export default function BackgroundRemovalControls({
                   backgroundCanvasRef.current,
                   backgroundType === "transparent"
                     ? "transparent"
-                    : backgroundColor,
+                    : backgroundColor
                 );
               }
             } catch (error) {
@@ -95,11 +95,11 @@ export default function BackgroundRemovalControls({
         }
       }, 100);
     } else {
-      console.log("Background removal conditions not met:", {
-        backgroundRemovalEnabled,
-        videoExists: !!videoRef.current,
-        canvasExists: !!backgroundCanvasRef.current,
-      });
+      // console.log("Background removal conditions not met:", {
+      //   backgroundRemovalEnabled,
+      //   videoExists: !!videoRef.current,
+      //   canvasExists: !!backgroundCanvasRef.current,
+      // });
     }
 
     return () => {
@@ -162,6 +162,12 @@ export default function BackgroundRemovalControls({
     }
   }, [videoRef]);
 
+  const [isLayerHovered, setIsLayerHovered] = useState(false);
+
+  const bgStyles = isLayerHovered
+    ? "bg-gradient-to-r from-[#f87171] to-[#ef4444]" // lighter red on hover
+    : "bg-gradient-to-r from-[#ef4444] to-[#dc2626]";
+
   return (
     <>
       {/* Background removal canvas layer */}
@@ -180,17 +186,23 @@ export default function BackgroundRemovalControls({
           onClick={() => {
             console.log(
               "Background removal toggled:",
-              !backgroundRemovalEnabled,
+              !backgroundRemovalEnabled
             );
             setBackgroundRemovalEnabled(!backgroundRemovalEnabled);
           }}
-          className="group px-5 py-3 bg-gradient-to-r from-[#ef4444] to-[#dc2626] text-white font-semibold transition-all duration-300 hover:shadow-2xl hover:shadow-red-500/30 hover:-translate-y-0.5 active:translate-y-0 overflow-hidden"
+          onMouseEnter={() => setIsLayerHovered(true)}
+          onMouseLeave={() => setIsLayerHovered(false)}
+          className={`${bgStyles} relative group px-5 py-3 bg-gradient-to-r from-[#ef4444] to-[#dc2626] text-white font-semibold transition-all duration-300 hover:shadow-2xl hover:shadow-red-500/30 hover:-translate-y-0.5 active:translate-y-0 overflow-hidden`}
         >
           {/* Shine effect on hover */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
 
           <div className="relative flex items-center gap-2">
-            <span className="text-sm tracking-wide">
+            <span
+              className={`text-sm tracking-wide transition-transform duration-300 ${
+                isLayerHovered ? "-translate-y-0.5" : ""
+              }`}
+            >
               {backgroundRemovalEnabled ? "Layering ✓" : "Layering"}
             </span>
           </div>
