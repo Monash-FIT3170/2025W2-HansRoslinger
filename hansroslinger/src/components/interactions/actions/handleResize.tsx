@@ -17,7 +17,7 @@ export const handleResize = (
   pointerA: VisualPosition,
   pointerB: VisualPosition,
   pinchStartDistance: number,
-  pinchStartSize: { width: number; height: number },
+  pinchStartSize: { width: number; height: number }
 ) => {
   const store = useVisualStore.getState();
   const visual = store.getVisual(id);
@@ -44,14 +44,29 @@ export const handleResize = (
 
   const container = containerStore.getState().container;
   if (container) {
+    const containerWidth = container.clientWidth;
     const containerHeight = container.clientHeight;
 
-    // Clamp height to container
-    if (newHeight > containerHeight) {
-      newHeight = containerHeight;
-      // keep ratio consistent
-      newWidth = newHeight * aspectRatio;
-    }
+    // Max heights implied by each container dimension:
+    // - From height bound: cannot exceed container height
+    const maxHeightByContainerHeight = containerHeight;
+
+    // - From width bound: width <= containerWidth & height <= containerWidth / aspectRatio
+    const maxHeightByContainerWidth = containerWidth / aspectRatio;
+
+    // Final height is the minimum of:
+    //   1) the height computed from the gesture,
+    //   2) the max height allowed by container height,
+    //   3) the max height allowed by container width (via aspect ratio)
+    const clampedHeight = Math.min(
+      newHeight,
+      maxHeightByContainerHeight,
+      maxHeightByContainerWidth
+    );
+
+    // Recompute width from clamped height to keep the ratio exact
+    newHeight = clampedHeight;
+    newWidth = clampedHeight * aspectRatio;
   }
 
   store.setVisualSize(id, {
