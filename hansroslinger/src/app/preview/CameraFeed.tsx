@@ -24,7 +24,9 @@ const CameraFeed = () => {
   const setGesturePayload = useGestureStore(
     (state) => state.setGesturePayloads,
   );
-  const layerBehindPerson = useBackgroundStore((state) => state.layerBehindPerson);
+  const layerBehindPerson = useBackgroundStore(
+    (state) => state.layerBehindPerson,
+  );
 
   const setContainerEl = useContainerStore((s) => s.setContainerEl);
 
@@ -78,7 +80,6 @@ const CameraFeed = () => {
                 canvasRef.current.width > 0 &&
                 canvasRef.current.height > 0
               ) {
-
                 const payload = await HandRecogniser(
                   videoRef.current,
                   canvasRef.current,

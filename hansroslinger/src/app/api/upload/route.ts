@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const files = formData.getAll("file");
     const collectionName = formData.get("collectionName") as string;
-    
+
     if (!files || files.length === 0) {
       return NextResponse.json({ error: "No files provided" }, { status: 400 });
     }
@@ -34,10 +34,7 @@ export async function POST(request: NextRequest) {
     // Get the user by email to retrieve the user ID
     const user = await getUser(email);
     if (!user) {
-      return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 },
-      );
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     // Get the collection using the user ID
@@ -54,7 +51,10 @@ export async function POST(request: NextRequest) {
       // Try to get the "Home" collection, create it if it doesn't exist
       collection = await getCollection("Home", user.id);
       if (!collection) {
-        console.log("Home collection not found, creating it for user:", user.id);
+        console.log(
+          "Home collection not found, creating it for user:",
+          user.id,
+        );
         try {
           collection = await createCollection(user.id, "Home");
           // Create the S3 folder for the collection
@@ -87,7 +87,12 @@ export async function POST(request: NextRequest) {
         const asset = await createAsset(collection.id, fileName);
 
         // Upload directly to S3
-        const result = await uploadBufferToS3(email, String(asset.id), buffer, String(collection.id));
+        const result = await uploadBufferToS3(
+          email,
+          String(asset.id),
+          buffer,
+          String(collection.id),
+        );
 
         uploadResults.push({
           originalName: file.name,

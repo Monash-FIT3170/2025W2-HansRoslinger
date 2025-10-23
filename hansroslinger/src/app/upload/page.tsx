@@ -14,7 +14,9 @@ export default function UploadPage() {
     message: string;
   } | null>(null);
   const router = useRouter();
-  const [collections, setCollections] = useState<Array<{ id: string; name: string }>>([]);
+  const [collections, setCollections] = useState<
+    Array<{ id: string; name: string }>
+  >([]);
   const [selectedCollection, setSelectedCollection] = useState<string>("");
 
   // Load collections: prefer localStorage (populated by Collections page), fallback to API
@@ -36,11 +38,20 @@ export default function UploadPage() {
       try {
         const res = await fetch("/api/collections", { cache: "no-store" });
         if (!res.ok) return;
-        const data = (await res.json()) as { collections?: Array<{ id: string; name: string }>; };
-        if (isMounted && Array.isArray(data.collections) && data.collections.length > 0) {
+        const data = (await res.json()) as {
+          collections?: Array<{ id: string; name: string }>;
+        };
+        if (
+          isMounted &&
+          Array.isArray(data.collections) &&
+          data.collections.length > 0
+        ) {
           setCollections(data.collections);
           try {
-            window.localStorage.setItem("collections", JSON.stringify(data.collections));
+            window.localStorage.setItem(
+              "collections",
+              JSON.stringify(data.collections),
+            );
           } catch (_) {}
         }
       } catch (_) {
@@ -101,11 +112,11 @@ export default function UploadPage() {
 
     try {
       const formData = new FormData();
-      
+
       files.forEach((file) => {
         formData.append("file", file);
       });
-      
+
       // Send the collection name to the backend
       if (selectedCollection) {
         formData.append("collectionName", selectedCollection);
@@ -115,7 +126,7 @@ export default function UploadPage() {
         "Uploading files...",
         files.map((f) => f.name),
         "to collection:",
-        selectedCollection || "Home (default)"
+        selectedCollection || "Home (default)",
       );
 
       const response = await fetch("/api/upload", {
@@ -308,43 +319,43 @@ export default function UploadPage() {
         </div>
 
         <div className="modern-card-enhanced p-8 animate-slide-up backdrop-blur-md bg-white/80">
-            <div className="mb-6 flex items-start justify-between gap-4 flex-wrap">
-              <h2 className="text-3xl font-bold flex items-center gap-3">
-                <span className="gradient-text-enhanced">Selected Files</span>
-                <span className="relative">
-                  <div className="absolute inset-0 bg-[#5C9BB8]/30 blur-md"></div>
-                  <span className="relative text-base font-bold px-4 py-2 bg-gradient-to-r from-[#5C9BB8] to-[#7BAFD4] text-white shadow-lg">
-                    {files.length}
-                  </span>
+          <div className="mb-6 flex items-start justify-between gap-4 flex-wrap">
+            <h2 className="text-3xl font-bold flex items-center gap-3">
+              <span className="gradient-text-enhanced">Selected Files</span>
+              <span className="relative">
+                <div className="absolute inset-0 bg-[#5C9BB8]/30 blur-md"></div>
+                <span className="relative text-base font-bold px-4 py-2 bg-gradient-to-r from-[#5C9BB8] to-[#7BAFD4] text-white shadow-lg">
+                  {files.length}
                 </span>
-              </h2>
-              {files.length > 0 && (
-                <div className="flex items-center gap-3">
-                  <label className="text-sm font-semibold text-[#4a4a4a]">
-                    Add all files to:
-                  </label>
-                  <select
-                    value={selectedCollection}
-                    onChange={(e) => setSelectedCollection(e.target.value)}
-                    className="px-4 py-2 border border-[#5C9BB8]/30 bg-white/90 focus:outline-none focus:ring-2 focus:ring-[#5C9BB8]/40 focus:border-transparent font-semibold"
-                  >
-                    <option value="">Home (default)</option>
-                    {collections.map((c) => (
-                      <option key={c.id} value={c.name}>
-                        {c.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
-            </div>
-            <div className="space-y-4 mb-8">
-              {files.length === 0 ? (
-                <div className="p-5 bg-gradient-to-r from-[#F5F9FC] via-[#E8F0F7]/60 to-[#D8E4F0]/40 border border-[#5C9BB8]/15 text-center text-[#4a4a4a]/80 font-semibold">
-                  No files selected yet
-                </div>
-              ) : (
-                files.map((file, index) => (
+              </span>
+            </h2>
+            {files.length > 0 && (
+              <div className="flex items-center gap-3">
+                <label className="text-sm font-semibold text-[#4a4a4a]">
+                  Add all files to:
+                </label>
+                <select
+                  value={selectedCollection}
+                  onChange={(e) => setSelectedCollection(e.target.value)}
+                  className="px-4 py-2 border border-[#5C9BB8]/30 bg-white/90 focus:outline-none focus:ring-2 focus:ring-[#5C9BB8]/40 focus:border-transparent font-semibold"
+                >
+                  <option value="">Home (default)</option>
+                  {collections.map((c) => (
+                    <option key={c.id} value={c.name}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
+          <div className="space-y-4 mb-8">
+            {files.length === 0 ? (
+              <div className="p-5 bg-gradient-to-r from-[#F5F9FC] via-[#E8F0F7]/60 to-[#D8E4F0]/40 border border-[#5C9BB8]/15 text-center text-[#4a4a4a]/80 font-semibold">
+                No files selected yet
+              </div>
+            ) : (
+              files.map((file, index) => (
                 <div
                   key={index}
                   className="group relative flex items-center justify-between p-5 bg-gradient-to-r from-[#F5F9FC] via-[#E8F0F7]/60 to-[#D8E4F0]/40 border border-[#5C9BB8]/15 hover:shadow-xl hover:-translate-y-1 transition-all duration-500 overflow-hidden"
@@ -401,50 +412,51 @@ export default function UploadPage() {
                     </svg>
                   </button>
                 </div>
-              )))}
-            </div>
+              ))
+            )}
+          </div>
 
-            <div className="flex justify-end">
-              <button
-                onClick={handleUpload}
-                disabled={isUploading || files.length === 0}
-                className="group relative inline-flex items-center gap-3 bg-gradient-to-r from-[#FC9770] to-[#fb8659] text-white px-10 py-4 font-bold shadow-xl shadow-[#FC9770]/50 transition-all duration-300 hover:shadow-2xl hover:shadow-[#FC9770]/70 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 overflow-hidden"
-              >
-                {/* Animated shine effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FC9770] to-[#FBC841] opacity-0 group-hover:opacity-75 blur-sm transition-opacity duration-300"></div>
+          <div className="flex justify-end">
+            <button
+              onClick={handleUpload}
+              disabled={isUploading || files.length === 0}
+              className="group relative inline-flex items-center gap-3 bg-gradient-to-r from-[#FC9770] to-[#fb8659] text-white px-10 py-4 font-bold shadow-xl shadow-[#FC9770]/50 transition-all duration-300 hover:shadow-2xl hover:shadow-[#FC9770]/70 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 overflow-hidden"
+            >
+              {/* Animated shine effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FC9770] to-[#FBC841] opacity-0 group-hover:opacity-75 blur-sm transition-opacity duration-300"></div>
 
-                {isUploading ? (
-                  <>
-                    <span className="loading-dots relative z-10">
-                      <span className="dot"></span>
-                      <span className="dot"></span>
-                      <span className="dot"></span>
-                    </span>
-                    <span className="relative z-10 tracking-wide">Uploading</span>
-                  </>
-                ) : (
-                  <>
-                    <svg
-                      className="w-6 h-6 relative z-10 transition-transform group-hover:scale-110"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2.5}
-                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3v-6"
-                      />
-                    </svg>
-                    <span className="relative z-10 tracking-wide">
-                      Upload Files
-                    </span>
-                  </>
-                )}
-              </button>
-            </div>
+              {isUploading ? (
+                <>
+                  <span className="loading-dots relative z-10">
+                    <span className="dot"></span>
+                    <span className="dot"></span>
+                    <span className="dot"></span>
+                  </span>
+                  <span className="relative z-10 tracking-wide">Uploading</span>
+                </>
+              ) : (
+                <>
+                  <svg
+                    className="w-6 h-6 relative z-10 transition-transform group-hover:scale-110"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2.5}
+                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3v-6"
+                    />
+                  </svg>
+                  <span className="relative z-10 tracking-wide">
+                    Upload Files
+                  </span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </main>

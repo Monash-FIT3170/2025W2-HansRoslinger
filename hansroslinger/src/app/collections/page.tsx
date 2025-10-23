@@ -42,14 +42,14 @@ export default function CollectionsPage() {
   // Mock data for demonstration
   useEffect(() => {
     const fetchCollections = async () => {
-    const res = await fetch("/api/collection-getAll",{
-    method: "GET",
-    credentials: "include"
-  });
-    const data = await res.json();
-    console.log(data)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const formattedCollections = data.collections.map((collection: any) => ({
+      const res = await fetch("/api/collection-getAll", {
+        method: "GET",
+        credentials: "include",
+      });
+      const data = await res.json();
+      console.log(data);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const formattedCollections = data.collections.map((collection: any) => ({
         id: String(collection.id),
         name: collection.name,
         description: collection.description || "No description",
@@ -57,14 +57,16 @@ export default function CollectionsPage() {
         createdAt: new Date(collection.createdAt).toISOString().split("T")[0],
         thumbnailSrc: "/uploads/default-thumbnail.png",
         isSelected: Boolean(collection.isSelected),
-    }));
-    setCollections(formattedCollections);
-    // initialize active collections from persisted selection
-    setActiveCollections(
-      formattedCollections.filter((c: Collection) => c.isSelected).map((c: Collection) => c.id),
-    );
-    setIsLoading(false);
-    }
+      }));
+      setCollections(formattedCollections);
+      // initialize active collections from persisted selection
+      setActiveCollections(
+        formattedCollections
+          .filter((c: Collection) => c.isSelected)
+          .map((c: Collection) => c.id),
+      );
+      setIsLoading(false);
+    };
     fetchCollections();
 
     // // Simulating API call
@@ -96,52 +98,51 @@ export default function CollectionsPage() {
     //     },
     //   ]);
 
-      // Mock available uploads
-      setAvailableUploads({
-        "chart-1": {
-          name: "Stock Trends",
-          type: "json",
-          src: "/uploads/line-chart.json",
-          thumbnailSrc: "/uploads/chart-icon.png",
-        },
-        "chart-2": {
-          name: "Revenue Growth",
-          type: "json",
-          src: "/uploads/line-chart.json",
-          thumbnailSrc: "/uploads/chart-icon.png",
-        },
-        "chart-3": {
-          name: "Sales by Region",
-          type: "json",
-          src: "/uploads/bar-chart.json",
-          thumbnailSrc: "/uploads/chart-icon.png",
-        },
-        "chart-4": {
-          name: "Quarterly Results",
-          type: "json",
-          src: "/uploads/bar-chart.json",
-          thumbnailSrc: "/uploads/chart-icon.png",
-        },
-        "img-1": {
-          name: "Profile Photo",
-          type: "png",
-          src: "/uploads/ian.png",
-          thumbnailSrc: "/uploads/ian.png",
-        },
-        "img-2": {
-          name: "Team Photo",
-          type: "png",
-          src: "/uploads/default-thumbnail.png",
-          thumbnailSrc: "/uploads/default-thumbnail.png",
-        },
-        "img-3": {
-          name: "Project Logo",
-          type: "png",
-          src: "/uploads/default-thumbnail.png",
-          thumbnailSrc: "/uploads/default-thumbnail.png",
-        },
-      });
-
+    // Mock available uploads
+    setAvailableUploads({
+      "chart-1": {
+        name: "Stock Trends",
+        type: "json",
+        src: "/uploads/line-chart.json",
+        thumbnailSrc: "/uploads/chart-icon.png",
+      },
+      "chart-2": {
+        name: "Revenue Growth",
+        type: "json",
+        src: "/uploads/line-chart.json",
+        thumbnailSrc: "/uploads/chart-icon.png",
+      },
+      "chart-3": {
+        name: "Sales by Region",
+        type: "json",
+        src: "/uploads/bar-chart.json",
+        thumbnailSrc: "/uploads/chart-icon.png",
+      },
+      "chart-4": {
+        name: "Quarterly Results",
+        type: "json",
+        src: "/uploads/bar-chart.json",
+        thumbnailSrc: "/uploads/chart-icon.png",
+      },
+      "img-1": {
+        name: "Profile Photo",
+        type: "png",
+        src: "/uploads/ian.png",
+        thumbnailSrc: "/uploads/ian.png",
+      },
+      "img-2": {
+        name: "Team Photo",
+        type: "png",
+        src: "/uploads/default-thumbnail.png",
+        thumbnailSrc: "/uploads/default-thumbnail.png",
+      },
+      "img-3": {
+        name: "Project Logo",
+        type: "png",
+        src: "/uploads/default-thumbnail.png",
+        thumbnailSrc: "/uploads/default-thumbnail.png",
+      },
+    });
   }, []);
 
   // Persist a minimal view of collections to localStorage for use on other pages (e.g., Uploads)
@@ -162,7 +163,7 @@ export default function CollectionsPage() {
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
-      },
+        },
         body: JSON.stringify({
           name: newCollection.name,
           description: newCollection.description,
@@ -171,27 +172,29 @@ export default function CollectionsPage() {
       const data = await res.json();
       console.log("Collection created:", data);
       if (!res.ok) {
-      console.error("Failed to create collection:", data);
-      alert(`Failed to create collection: ${data.error || 'Unknown error'}`);
-      return;
-    }
-    
-    // Use the collection data returned from the API
-    const newCol: Collection = {
-      id: String(data.results.id),
-      name: data.results.name,
-      description: data.results.description || newCollection.description,
-      items: [],
-      createdAt: new Date(data.results.createdAt).toISOString().split("T")[0],
-    };
+        console.error("Failed to create collection:", data);
+        alert(`Failed to create collection: ${data.error || "Unknown error"}`);
+        return;
+      }
 
-    setCollections([...collections, newCol]);
-    setNewCollection({ name: "", description: "" });
-    setIsCreating(false);
+      // Use the collection data returned from the API
+      const newCol: Collection = {
+        id: String(data.results.id),
+        name: data.results.name,
+        description: data.results.description || newCollection.description,
+        items: [],
+        createdAt: new Date(data.results.createdAt).toISOString().split("T")[0],
+      };
+
+      setCollections([...collections, newCol]);
+      setNewCollection({ name: "", description: "" });
+      setIsCreating(false);
     } catch (error) {
-    console.error("Error creating collection:", error);
-    alert(`Error creating collection: ${error instanceof Error ? error.message : 'Unknown error'}`);
-  }
+      console.error("Error creating collection:", error);
+      alert(
+        `Error creating collection: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
+    }
   };
 
   const handleDeleteCollection = async (id: string, name: string) => {
@@ -208,7 +211,7 @@ export default function CollectionsPage() {
       if (!res.ok) {
         const data = await res.json();
         console.error("Failed to delete collection:", data);
-        alert(`Failed to delete collection: ${data.error || 'Unknown error'}`);
+        alert(`Failed to delete collection: ${data.error || "Unknown error"}`);
         return;
       }
 
@@ -217,12 +220,14 @@ export default function CollectionsPage() {
       if (selectedCollection?.id === id) {
         setSelectedCollection(null);
       }
-      
+
       // Remove from active collections if present
       setActiveCollections((prev) => prev.filter((colId) => colId !== id));
     } catch (error) {
       console.error("Error deleting collection:", error);
-      alert(`Error deleting collection: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      alert(
+        `Error deleting collection: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
     }
   };
 
@@ -243,72 +248,77 @@ export default function CollectionsPage() {
       setEditableDescription(collection.description || "");
       setIsLoadingItems(true);
       try {
-      // Use query parameter for GET request
-      const res = await fetch(
-        `/api/assets-getAll?collection=${encodeURIComponent(
-          collection.name
-        )}`,
-        {
-          method: "GET",
-          credentials: "include",
-        }
-      );
-      const data = await res.json();
-      if (data.success) {
-        setAvailableUploads(data.uploads);
-        const itemIds = Object.keys(data.uploads);
-        setSelectedCollection((prev) =>
-          prev ? { ...prev, items: itemIds } : null
+        // Use query parameter for GET request
+        const res = await fetch(
+          `/api/assets-getAll?collection=${encodeURIComponent(
+            collection.name,
+          )}`,
+          {
+            method: "GET",
+            credentials: "include",
+          },
         );
-
-      } else {
-        console.error("Failed to load collection assets:", data.error);
+        const data = await res.json();
+        if (data.success) {
+          setAvailableUploads(data.uploads);
+          const itemIds = Object.keys(data.uploads);
+          setSelectedCollection((prev) =>
+            prev ? { ...prev, items: itemIds } : null,
+          );
+        } else {
+          console.error("Failed to load collection assets:", data.error);
+        }
+      } catch (error) {
+        console.error("Error fetching collection assets:", error);
+      } finally {
+        setIsLoadingItems(false);
       }
-    } catch (error) {
-      console.error("Error fetching collection assets:", error);
-    } finally {
-      setIsLoadingItems(false);
     }
-  }};
+  };
 
-  const toggleActiveCollection = async (collectionId: string, e: React.MouseEvent) => {
-  e.stopPropagation(); // Prevent triggering selectCollection
-  const isCurrentlyActive = activeCollections.includes(collectionId);
+  const toggleActiveCollection = async (
+    collectionId: string,
+    e: React.MouseEvent,
+  ) => {
+    e.stopPropagation(); // Prevent triggering selectCollection
+    const isCurrentlyActive = activeCollections.includes(collectionId);
 
-  // Optimistic UI update
-  const prevActive = activeCollections;
-  const nextActive = isCurrentlyActive
-    ? activeCollections.filter((id) => id !== collectionId)
-    : [...activeCollections, collectionId];
-  setActiveCollections(nextActive);
-  const prevCollections = collections;
-  setCollections((prev) =>
-    prev.map((c) => (c.id === collectionId ? { ...c, isSelected: !isCurrentlyActive } : c)),
-  );
+    // Optimistic UI update
+    const prevActive = activeCollections;
+    const nextActive = isCurrentlyActive
+      ? activeCollections.filter((id) => id !== collectionId)
+      : [...activeCollections, collectionId];
+    setActiveCollections(nextActive);
+    const prevCollections = collections;
+    setCollections((prev) =>
+      prev.map((c) =>
+        c.id === collectionId ? { ...c, isSelected: !isCurrentlyActive } : c,
+      ),
+    );
 
-  try {
-    const res = await fetch("/api/collection-toggle", {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        collectionID: collectionId,
-        state: !isCurrentlyActive,
-      }),
-    });
-    if (!res.ok) {
-      // rollback on server error
+    try {
+      const res = await fetch("/api/collection-toggle", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          collectionID: collectionId,
+          state: !isCurrentlyActive,
+        }),
+      });
+      if (!res.ok) {
+        // rollback on server error
+        setActiveCollections(prevActive);
+        setCollections(prevCollections);
+      }
+    } catch (_) {
+      // rollback on network error
       setActiveCollections(prevActive);
       setCollections(prevCollections);
     }
-  } catch (_) {
-    // rollback on network error
-    setActiveCollections(prevActive);
-    setCollections(prevCollections);
-  }
-};
+  };
 
   const startEditingTitle = () => {
     if (selectedCollection) {
@@ -358,7 +368,7 @@ export default function CollectionsPage() {
 
   const handleDeleteItem = async (itemId: string) => {
     if (!selectedCollection) return;
-    
+
     const item = availableUploads[itemId];
     if (!item) return;
 
@@ -383,14 +393,14 @@ export default function CollectionsPage() {
       });
 
       const data = await res.json();
-      
+
       if (!res.ok) {
         console.error("Failed to delete asset:", data);
         console.error("Request was:", {
           assetId: item.id,
           collectionName: selectedCollection.name,
         });
-        alert(`Failed to delete asset: ${data.error || 'Unknown error'}`);
+        alert(`Failed to delete asset: ${data.error || "Unknown error"}`);
         return;
       }
 
@@ -414,7 +424,9 @@ export default function CollectionsPage() {
       setAvailableUploads(newUploads);
     } catch (error) {
       console.error("Error deleting asset:", error);
-      alert(`Error deleting asset: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      alert(
+        `Error deleting asset: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
     }
   };
 
@@ -803,7 +815,10 @@ export default function CollectionsPage() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleDeleteCollection(collection.id, collection.name);
+                          handleDeleteCollection(
+                            collection.id,
+                            collection.name,
+                          );
                         }}
                         className="relative p-1.5 text-gray-400 hover:text-[#FC9770] hover:bg-[#FC9770]/10 transition-all duration-300 hover:scale-110"
                         title="Delete collection"
@@ -827,7 +842,7 @@ export default function CollectionsPage() {
                     <p className="text-[#4a4a4a]/70 text-xs mt-1 line-clamp-1 leading-relaxed">
                       {collection.description || "No description"}
                     </p>
-                      {/* Items count and collection date hidden */}
+                    {/* Items count and collection date hidden */}
                   </div>
                 </div>
               ))
