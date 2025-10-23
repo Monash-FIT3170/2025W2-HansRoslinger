@@ -3,6 +3,9 @@ import { v4 as uuidv4 } from "uuid";
 import { uploadBufferToS3 } from "../../../lib/http/uploadBuffer";
 import { getCollection } from "database/common/collections/getCollection";
 import { createAsset } from "database/common/collections/createAsset";
+import { getUser } from "database/common/user/getUser";
+import { createCollection } from "database/common/collections/createCollection";
+import { createUserFolder } from "../../../lib/http/createUserFolder";
 
 // Export configuration for Next.js App Router
 export const dynamic = "force-dynamic";
@@ -27,25 +30,44 @@ export async function POST(request: NextRequest) {
         { status: 401 },
       );
     }
-    //let collectionID: number;
+
+    // Get the user by email to retrieve the user ID
+    const user = await getUser(email);
+    if (!user) {
+      return NextResponse.json(
+        { error: "User not found" },
+        { status: 404 },
+      );
+    }
+
+    // Get the collection using the user ID
     let collection;
     if (collectionName) {
-      collection = await getCollection(collectionName, email);
+      collection = await getCollection(collectionName, user.id);
       if (!collection) {
         return NextResponse.json(
           { error: "Collection does not exist" },
           { status: 400 },
         );
       }
-    }else{
-      collection = await getCollection("Home", email);
+    } else {
+      // Try to get the "Home" collection, create it if it doesn't exist
+      collection = await getCollection("Home", user.id);
       if (!collection) {
-        return NextResponse.json(
-          { error: "Collection does not exist" },
-          { status: 400 },
-        );
+        console.log("Home collection not found, creating it for user:", user.id);
+        try {
+          collection = await createCollection(user.id, "Home");
+          // Create the S3 folder for the collection
+          await createUserFolder(email, String(collection.id));
+          console.log("Home collection created successfully:", collection.id);
+        } catch (error) {
+          console.error("Error creating Home collection:", error);
+          return NextResponse.json(
+            { error: "Failed to create Home collection" },
+            { status: 500 },
+          );
+        }
       }
-
     }
     const uploadResults = [];
 
