@@ -23,10 +23,10 @@ export default function BackgroundRemovalControls({
   const [backgroundColor, setBackgroundColor] = useState("#00ff88");
   const [blurRadius, setBlurRadius] = useState(10);
   const layerBehindPerson = useBackgroundStore(
-    (state) => state.layerBehindPerson
+    (state) => state.layerBehindPerson,
   );
   const setLayerBehindPerson = useBackgroundStore(
-    (state) => state.setLayerBehindPerson
+    (state) => state.setLayerBehindPerson,
   );
   const intervalRef = useRef<number | null>(null);
 
@@ -71,7 +71,7 @@ export default function BackgroundRemovalControls({
                 await processBackgroundBlur(
                   videoRef.current,
                   backgroundCanvasRef.current,
-                  blurRadius
+                  blurRadius,
                 );
               } else {
                 await processBackgroundRemoval(
@@ -79,7 +79,7 @@ export default function BackgroundRemovalControls({
                   backgroundCanvasRef.current,
                   backgroundType === "transparent"
                     ? "transparent"
-                    : backgroundColor
+                    : backgroundColor,
                 );
               }
             } catch (error) {
@@ -186,7 +186,7 @@ export default function BackgroundRemovalControls({
           onClick={() => {
             console.log(
               "Background removal toggled:",
-              !backgroundRemovalEnabled
+              !backgroundRemovalEnabled,
             );
             setBackgroundRemovalEnabled(!backgroundRemovalEnabled);
           }}
