@@ -152,29 +152,33 @@ export default function BackgroundRemovalControls({
       />
 
       {/* Background removal controls */}
-      <div className="absolute bottom-4 right-4 flex flex-col gap-2 bg-black/60 text-white rounded-lg p-3 backdrop-blur z-[10000]">
-        <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            id="backgroundRemoval"
-            checked={backgroundRemovalEnabled}
-            onChange={(e) => {
-              console.log("Background removal toggled:", e.target.checked);
-              setBackgroundRemovalEnabled(e.target.checked);
-            }}
-            className="rounded"
-          />
-          <label htmlFor="backgroundRemoval" className="text-sm font-medium">
-            Remove Background
-          </label>
-        </div>
+      <div className="absolute bottom-20 right-6 flex flex-col gap-2 z-[10000]">
+        {/* Remove Background Button - styled like ClearButton */}
+        <button
+          onClick={() => {
+            console.log("Background removal toggled:", !backgroundRemovalEnabled);
+            setBackgroundRemovalEnabled(!backgroundRemovalEnabled);
+          }}
+          className="group px-5 py-3 bg-gradient-to-r from-[#ef4444] to-[#dc2626] text-white font-semibold transition-all duration-300 hover:shadow-2xl hover:shadow-red-500/30 hover:-translate-y-0.5 active:translate-y-0 overflow-hidden"
+        >
+          {/* Shine effect on hover */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+          
+          <div className="relative flex items-center gap-2">
+            <span className="text-sm tracking-wide">
+              {backgroundRemovalEnabled ? "Layering ✓" : "Layering"}
+            </span>
+          </div>
+        </button>
 
+        {/* Background removal options panel */}
         {backgroundRemovalEnabled && (
-          <div className="flex flex-col gap-2 text-xs">
+          <div className="bg-black/60 text-white p-3 backdrop-blur">
+            <div className="flex flex-col gap-2 text-sm font-semibold tracking-wide">
             <div className="flex gap-1">
               <button
                 onClick={() => setBackgroundType("transparent")}
-                className={`px-2 py-1 rounded text-xs ${
+                className={`px-2 py-1 text-sm font-semibold tracking-wide ${
                   backgroundType === "transparent"
                     ? "bg-white text-black"
                     : "bg-white/20"
@@ -184,7 +188,7 @@ export default function BackgroundRemovalControls({
               </button>
               <button
                 onClick={() => setBackgroundType("solid")}
-                className={`px-2 py-1 rounded text-xs ${
+                className={`px-2 py-1 text-sm font-semibold tracking-wide ${
                   backgroundType === "solid"
                     ? "bg-white text-black"
                     : "bg-white/20"
@@ -194,7 +198,7 @@ export default function BackgroundRemovalControls({
               </button>
               <button
                 onClick={() => setBackgroundType("blur")}
-                className={`px-2 py-1 rounded text-xs ${
+                className={`px-2 py-1 text-sm font-semibold tracking-wide ${
                   backgroundType === "blur"
                     ? "bg-white text-black"
                     : "bg-white/20"
@@ -206,19 +210,19 @@ export default function BackgroundRemovalControls({
 
             {backgroundType === "solid" && (
               <div className="flex items-center gap-2">
-                <label className="text-xs">Color:</label>
+                <label className="text-sm font-semibold tracking-wide">Color:</label>
                 <input
                   type="color"
                   value={backgroundColor}
                   onChange={(e) => setBackgroundColor(e.target.value)}
-                  className="h-6 w-8 rounded border border-white/20"
+                  className="h-6 w-8 border border-white/20"
                 />
               </div>
             )}
 
             {backgroundType === "blur" && (
               <div className="flex items-center gap-2">
-                <label className="text-xs">Blur:</label>
+                <label className="text-sm font-semibold tracking-wide">Blur:</label>
                 <input
                   type="range"
                   min="2"
@@ -227,7 +231,7 @@ export default function BackgroundRemovalControls({
                   onChange={(e) => setBlurRadius(Number(e.target.value))}
                   className="w-16"
                 />
-                <span className="text-xs">{blurRadius}px</span>
+                <span className="text-sm font-semibold tracking-wide">{blurRadius}px</span>
               </div>
             )}
 
@@ -238,11 +242,12 @@ export default function BackgroundRemovalControls({
                 id="layerBehindPerson"
                 checked={layerBehindPerson}
                 onChange={(e) => setLayerBehindPerson(e.target.checked)}
-                className="rounded"
+                className=""
               />
-              <label htmlFor="layerBehindPerson" className="text-xs">
+              <label htmlFor="layerBehindPerson" className="text-sm font-semibold tracking-wide">
                 Layer behind person
               </label>
+            </div>
             </div>
           </div>
         )}
