@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { processBackgroundRemoval, processBackgroundBlur } from "app/detection/ImageSegmentation";
+import { useBackgroundStore } from "store/backgroundSlice";
 
 interface BackgroundRemovalControlsProps {
   videoRef: React.RefObject<HTMLVideoElement | null>;
@@ -15,6 +16,8 @@ export default function BackgroundRemovalControls({
   const [backgroundType, setBackgroundType] = useState<"transparent" | "solid" | "blur">("transparent");
   const [backgroundColor, setBackgroundColor] = useState("#00ff88");
   const [blurRadius, setBlurRadius] = useState(10);
+  const layerBehindPerson = useBackgroundStore((state) => state.layerBehindPerson);
+  const setLayerBehindPerson = useBackgroundStore((state) => state.setLayerBehindPerson);
   const intervalRef = useRef<number | null>(null);
 
   // Handle background removal processing
@@ -227,6 +230,20 @@ export default function BackgroundRemovalControls({
                 <span className="text-xs">{blurRadius}px</span>
               </div>
             )}
+
+            {/* Layer positioning toggle */}
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="layerBehindPerson"
+                checked={layerBehindPerson}
+                onChange={(e) => setLayerBehindPerson(e.target.checked)}
+                className="rounded"
+              />
+              <label htmlFor="layerBehindPerson" className="text-xs">
+                Layer behind person
+              </label>
+            </div>
           </div>
         )}
       </div>
