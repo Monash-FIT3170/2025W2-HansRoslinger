@@ -14,6 +14,8 @@ export type UploadProp = {
   type: (typeof ACCEPTED_FILE_TYPES)[number];
   src: string;
   thumbnailSrc?: string;
+  id?: number;
+  order?: number;
 };
 
 export type Uploads = {
