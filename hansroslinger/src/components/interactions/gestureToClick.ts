@@ -9,11 +9,16 @@ type HandState = {
   pinchStartTime: number;
   lastPoint: { x: number; y: number } | null;
   lastHovered: HTMLElement | null;
+  pinchCount: number;
 };
 
 type HandStateMap = Record<HandIds, HandState>;
 
 const PINCH_MAX_DURATION_MS = 1500;
+
+// Added for stable click. Sometimes might detect half pinch as pinch
+// This is added to ensure pinch is stable before continuing
+const MIN_PINCH_FOR_CLICK = 2;
 
 /**
  * This class handles pinch to click
@@ -34,6 +39,7 @@ class GestureToMouse {
       pinchStartTime: 0,
       lastPoint: null,
       lastHovered: null,
+      pinchCount: 0,
     },
     right: {
       wasPinching: false,
@@ -41,6 +47,7 @@ class GestureToMouse {
       pinchStartTime: 0,
       lastPoint: null,
       lastHovered: null,
+      pinchCount: 0,
     },
   };
 
@@ -50,13 +57,14 @@ class GestureToMouse {
     this.handStateMap[handId].downTarget = null;
     this.handStateMap[handId].pinchStartTime = 0;
     this.handStateMap[handId].lastPoint = null;
+    this.handStateMap[handId].pinchCount = 0;
   }
 
   // Dispatch hover events
   handleHover(clientX: number, clientY: number, handId: HandIds) {
     let hoverEl = document.elementFromPoint(
       clientX,
-      clientY,
+      clientY
     ) as HTMLElement | null;
 
     // Walk up until we find something clickable
@@ -81,10 +89,10 @@ class GestureToMouse {
 
     // Dispatch real mouse event for hover
     hoverEl.dispatchEvent(
-      new MouseEvent("mouseenter", { bubbles: true, clientX, clientY }),
+      new MouseEvent("mouseenter", { bubbles: true, clientX, clientY })
     );
     hoverEl.dispatchEvent(
-      new MouseEvent("mouseover", { bubbles: true, clientX, clientY }),
+      new MouseEvent("mouseover", { bubbles: true, clientX, clientY })
     );
 
     state.lastHovered = hoverEl;
@@ -102,13 +110,13 @@ class GestureToMouse {
       new MouseEvent("mouseout", {
         bubbles: true,
         relatedTarget: null,
-      }),
+      })
     );
     el.dispatchEvent(
       new MouseEvent("mouseleave", {
         bubbles: false,
         relatedTarget: null,
-      }),
+      })
     );
   }
 
@@ -139,17 +147,22 @@ class GestureToMouse {
 
     // Not pinch --> pinch
     if (gesturePayload.name === PINCH && !prevIsPinching) {
+      this.handStateMap[handId].pinchCount += 1;
+      if (this.handStateMap[handId].pinchCount !== MIN_PINCH_FOR_CLICK) {
+        return;
+      }
       this.handStateMap[handId].pinchStartTime = Date.now();
 
       // Try to get the element under the current hand position
       let el = document.elementFromPoint(
         clientX,
-        clientY,
+        clientY
       ) as HTMLElement | null;
 
       // Fallback: if nothing under point, use the last hovered element
       if (!el || !this.isClickable(el)) {
         el = this.handStateMap[handId].lastHovered as HTMLElement | null;
+        console.log(el);
       } else {
         this.handleHover(clientX, clientY, handId);
       }
@@ -161,7 +174,7 @@ class GestureToMouse {
             bubbles: true,
             clientX,
             clientY,
-          }),
+          })
         );
       }
     }
@@ -172,13 +185,13 @@ class GestureToMouse {
 
       if (elapsed <= PINCH_MAX_DURATION_MS && state.downTarget) {
         state.downTarget.dispatchEvent(
-          new MouseEvent("mouseup", { bubbles: true, clientX, clientY }),
+          new MouseEvent("mouseup", { bubbles: true, clientX, clientY })
         );
         (state.downTarget as HTMLElement).click?.();
       } else {
         if (state.downTarget) {
           state.downTarget.dispatchEvent(
-            new MouseEvent("mouseup", { bubbles: true, clientX, clientY }),
+            new MouseEvent("mouseup", { bubbles: true, clientX, clientY })
           );
         }
       }
