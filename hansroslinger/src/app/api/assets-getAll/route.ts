@@ -39,43 +39,59 @@ export async function GET(request: NextRequest) {
     }
 
     const assets = await getAllAssets(collectionId.id);
-    // Retrieve files from S3
+    // Retrieve files from S3 (keys are `${email}/${collectionID}/${assetId}`)
     const files = await retrieveUserFiles(email, String(collectionId?.id));
 
     // Convert to the format expected by UploadsDisplay
     const uploads: Uploads = {};
 
     files.forEach((file, index) => {
-      const fileName = file.key.split("/").pop() || "";
-      const fileExt = path.extname(fileName).toLowerCase();
-      const fileType =
-        fileExt === ".png"
-          ? FILE_TYPE_PNG
-          : fileExt === ".json"
-            ? FILE_TYPE_JSON
-            : "unknown";
-      // Only process supported file types
-      if (fileType === FILE_TYPE_PNG || fileType === FILE_TYPE_JSON) {
-        // Create a unique assetId
-        const matchedAsset = assets.find((a) => a.name === fileName);
-        const uploadProp: UploadProp = {
-          name: fileName.replace(/^[0-9a-f-]+-/, ""), // clean up filename
-          type: fileType,
-          src: file.url,
-          id: matchedAsset?.id, 
-          order: matchedAsset?.order, 
-        };
+      const keyLast = file.key.split("/").pop() || "";
+      if (!keyLast) return; // folder placeholder
 
-        // For PNG files, add a thumbnail
-        if (fileType === FILE_TYPE_PNG) {
-          // In AWS S3, we need a public URL - for now use default thumbnail
-          uploadProp.thumbnailSrc = "/uploads/default-thumbnail.png";
-        }
-        const key = matchedAsset
-          ? `asset-${matchedAsset.id}`
-          : `upload-${index}-${fileName}`;
-        uploads[key] = uploadProp;
+      const numericId = Number(keyLast);
+      let matchedAsset = Number.isFinite(numericId)
+        ? assets.find((a) => a.id === numericId)
+        : undefined;
+
+      // Fallback: try match by stored original name when keys are full filenames
+      if (!matchedAsset) {
+        matchedAsset = assets.find((a) => a.name === keyLast);
       }
+
+      const src = `/api/aws-get?email=${encodeURIComponent(email)}&key=${encodeURIComponent(file.key)}`;
+
+      if (matchedAsset) {
+        const originalName = matchedAsset.name;
+        const ext = path.extname(originalName).toLowerCase();
+        const type = ext === ".png" ? FILE_TYPE_PNG : ext === ".json" ? FILE_TYPE_JSON : "unknown";
+        if (type === "unknown") return;
+
+        const displayName = originalName.replace(/^[0-9a-f-]+-/, "");
+        const uploadProp: UploadProp = {
+          name: displayName,
+          type,
+          src,
+          id: matchedAsset.id,
+          order: matchedAsset.order,
+        };
+        if (type === FILE_TYPE_PNG) uploadProp.thumbnailSrc = src;
+        uploads[`asset-${matchedAsset.id}`] = uploadProp;
+        return;
+      }
+
+      // Final fallback: infer by key extension for legacy uploads with original filenames but no DB asset
+      const ext = path.extname(keyLast).toLowerCase();
+      const type = ext === ".png" ? FILE_TYPE_PNG : ext === ".json" ? FILE_TYPE_JSON : "unknown";
+      if (type === "unknown") return;
+
+      const displayName = keyLast.replace(/^[0-9a-f-]+-/, "");
+      uploads[`upload-${index}-${keyLast}`] = {
+        name: displayName,
+        type,
+        src,
+        ...(type === FILE_TYPE_PNG ? { thumbnailSrc: src } : {}),
+      };
     });
 
     return NextResponse.json({
