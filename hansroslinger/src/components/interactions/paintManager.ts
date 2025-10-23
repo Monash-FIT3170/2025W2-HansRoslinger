@@ -8,16 +8,19 @@ import {
 import { eraserOverlay } from "./actions/eraserOverlay";
 
 type Tool = "draw" | "erase";
+type Point = { x: number; y: number };
 
 const ERASER_MULTIPLIER = 3;
 const EMPTY_LIMIT_FRAMES = 5; // end stroke after N empty frames
 const SWITCH_HYSTERESIS_FRAMES = 3; // require N frames to switch tools
+const JUMP_DISTANCE_THRESHOLD = 100; // px — break path if hand jumps too far
 
 function getCanvas(): HTMLCanvasElement | null {
   return document.getElementById(
     "annotation-canvas",
   ) as HTMLCanvasElement | null;
 }
+
 function getAttr(name: string): string | null {
   return getCanvas()?.getAttribute(name) ?? null;
 }
@@ -56,6 +59,9 @@ export class PaintManager {
 
   // Remember the user's brush width so we can restore it after erasing.
   private savedDrawWidth: number | null = null;
+
+  // Track last paint point to detect jump distances (prevents "connecting line" bug)
+  private lastPaintPoint: Point | null = null;
 
   /** Call once per frame with ALL gesture payloads (only in paint mode). */
   processFrame(payloads: GesturePayload[]) {
@@ -127,11 +133,25 @@ export class PaintManager {
   handlePinch(payload: GesturePayload) {
     const p = payload.points.pinchPoint;
     if (!p) return;
-    // tool attr managed by onToolSwitched; just hide HUD
     eraserOverlay?.clear?.();
 
-    if (!isPainting()) paintStart(p);
-    else paintMove(p);
+    // If already painting, check for large jump
+    if (isPainting() && this.lastPaintPoint) {
+      const jump = Math.hypot(p.x - this.lastPaintPoint.x, p.y - this.lastPaintPoint.y);
+      if (jump > JUMP_DISTANCE_THRESHOLD) {
+        // Treat as a new stroke
+        paintEnd();
+        paintStart(p);
+      } else {
+        paintMove(p);
+      }
+    } else {
+      // Start a new stroke
+      paintStart(p);
+    }
+
+    // Update last point
+    this.lastPaintPoint = p;
   }
 
   /** Erase with closed fist (uses enlarged stroke width, shows overlay). */
@@ -142,14 +162,26 @@ export class PaintManager {
     // Overlay radius reflects the actual (enlarged) erase size.
     eraserOverlay?.drawAt?.(p, getEraseRadiusDevicePx(this.savedDrawWidth));
 
-    if (!isPainting()) paintStart(p);
-    else paintMove(p);
+    if (isPainting() && this.lastPaintPoint) {
+      const jump = Math.hypot(p.x - this.lastPaintPoint.x, p.y - this.lastPaintPoint.y);
+      if (jump > JUMP_DISTANCE_THRESHOLD) {
+        paintEnd();
+        paintStart(p);
+      } else {
+        paintMove(p);
+      }
+    } else {
+      paintStart(p);
+    }
+
+    this.lastPaintPoint = p;
   }
 
   /** Lift pen & hide overlay. */
   stopDrawing() {
     paintEnd();
     eraserOverlay?.clear?.();
+    this.lastPaintPoint = null;
   }
 
   /** Clear only the annotation canvas; also hide overlay. */
@@ -160,6 +192,7 @@ export class PaintManager {
     if (!ctx) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     eraserOverlay?.clear?.();
+    this.lastPaintPoint = null;
     console.log("[PaintManager] Canvas cleared");
   }
 }
