@@ -314,6 +314,52 @@ export default function CollectionsPage() {
     }
   };
 
+  // Full-screen loader before content renders
+  if (isLoading) {
+    return (
+      <main className="flex-1 p-8 relative overflow-hidden">
+        {/* Enhanced Background decoration to match dashboard */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#F5F9FC] via-[#5C9BB8]/10 to-[#E8F0F7]/25 -z-10"></div>
+
+        {/* Floating background orbs */}
+        <div className="absolute top-10 left-[10%] w-96 h-96 bg-gradient-to-r from-[#5C9BB8]/10 to-[#FC9770]/10 blur-3xl animate-float-slow opacity-40"></div>
+        <div className="absolute bottom-20 right-[15%] w-80 h-80 bg-gradient-to-r from-[#FBC841]/10 to-[#E5A168]/10 blur-3xl animate-float-delayed opacity-40"></div>
+
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="mb-10 flex items-center justify-between animate-fade-in">
+            <div>
+              <h1 className="text-5xl md:text-6xl font-bold mb-3 leading-tight">
+                My <span className="gradient-text-enhanced">Collections</span>
+              </h1>
+              <p className="text-lg text-[#4a4a4a]/90 font-medium">
+                Preparing your collections...
+              </p>
+            </div>
+          </div>
+
+          <div
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 animate-slide-up"
+            style={{ animationDelay: "200ms" }}
+          >
+            {Array.from({ length: 12 }).map((_, i) => (
+              <div
+                key={i}
+                className="h-48 bg-gradient-to-br from-[#F5F9FC] via-[#E8F0F7]/60 to-[#D8E4F0]/40 border border-[#5C9BB8]/15 overflow-hidden relative animate-pulse"
+                style={{ animationDelay: `${i * 60}ms` }}
+              >
+                <div className="h-28 bg-gradient-to-br from-[#5C9BB8]/10 to-[#FC9770]/10"></div>
+                <div className="p-3 space-y-2">
+                  <div className="h-4 bg-[#5C9BB8]/20 w-3/4"></div>
+                  <div className="h-3 bg-[#5C9BB8]/10 w-1/2"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="flex-1 p-8 relative overflow-hidden">
       {/* Enhanced Background decoration to match dashboard */}

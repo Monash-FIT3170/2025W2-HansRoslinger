@@ -422,10 +422,12 @@ export default function UploadPage() {
 
                 {isUploading ? (
                   <>
-                    <div className="spinner w-6 h-6 border-2 relative z-10"></div>
-                    <span className="relative z-10 tracking-wide">
-                      Uploading...
+                    <span className="loading-dots relative z-10">
+                      <span className="dot"></span>
+                      <span className="dot"></span>
+                      <span className="dot"></span>
                     </span>
+                    <span className="relative z-10 tracking-wide">Uploading</span>
                   </>
                 ) : (
                   <>
