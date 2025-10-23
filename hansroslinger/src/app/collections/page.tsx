@@ -166,14 +166,17 @@ export default function CollectionsPage() {
       console.log("Collection created:", data);
       if (!res.ok) {
       console.error("Failed to create collection:", data);
+      alert(`Failed to create collection: ${data.error || 'Unknown error'}`);
       return;
     }
+    
+    // Use the collection data returned from the API
     const newCol: Collection = {
-      id: `col-${Date.now()}`,
-      name: newCollection.name,
-      description: newCollection.description,
+      id: String(data.results.id),
+      name: data.results.name,
+      description: data.results.description || newCollection.description,
       items: [],
-      createdAt: new Date().toISOString().split("T")[0],
+      createdAt: new Date(data.results.createdAt).toISOString().split("T")[0],
     };
 
     setCollections([...collections, newCol]);
@@ -181,7 +184,7 @@ export default function CollectionsPage() {
     setIsCreating(false);
     } catch (error) {
     console.error("Error creating collection:", error);
-    setIsCreating(false);
+    alert(`Error creating collection: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
   };
 

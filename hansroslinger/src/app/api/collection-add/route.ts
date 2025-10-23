@@ -16,22 +16,40 @@ export async function POST(request: NextRequest) {
     const email = request.cookies.get("email")?.value || "";
     const userID: number = +(request.cookies.get("userID")?.value || "");
 
+    console.log("Collection creation request:", { email, userID, name, description });
+
     if (!email || !name) {
+      console.error("Missing required fields:", { email: !!email, name: !!name });
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 },
       );
     }
 
+    if (!userID || isNaN(userID)) {
+      console.error("Invalid userID:", userID);
+      return NextResponse.json(
+        { error: "Invalid user ID" },
+        { status: 400 },
+      );
+    }
+
     const collection = await createCollection(userID, name, description);
     if (!collection) {
-      return NextResponse.json("Failed to create collection", { status: 500 });
+      console.error("createCollection returned null/undefined");
+      return NextResponse.json({ error: "Failed to create collection" }, { status: 500 });
     }
+    
+    console.log("Collection created successfully:", collection);
+    
     const folder = await createUserFolder(email, String(collection.id));
     if (!folder) {
+      console.error("createUserFolder returned null/undefined");
       await deleteCollection(collection.name, email);
-      return NextResponse.json("Failed to create user folder", { status: 500 });
+      return NextResponse.json({ error: "Failed to create user folder" }, { status: 500 });
     }
+    
+    console.log("User folder created successfully:", folder);
     
     return NextResponse.json({
       success: true,
@@ -40,7 +58,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Error creating collection:", error);
     return NextResponse.json(
-      { error: "Failed to create collection" },
+      { error: error instanceof Error ? error.message : "Failed to create collection" },
       { status: 500 },
     );
   }
