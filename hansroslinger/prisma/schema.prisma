@@ -23,6 +23,8 @@ model Collection {
   id Int @id @default(autoincrement())
   name String
   isSelected Boolean @default(false)
+  description String?
+  createdAt    DateTime @default(now())
   author User @relation(fields: [authorID], references: [id])
   authorID Int
   assets Asset[]
