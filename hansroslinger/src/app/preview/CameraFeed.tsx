@@ -6,6 +6,7 @@ import { canvasRenderer } from "app/detection/canvasRenderer";
 import { useGestureStore } from "store/gestureSlice";
 import AnnotationLayer from "./AnnotationLayer";
 import { useContainerStore } from "store/containerSlice";
+import { useBackgroundStore } from "store/backgroundSlice";
 import BackgroundRemovalControls from "@/components/BackgroundRemovalControls";
 import { GestureRecognizerResult } from "@mediapipe/tasks-vision";
 import FloatingDataPanel from "@/components/FloatingDataPanel";
@@ -23,6 +24,7 @@ const CameraFeed = () => {
   const setGesturePayload = useGestureStore(
     (state) => state.setGesturePayloads,
   );
+  const layerBehindPerson = useBackgroundStore((state) => state.layerBehindPerson);
 
   const setContainerEl = useContainerStore((s) => s.setContainerEl);
 
@@ -125,6 +127,7 @@ const CameraFeed = () => {
           playsInline
           muted
           className="w-full h-full object-cover transform -scale-x-100 select-none"
+          style={{ zIndex: layerBehindPerson ? 1 : 0 }}
         />
       )}
 

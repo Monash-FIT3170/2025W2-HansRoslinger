@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import ImageVisual from "./visuals/ImageVisual";
 import { useVisualStore } from "store/visualsSlice";
+import { useBackgroundStore } from "store/backgroundSlice";
 import { FILE_TYPE_JSON, FILE_TYPE_PNG } from "constants/application";
 import VegaLiteVisual from "./visuals/VegaLiteChartVisual";
 
@@ -15,6 +16,7 @@ import ClearButton from "./ClearButton";
 
 const CanvasOverlay = () => {
   const visuals = useVisualStore((state) => state.visuals);
+  const layerBehindPerson = useBackgroundStore((state) => state.layerBehindPerson);
 
   const [dimensions, setDimensions] = useState<{
     width: number;
@@ -63,7 +65,11 @@ const CanvasOverlay = () => {
   }, []);
 
   return (
-    <div ref={rootRef} className="absolute inset-0 z-10">
+    <div 
+      ref={rootRef} 
+      className="absolute inset-0"
+      style={{ zIndex: layerBehindPerson ? 0 : 10 }}
+    >
       {/* --- Annotation layers (behind visuals) --- */}
       <canvas
         id="annotation-canvas"
