@@ -12,6 +12,8 @@ export async function createCollection(userID: number, name: string = "Home", de
       select: {
         id: true,
         name: true,
+        description: true,
+        createdAt: true,
       }
     });
 
