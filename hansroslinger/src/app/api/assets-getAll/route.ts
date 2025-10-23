@@ -4,7 +4,7 @@ import { Uploads, UploadProp } from "../../../types/application";
 import { FILE_TYPE_JSON, FILE_TYPE_PNG } from "../../../constants/application";
 import path from "path";
 import { getCollection } from "database/common/collections/getCollection";
-import { getAllAssets} from "database/common/collections/getAllAssets";
+import { getAllAssets } from "database/common/collections/getAllAssets";
 // Export configuration for Next.js App Router
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -28,7 +28,6 @@ export async function GET(request: NextRequest) {
         { status: 401 },
       );
     }
-
 
     const collectionId = await getCollection(collection, userID);
     if (!collectionId) {
@@ -64,7 +63,12 @@ export async function GET(request: NextRequest) {
       if (matchedAsset) {
         const originalName = matchedAsset.name;
         const ext = path.extname(originalName).toLowerCase();
-        const type = ext === ".png" ? FILE_TYPE_PNG : ext === ".json" ? FILE_TYPE_JSON : "unknown";
+        const type =
+          ext === ".png"
+            ? FILE_TYPE_PNG
+            : ext === ".json"
+              ? FILE_TYPE_JSON
+              : "unknown";
         if (type === "unknown") return;
 
         const displayName = originalName.replace(/^[0-9a-f-]+-/, "");
@@ -82,7 +86,12 @@ export async function GET(request: NextRequest) {
 
       // Final fallback: infer by key extension for legacy uploads with original filenames but no DB asset
       const ext = path.extname(keyLast).toLowerCase();
-      const type = ext === ".png" ? FILE_TYPE_PNG : ext === ".json" ? FILE_TYPE_JSON : "unknown";
+      const type =
+        ext === ".png"
+          ? FILE_TYPE_PNG
+          : ext === ".json"
+            ? FILE_TYPE_JSON
+            : "unknown";
       if (type === "unknown") return;
 
       const displayName = keyLast.replace(/^[0-9a-f-]+-/, "");

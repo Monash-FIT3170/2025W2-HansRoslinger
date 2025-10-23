@@ -25,16 +25,16 @@ export async function createUser(
       },
     });
 
-    console.log("Collection test: " + user.id)
+    console.log("Collection test: " + user.id);
     const collection = await createCollection(user.id);
 
     await prisma.user.update({
       where: { id: user.id },
       data: {
         collections: {
-          connect: { id: collection.id }
-        }
-      }
+          connect: { id: collection.id },
+        },
+      },
     });
     console.log("User created:", user);
     return user;

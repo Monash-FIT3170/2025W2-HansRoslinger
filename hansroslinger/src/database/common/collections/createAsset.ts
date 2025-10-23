@@ -1,22 +1,19 @@
 import prisma from "../client";
 
-export async function createAsset(
-  collectionID : number,
-  name: string,
-) {
+export async function createAsset(collectionID: number, name: string) {
   try {
     const asset = await prisma.asset.create({
       data: {
         name: name,
-        collectionID: collectionID
-      },    
+        collectionID: collectionID,
+      },
       select: {
-        id: true
-      }
+        id: true,
+      },
     });
     await prisma.collection.update({
       where: { id: collectionID },
-      data: { assets: { connect: { id: asset.id } } }
+      data: { assets: { connect: { id: asset.id } } },
     });
 
     console.log(`Asset for collection ${collectionID} created:`, asset.id);

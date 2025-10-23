@@ -1,8 +1,6 @@
 import prisma from "../client";
 
-export async function getAllAssets(
-  collectionID: number
-) {
+export async function getAllAssets(collectionID: number) {
   try {
     const assets = await prisma.asset.findMany({
       where: {

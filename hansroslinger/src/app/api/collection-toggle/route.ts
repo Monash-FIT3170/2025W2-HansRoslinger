@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
     // Get user info from request cookies
     const email = request.cookies.get("email")?.value || "";
     const userID: number = +(request.cookies.get("userID")?.value || "");
-    const {collectionID, state } = await request.json();
+    const { collectionID, state } = await request.json();
     const colID: number = Number(collectionID);
 
     if (!email || !userID) {

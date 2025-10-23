@@ -2,18 +2,20 @@ import { ListObjectsV2Command, DeleteObjectsCommand } from "@aws-sdk/client-s3";
 
 import { s3Client } from "./s3Client";
 
-
-export async function deleteS3Folder( folderKey: string, userEmail: string): Promise<void> {
+export async function deleteS3Folder(
+  folderKey: string,
+  userEmail: string,
+): Promise<void> {
   try {
     // Ensure the prefix ends with "/"
     const prefix = folderKey.endsWith("/") ? folderKey : `${folderKey}/`;
     const bucketName = process.env.AWS_BUCKET_NAME;
-    
+
     const listedObjects = await s3Client.send(
       new ListObjectsV2Command({
         Bucket: bucketName,
         Prefix: `${userEmail}/${prefix}`,
-      })
+      }),
     );
 
     if (!listedObjects.Contents || listedObjects.Contents.length === 0) {
@@ -24,7 +26,7 @@ export async function deleteS3Folder( folderKey: string, userEmail: string): Pro
     const deleteParams = {
       Bucket: bucketName,
       Delete: {
-        Objects: listedObjects.Contents.map(obj => ({ Key: obj.Key! })),
+        Objects: listedObjects.Contents.map((obj) => ({ Key: obj.Key! })),
       },
     };
 

@@ -9,10 +9,11 @@ export const createImageSegmenter = async () => {
     const vision = await FilesetResolver.forVisionTasks(
       "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm",
     );
-    
+
     imageSegmenter = await ImageSegmenter.createFromOptions(vision, {
       baseOptions: {
-        modelAssetPath: "https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_segmenter_landscape/float16/latest/selfie_segmenter_landscape.tflite",
+        modelAssetPath:
+          "https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_segmenter_landscape/float16/latest/selfie_segmenter_landscape.tflite",
         delegate: "GPU",
       },
       runningMode: runningMode,
@@ -39,10 +40,14 @@ const ensureInitialized = async () => {
 const processSegmentationWithBackground = async (
   video: HTMLVideoElement,
   canvas: HTMLCanvasElement,
-  backgroundProcessor: (data: Uint8ClampedArray, mask: Float32Array, imageData: ImageData) => void
+  backgroundProcessor: (
+    data: Uint8ClampedArray,
+    mask: Float32Array,
+    imageData: ImageData,
+  ) => void,
 ) => {
   const startTimeMs = performance.now();
-  
+
   try {
     const segmentationResult = imageSegmenter.segmentForVideo(
       video,
@@ -72,23 +77,26 @@ const processSegmentationWithBackground = async (
 
       // Put the processed image data back
       ctx.putImageData(imageData, 0, 0);
-      
+
       // Apply object-cover cropping to match video display
       const videoWidth = video.videoWidth;
       const videoHeight = video.videoHeight;
       const canvasWidth = canvas.width;
       const canvasHeight = canvas.height;
-      
+
       // Get the video's display dimensions
       const rect = video.getBoundingClientRect();
       const displayWidth = rect.width;
       const displayHeight = rect.height;
-      
+
       const videoAspectRatio = videoWidth / videoHeight;
       const displayAspectRatio = displayWidth / displayHeight;
-      
-      let sourceX = 0, sourceY = 0, sourceWidth = canvasWidth, sourceHeight = canvasHeight;
-      
+
+      let sourceX = 0,
+        sourceY = 0,
+        sourceWidth = canvasWidth,
+        sourceHeight = canvasHeight;
+
       if (videoAspectRatio > displayAspectRatio) {
         // Video is wider than display - crop sides
         sourceWidth = canvasHeight * displayAspectRatio;
@@ -98,36 +106,50 @@ const processSegmentationWithBackground = async (
         sourceHeight = canvasWidth / displayAspectRatio;
         sourceY = (canvasHeight - sourceHeight) / 2;
       }
-      
+
       // Create a temporary canvas for the final cropped result
-      const tempCanvas = document.createElement('canvas');
+      const tempCanvas = document.createElement("canvas");
       tempCanvas.width = canvasWidth;
       tempCanvas.height = canvasHeight;
-      const tempCtx = tempCanvas.getContext('2d');
-      
+      const tempCtx = tempCanvas.getContext("2d");
+
       if (tempCtx) {
         // Copy the full processed result to temp canvas
         tempCtx.putImageData(imageData, 0, 0);
-        
+
         // Clear the main canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
+
         // Draw the cropped portion to match video display
-        ctx.drawImage(tempCanvas, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, canvasWidth, canvasHeight);
-        
+        ctx.drawImage(
+          tempCanvas,
+          sourceX,
+          sourceY,
+          sourceWidth,
+          sourceHeight,
+          0,
+          0,
+          canvasWidth,
+          canvasHeight,
+        );
+
         // Apply mirroring to match video display
-        const mirrorCanvas = document.createElement('canvas');
+        const mirrorCanvas = document.createElement("canvas");
         mirrorCanvas.width = canvasWidth;
         mirrorCanvas.height = canvasHeight;
-        const mirrorCtx = mirrorCanvas.getContext('2d');
-        
+        const mirrorCtx = mirrorCanvas.getContext("2d");
+
         if (mirrorCtx) {
           // Copy current result to mirror canvas
-          mirrorCtx.putImageData(ctx.getImageData(0, 0, canvasWidth, canvasHeight), 0, 0);
-          
+          mirrorCtx.putImageData(
+            ctx.getImageData(0, 0, canvasWidth, canvasHeight),
+            0,
+            0,
+          );
+
           // Clear main canvas
           ctx.clearRect(0, 0, canvas.width, canvas.height);
-          
+
           // Mirror the result
           ctx.save();
           ctx.scale(-1, 1);
@@ -147,22 +169,25 @@ const processSegmentationWithBackground = async (
 export const processBackgroundRemoval = async (
   video: HTMLVideoElement,
   canvas: HTMLCanvasElement,
-  backgroundColor: string = "transparent"
+  backgroundColor: string = "transparent",
 ) => {
   console.log("Starting background removal with color:", backgroundColor);
   await ensureInitialized();
   await processSegmentationWithBackground(video, canvas, (data, mask) => {
-    console.log("Processing background removal...", { dataLength: data.length, maskLength: mask.length });
+    console.log("Processing background removal...", {
+      dataLength: data.length,
+      maskLength: mask.length,
+    });
     let backgroundPixels = 0;
     let foregroundPixels = 0;
-    
+
     for (let i = 0; i < data.length; i += 4) {
       const maskIndex = (i / 4) | 0;
       const maskValue = mask[maskIndex];
 
       // Use a more aggressive threshold for cleaner edges
       const threshold = 0.1; // Lower threshold for more aggressive background removal
-      
+
       if (maskValue < threshold) {
         foregroundPixels++;
         // Foreground pixels (person) - keep original
@@ -175,37 +200,40 @@ export const processBackgroundRemoval = async (
           // Set to solid background color
           const color = hexToRgb(backgroundColor);
           if (color) {
-            data[i] = color.r;     // Red
+            data[i] = color.r; // Red
             data[i + 1] = color.g; // Green
             data[i + 2] = color.b; // Blue
-            data[i + 3] = 255;     // Alpha
+            data[i + 3] = 255; // Alpha
           }
         }
       }
     }
-    console.log("Background removal complete:", { backgroundPixels, foregroundPixels });
+    console.log("Background removal complete:", {
+      backgroundPixels,
+      foregroundPixels,
+    });
   });
 };
 
 export const processBackgroundBlur = async (
   video: HTMLVideoElement,
   canvas: HTMLCanvasElement,
-  blurRadius: number = 10
+  blurRadius: number = 10,
 ) => {
   await ensureInitialized();
   // Create blurred background image
-  const tempCanvas = document.createElement('canvas');
+  const tempCanvas = document.createElement("canvas");
   tempCanvas.width = canvas.width;
   tempCanvas.height = canvas.height;
-  const tempCtx = tempCanvas.getContext('2d');
-  
+  const tempCtx = tempCanvas.getContext("2d");
+
   if (!tempCtx) return;
 
   // Draw and blur the video
   tempCtx.drawImage(video, 0, 0, canvas.width, canvas.height);
   tempCtx.filter = `blur(${blurRadius}px)`;
   tempCtx.drawImage(video, 0, 0, canvas.width, canvas.height);
-  
+
   const blurredData = tempCtx.getImageData(0, 0, canvas.width, canvas.height);
   const blurredPixels = blurredData.data;
 
@@ -218,7 +246,7 @@ export const processBackgroundBlur = async (
         // Foreground pixels (person) - keep original
       } else {
         // Background pixels - use blurred version
-        data[i] = blurredPixels[i];         // Red
+        data[i] = blurredPixels[i]; // Red
         data[i + 1] = blurredPixels[i + 1]; // Green
         data[i + 2] = blurredPixels[i + 2]; // Blue
         data[i + 3] = blurredPixels[i + 3]; // Alpha
@@ -230,9 +258,11 @@ export const processBackgroundBlur = async (
 // Helper function to convert hex color to RGB
 const hexToRgb = (hex: string) => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? {
-    r: parseInt(result[1], 16),
-    g: parseInt(result[2], 16),
-    b: parseInt(result[3], 16)
-  } : null;
+  return result
+    ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
+    : null;
 };
