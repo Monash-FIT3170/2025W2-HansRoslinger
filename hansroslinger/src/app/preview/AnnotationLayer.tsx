@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useModeStore } from "store/modeSlice";
 import ModeToggle from "@/components/ModeToggle";
 import { handleUndo } from "@/components/interactions/actions/handleUndo";
+import ClearButton from "@/components/ClearButton";
 
 type AnnotationLayerProps = {
   /** Element to align/sync canvas size with video element. */
@@ -157,6 +158,7 @@ const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
           <button
             onClick={handleUndo}
             className="absolute top-4 right-4 bg-white text-black p-3 rounded-full shadow-lg hover:bg-gray-200 transition-colors"
+            style={{ zIndex: zIndex + 2 }}
             title="Undo"
           >
             <svg
@@ -173,6 +175,12 @@ const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
               <path d="m21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13" />
             </svg>
           </button>
+          <div
+            className="absolute bottom-6 right-6"
+            style={{ zIndex: zIndex + 2 }}
+          >
+            <ClearButton variant="relative" />
+          </div>
         </div>
       )}
       {/* Conditionally rendered toolbar */}

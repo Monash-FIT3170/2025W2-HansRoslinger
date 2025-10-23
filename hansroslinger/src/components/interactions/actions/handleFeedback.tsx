@@ -1,31 +1,59 @@
 "use client";
-import Image from "next/image";
 import { AcceptedFileType } from "types/application";
+import { Pointer, MoveHorizontal } from "lucide-react";
+import Image from "next/image";
+
+
+// Custom Pinch Hand Gesture Icon
+const PinchHandIcon = ({
+  className = "",
+  strokeWidth = 2.5,
+}: {
+  className?: string;
+  strokeWidth?: number;
+}) => (
+  <Image
+    src="/gestures/pinch.png"
+    alt="Pinch gesture"
+    width={24}
+    height={24}
+    className={`${className} brightness-0 invert`}
+  />
+);
 
 export const getFeedback = () => {
-  const gestures = {
+  const gestures: Record<
+    string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    Array<{ Icon: any; title: string; iconColor?: string }>
+  > = {
     json: [
       {
-        img: "/gestures/left-pinch.png",
+        Icon: PinchHandIcon,
         title: "PINCH",
+        iconColor: "bg-[#FC9770]",
       },
       {
-        img: ["/gestures/left-pinch.png", "/gestures/right-pinch.png"],
+        Icon: PinchHandIcon,
         title: "DOUBLE PINCH",
+        iconColor: "bg-[#FBC841]",
       },
       {
-        img: "/gestures/point.png",
+        Icon: Pointer,
         title: "POINT",
+        iconColor: "bg-[#E5A168]",
       },
     ],
     png: [
       {
-        img: "/gestures/left-pinch.png",
+        Icon: PinchHandIcon,
         title: "PINCH",
+        iconColor: "bg-[#FC9770]",
       },
       {
-        img: ["/gestures/left-pinch.png", "/gestures/right-pinch.png"],
+        Icon: PinchHandIcon,
         title: "DOUBLE PINCH",
+        iconColor: "bg-[#FBC841]",
       },
     ],
   };
@@ -48,31 +76,21 @@ export const FeedbackDisplay = ({
 
   console.log("Gestures for file type:", fileType, gestures);
   return (
-    <div className="z-20 bg-white bg-opacity-90 rounded-lg shadow-lg p-1">
+    <div className="z-20 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-2">
       {isDragging ? (
-        <div className="flex justify-center items-center gap-2">
-          <Image
-            key="dragging"
-            src="/gestures/pinch-move.png"
-            alt="Dragging Gesture"
-            width={48}
-            height={48}
-          />
+        <div className="flex justify-center items-center gap-2 p-1">
+          <div className="p-2 rounded-lg bg-[#5C9BB8] shadow-md">
+            <MoveHorizontal className="w-6 h-6 text-white" strokeWidth={2} />
+          </div>
         </div>
       ) : (
-        <div>
+        <div className="flex gap-2">
           {gestures.map((g, idx) => (
-            <div key={idx}>
-              <div className="flex justify-center items-center gap-2 mb-2">
-                {(Array.isArray(g.img) ? g.img : [g.img]).map((src, i) => (
-                  <Image
-                    key={i}
-                    src={src}
-                    alt={`${g.title} ${i + 1}`}
-                    width={16}
-                    height={16}
-                  />
-                ))}
+            <div key={idx} className="flex justify-center items-center">
+              <div
+                className={`p-1.5 rounded-lg ${g.iconColor || "bg-gray-400"} shadow-md`}
+              >
+                <g.Icon className="w-4 h-4 text-white" strokeWidth={2} />
               </div>
             </div>
           ))}

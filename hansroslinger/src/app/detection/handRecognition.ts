@@ -4,31 +4,69 @@ import { GestureFactory } from "./GestureFactory";
 import { GesturePayload } from "./Gesture";
 import { PINCH } from "constants/application";
 
-let gestureRecognizer: GestureRecognizer;
+let gestureRecognizer: GestureRecognizer | null = null;
+let isInitializing = false;
+let initializationPromise: Promise<void> | null = null;
 const runningMode: "VIDEO" | "IMAGE" = "VIDEO";
 
 export const createGestureRecognizer = async () => {
-  const vision = await FilesetResolver.forVisionTasks(
-    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm",
-  );
-  gestureRecognizer = await GestureRecognizer.createFromOptions(vision, {
-    baseOptions: {
-      modelAssetPath:
-        "https://storage.googleapis.com/mediapipe-tasks/gesture_recognizer/gesture_recognizer.task",
-      delegate: "GPU",
-    },
-    runningMode: runningMode,
-    numHands: 2,
-  });
-  console.log("gesture recognise mediapipe");
+  if (gestureRecognizer) {
+    return; // Already initialized
+  }
+
+  if (isInitializing && initializationPromise) {
+    await initializationPromise; // Wait for ongoing initialization
+    return;
+  }
+
+  isInitializing = true;
+  initializationPromise = (async () => {
+    try {
+      const vision = await FilesetResolver.forVisionTasks(
+        "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm",
+      );
+      gestureRecognizer = await GestureRecognizer.createFromOptions(vision, {
+        baseOptions: {
+          modelAssetPath:
+            "https://storage.googleapis.com/mediapipe-tasks/gesture_recognizer/gesture_recognizer.task",
+          delegate: "GPU",
+        },
+        runningMode: runningMode,
+        numHands: 2,
+      });
+      console.log("gesture recognise mediapipe initialized");
+    } catch (error) {
+      console.error("Failed to initialize gesture recognizer:", error);
+      throw error;
+    } finally {
+      isInitializing = false;
+    }
+  })();
+
+  await initializationPromise;
 };
-await createGestureRecognizer();
+
+// Initialize on module load, but don't block
+createGestureRecognizer().catch(console.error);
 
 export const HandRecogniser = async (
   video: HTMLVideoElement,
   canvas: HTMLCanvasElement,
 ) => {
   console.log("HandRecogniser started");
+
+  // Ensure gesture recognizer is initialized
+  if (!gestureRecognizer) {
+    await createGestureRecognizer();
+  }
+
+  if (!gestureRecognizer) {
+    console.error("Gesture recognizer failed to initialize");
+    return {
+      payloads: [],
+      gestureRecognitionResult: { gestures: [], worldLandmarks: [] },
+    };
+  }
 
   const startTimeMs = performance.now();
 

@@ -1,5 +1,4 @@
 import prisma from "../client";
-import { createCollection } from "../collections/createCollection";
 import * as crypto from "crypto";
 
 export async function createUser(

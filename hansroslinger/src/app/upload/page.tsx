@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FILE_TYPE_JSON, FILE_TYPE_PNG } from "../../constants/application";
 import ReturnToDashboard from "@/components/ReturnToDashboard";
 import { useRouter } from "next/navigation";
+import CollectionsButton from "@/components/CollectionsButton";
 
 export default function UploadPage() {
   const [isDragging, setIsDragging] = useState(false);
@@ -14,6 +15,43 @@ export default function UploadPage() {
     message: string;
   } | null>(null);
   const router = useRouter();
+  const [collections, setCollections] = useState<Array<{ id: string; name: string }>>([]);
+  const [fileToCollection, setFileToCollection] = useState<Record<number, string | "">>({});
+
+  // Load collections: prefer localStorage (populated by Collections page), fallback to API
+  useEffect(() => {
+    let isMounted = true;
+    try {
+      const raw = window.localStorage.getItem("collections");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && isMounted) {
+          setCollections(parsed);
+        }
+      }
+    } catch (_) {
+      // ignore parse errors
+    }
+
+    (async () => {
+      try {
+        const res = await fetch("/api/collections", { cache: "no-store" });
+        if (!res.ok) return;
+        const data = (await res.json()) as { collections?: Array<{ id: string; name: string }>; };
+        if (isMounted && Array.isArray(data.collections) && data.collections.length > 0) {
+          setCollections(data.collections);
+          try {
+            window.localStorage.setItem("collections", JSON.stringify(data.collections));
+          } catch (_) {}
+        }
+      } catch (_) {
+        // ignore
+      }
+    })();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -64,8 +102,13 @@ export default function UploadPage() {
 
     try {
       const formData = new FormData();
-      files.forEach((file) => {
+      files.forEach((file, index) => {
         formData.append("file", file);
+        const chosenCollection = fileToCollection[index];
+        if (chosenCollection) {
+          // Include the selected collection alongside each file (backend can choose to use or ignore)
+          formData.append(`collectionFor_${file.name}`, chosenCollection);
+        }
       });
 
       console.log(
@@ -123,45 +166,134 @@ export default function UploadPage() {
   };
 
   return (
-    <main className="flex-1 p-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-6">
+    <main className="flex-1 p-8 relative overflow-hidden">
+      {/* Enhanced Background decoration to match dashboard */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#F5F9FC] via-[#5C9BB8]/10 to-[#E8F0F7]/25 -z-10"></div>
+
+      {/* Floating background orbs */}
+      <div className="absolute top-10 left-[10%] w-96 h-96 bg-gradient-to-r from-[#5C9BB8]/10 to-[#FC9770]/10 blur-3xl animate-float-slow opacity-40"></div>
+      <div className="absolute bottom-20 right-[15%] w-80 h-80 bg-gradient-to-r from-[#FBC841]/10 to-[#E5A168]/10 blur-3xl animate-float-delayed opacity-40"></div>
+
+      <div className="max-w-4xl mx-auto relative z-10">
+        <div className="mb-8 flex items-center justify-between animate-fade-in">
+          <div>
+            <h1 className="text-4xl md:text-6xl font-bold mb-2">
+              Upload <span className="gradient-text-enhanced">Files</span>
+            </h1>
+            <p className="text-lg md:text-xl text-[#4a4a4a]/90 leading-relaxed">
+              Add your visualisations and images to the platform
+            </p>
+          </div>
           <ReturnToDashboard />
         </div>
 
-        <h1 className="text-3xl font-bold mb-8">Upload Files</h1>
-
         {uploadStatus && (
           <div
-            className={`mb-6 p-4 rounded-md ${
+            className={`mb-6 p-5 animate-fade-in flex items-center gap-3 shadow-lg ${
               uploadStatus.success
-                ? "bg-green-100 text-green-700"
-                : "bg-red-100 text-red-700"
+                ? "bg-gradient-to-r from-[#5C9BB8]/10 to-[#7BAFD4]/10 border-2 border-[#5C9BB8] text-[#2a2a2a] backdrop-blur-sm"
+                : "bg-red-50 border-2 border-red-500 text-red-700"
             }`}
           >
-            {uploadStatus.message}
+            {uploadStatus.success ? (
+              <svg
+                className="w-6 h-6 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            ) : (
+              <svg
+                className="w-6 h-6 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            )}
+            <span className="font-medium">{uploadStatus.message}</span>
           </div>
         )}
 
         <div
-          className={`border-2 border-dashed rounded-lg p-8 mb-6 text-center
-            ${isDragging ? "border-blue-500 bg-blue-50" : "border-gray-300"}
-            ${files.length > 0 ? "bg-gray-50" : ""}
+          className={`modern-card-enhanced p-12 mb-6 text-center transition-all duration-500 animate-scale-in backdrop-blur-md overflow-hidden
+            ${
+              isDragging
+                ? "ring-4 ring-[#5C9BB8] bg-white/95 shadow-2xl shadow-[#5C9BB8]/40 scale-105"
+                : "bg-white/80 hover:bg-white/90"
+            }
           `}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
         >
-          <div className="mb-4">
-            <p className="text-lg mb-2">Drag and drop files here</p>
-            <p className="text-sm text-gray-500">
-              Supported formats: PNG, JSON
+          {/* Animated gradient overlay */}
+          <div
+            className={`absolute inset-0 bg-gradient-to-br from-[#5C9BB8]/8 via-[#FC9770]/5 to-[#FBC841]/8 transition-opacity duration-500 pointer-events-none ${isDragging ? "opacity-100" : "opacity-0"}`}
+          ></div>
+
+          <div className="mb-6 relative z-10">
+            <div className="flex justify-center mb-6">
+              <div className="relative">
+                <div
+                  className={`absolute inset-0 bg-[#5C9BB8]/30 blur-3xl transition-opacity duration-500 ${isDragging ? "opacity-100 animate-pulse" : "opacity-0"}`}
+                ></div>
+                <div className="relative p-8 bg-gradient-to-br from-[#5C9BB8]/20 to-[#FC9770]/20 backdrop-blur-sm">
+                  <svg
+                    className="w-20 h-20 text-[#5C9BB8] relative"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <p className="text-2xl font-bold mb-3 text-[#2a2a2a]">
+              {isDragging ? "Drop files here!" : "Drag and drop files here"}
+            </p>
+            <p className="text-base text-[#4a4a4a]/80 mb-6 leading-relaxed">
+              Supported formats:{" "}
+              <span className="font-bold text-[#FC9770]">PNG</span>,{" "}
+              <span className="font-bold text-[#5C9BB8]">JSON</span>
             </p>
           </div>
 
-          <div className="flex justify-center">
-            <label className="cursor-pointer bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600">
-              Browse Files
+          <div className="flex justify-center relative z-10">
+            <label className="group relative cursor-pointer inline-flex items-center gap-2 bg-gradient-to-r from-[#5C9BB8] to-[#4a89a6] text-white px-10 py-4 font-bold shadow-xl shadow-[#5C9BB8]/50 transition-all duration-300 hover:shadow-2xl hover:shadow-[#5C9BB8]/70 hover:-translate-y-0.5 overflow-hidden">
+              {/* Animated shine effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-[#5C9BB8] to-[#7BAFD4] opacity-0 group-hover:opacity-75 blur-sm transition-opacity duration-300"></div>
+
+              <svg
+                className="w-6 h-6 relative z-10 transition-transform group-hover:scale-110 group-hover:rotate-90"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2.5}
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                />
+              </svg>
+              <span className="relative z-10 tracking-wide">Browse Files</span>
               <input
                 type="file"
                 className="hidden"
@@ -173,72 +305,155 @@ export default function UploadPage() {
           </div>
         </div>
 
-        {files.length > 0 && (
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold mb-4">Selected Files</h2>
-            <div className="space-y-3">
-              {files.map((file, index) => (
+        <div className="modern-card-enhanced p-8 animate-slide-up backdrop-blur-md bg-white/80">
+            <div className="mb-6 flex items-start justify-between gap-4 flex-wrap">
+              <h2 className="text-3xl font-bold flex items-center gap-3">
+                <span className="gradient-text-enhanced">Selected Files</span>
+                <span className="relative">
+                  <div className="absolute inset-0 bg-[#5C9BB8]/30 blur-md"></div>
+                  <span className="relative text-base font-bold px-4 py-2 bg-gradient-to-r from-[#5C9BB8] to-[#7BAFD4] text-white shadow-lg">
+                    {files.length}
+                  </span>
+                </span>
+              </h2>
+              <div className="flex items-center gap-3">
+                <CollectionsButton />
+              </div>
+            </div>
+            <div className="space-y-4 mb-8">
+              {files.length === 0 ? (
+                <div className="p-5 bg-gradient-to-r from-[#F5F9FC] via-[#E8F0F7]/60 to-[#D8E4F0]/40 border border-[#5C9BB8]/15 text-center text-[#4a4a4a]/80 font-semibold">
+                  No files selected yet
+                </div>
+              ) : (
+                files.map((file, index) => (
                 <div
                   key={index}
-                  className="flex items-center justify-between p-3 bg-gray-50 rounded"
+                  className="group relative flex items-center justify-between p-5 bg-gradient-to-r from-[#F5F9FC] via-[#E8F0F7]/60 to-[#D8E4F0]/40 border border-[#5C9BB8]/15 hover:shadow-xl hover:-translate-y-1 transition-all duration-500 overflow-hidden"
+                  style={{
+                    animationDelay: `${index * 50}ms`,
+                    animation: "scaleIn 0.5s ease-out backwards",
+                  }}
                 >
-                  <div className="flex items-center space-x-3">
-                    <div className="text-gray-600">{file.name}</div>
-                    <div className="text-sm text-gray-400">
-                      ({Math.round(file.size / 1024)} KB)
+                  {/* Shine effect */}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+
+                  <div className="flex items-center gap-4 flex-1 relative z-10">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-[#5C9BB8]/20 blur-md"></div>
+                      <div className="relative p-3 bg-gradient-to-br from-[#5C9BB8]/20 to-[#FC9770]/20 backdrop-blur-sm">
+                        <svg
+                          className="w-7 h-7 text-[#5C9BB8]"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-bold text-lg truncate text-[#2a2a2a] group-hover:text-[#5C9BB8] transition-colors">
+                        {file.name}
+                      </div>
+                      <div className="text-sm text-[#4a4a4a]/80 font-semibold">
+                        {Math.round(file.size / 1024)} KB
+                      </div>
+                      <div className="mt-2 flex items-center gap-2 flex-wrap">
+                        <label className="text-xs font-semibold text-[#4a4a4a]/80">
+                          Add to collection:
+                        </label>
+                        <select
+                          value={fileToCollection[index] ?? ""}
+                          onChange={(e) =>
+                            setFileToCollection((prev) => ({
+                              ...prev,
+                              [index]: e.target.value,
+                            }))
+                          }
+                          className="px-3 py-2 text-sm border border-[#5C9BB8]/30 bg-white/90 focus:outline-none focus:ring-2 focus:ring-[#5C9BB8]/40 focus:border-transparent"
+                        >
+                          <option value="">No collection</option>
+                          {collections.length === 0 ? (
+                            <option value="" disabled>
+                              No collections available
+                            </option>
+                          ) : (
+                            collections.map((c) => (
+                              <option key={c.id} value={c.id}>
+                                {c.name}
+                              </option>
+                            ))
+                          )}
+                        </select>
+                      </div>
                     </div>
                   </div>
                   <button
                     onClick={() => removeFile(index)}
-                    className="text-red-500 hover:text-red-700"
+                    className="relative z-10 p-2.5 text-red-500 hover:text-red-700 hover:bg-red-50 transition-all duration-300 group-hover:scale-110"
                   >
-                    Remove
+                    <svg
+                      className="w-6 h-6"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
                   </button>
                 </div>
-              ))}
+              )))}
             </div>
 
-            <div className="mt-6 flex justify-end">
+            <div className="flex justify-end">
               <button
                 onClick={handleUpload}
-                disabled={isUploading}
-                className={`${
-                  isUploading
-                    ? "bg-gray-400"
-                    : "bg-green-500 hover:bg-green-600"
-                } text-white px-6 py-2 rounded-lg transition-colors duration-200 flex items-center`}
+                disabled={isUploading || files.length === 0}
+                className="group relative inline-flex items-center gap-3 bg-gradient-to-r from-[#FC9770] to-[#fb8659] text-white px-10 py-4 font-bold shadow-xl shadow-[#FC9770]/50 transition-all duration-300 hover:shadow-2xl hover:shadow-[#FC9770]/70 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 overflow-hidden"
               >
+                {/* Animated shine effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FC9770] to-[#FBC841] opacity-0 group-hover:opacity-75 blur-sm transition-opacity duration-300"></div>
+
                 {isUploading ? (
                   <>
-                    <svg
-                      className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
-                    Uploading...
+                    <div className="spinner w-6 h-6 border-2 relative z-10"></div>
+                    <span className="relative z-10 tracking-wide">
+                      Uploading...
+                    </span>
                   </>
                 ) : (
-                  "Upload Files"
+                  <>
+                    <svg
+                      className="w-6 h-6 relative z-10 transition-transform group-hover:scale-110"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2.5}
+                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3v-6"
+                      />
+                    </svg>
+                    <span className="relative z-10 tracking-wide">
+                      Upload Files
+                    </span>
+                  </>
                 )}
               </button>
             </div>
-          </div>
-        )}
+        </div>
       </div>
     </main>
   );
