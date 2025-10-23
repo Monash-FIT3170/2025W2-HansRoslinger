@@ -61,7 +61,7 @@ const FloatingDataPanel = () => {
   >([]);
   const [collectionFilter, setCollectionFilter] = useState<string>("__all__");
   const [sourceMode, setSourceMode] = useState<"collections" | "assets">(
-    "collections"
+    "collections",
   );
 
   // Fetch starred collections and their assets
@@ -102,7 +102,7 @@ const FloatingDataPanel = () => {
           selectedCollections.map((c: { id: number; name: string }) => ({
             id: String(c.id),
             name: c.name,
-          }))
+          })),
         );
 
         const activeFilter =
@@ -114,7 +114,7 @@ const FloatingDataPanel = () => {
         const collectionsToFetch =
           activeFilter && activeFilter !== "__all__"
             ? selectedCollections.filter(
-                (c: { name: string }) => c.name === activeFilter
+                (c: { name: string }) => c.name === activeFilter,
               )
             : selectedCollections;
 
@@ -125,7 +125,7 @@ const FloatingDataPanel = () => {
               {
                 method: "GET",
                 credentials: "include",
-              }
+              },
             );
 
             if (assetsRes.ok) {
@@ -138,7 +138,7 @@ const FloatingDataPanel = () => {
           } catch (err) {
             console.error(
               `Error fetching assets for collection ${collection.name}:`,
-              err
+              err,
             );
           }
         }
@@ -151,7 +151,7 @@ const FloatingDataPanel = () => {
         setIsLoading(false);
       }
     },
-    [collectionFilter, sourceMode]
+    [collectionFilter, sourceMode],
   );
 
   useEffect(() => {
