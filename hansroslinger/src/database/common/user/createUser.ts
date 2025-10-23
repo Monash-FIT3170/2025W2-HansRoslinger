@@ -25,7 +25,8 @@ export async function createUser(
       },
     });
 
-    const collection =  await createCollection(email);
+    console.log("Collection test: " + user.id)
+    const collection = await createCollection(user.id);
 
     await prisma.user.update({
       where: { id: user.id },

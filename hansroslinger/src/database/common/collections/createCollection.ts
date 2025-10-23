@@ -1,21 +1,13 @@
 import prisma from "../client";
-import { getUser } from "../user/getUser";
 
-export async function createCollection(
-  email: string,
-  name: string = "Home",
-
-) {
+export async function createCollection(userID: number, name: string = "Home", description?: string)  {
   try {
-    const user = await getUser(email);
-    if (!user) {
-      throw new Error(`User with email ${email} not found`);
-    }
 
     const collection = await prisma.collection.create({
       data: {
         name: name,
-        authorID: user.id
+        authorID: userID,
+        ...(description && {description}),
       },    
       select: {
         id: true,
@@ -23,7 +15,7 @@ export async function createCollection(
       }
     });
 
-    console.log(`Collection for ${user.id} created:`, collection.id);
+    console.log(`Collection for ${userID} created:`, collection.id);
     return collection;
   } catch (error) {
     console.error("Error creating collection:", error);
