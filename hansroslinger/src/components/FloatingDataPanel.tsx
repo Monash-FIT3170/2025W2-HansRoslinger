@@ -22,9 +22,28 @@ import { useVisualStore } from "store/visualsSlice";
 import { FILE_TYPE_PNG } from "constants/application";
 import VegaLiteChartDisplay from "@/components/VegaLiteChartDisplay";
 import { Uploads } from "types/application";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
+// Helper for hovering using gesture
+// Not ideal implementation
+// TODO: Improve hovering by gesture
+function useHover() {
+  const [isHovered, setIsHovered] = useState(false);
+  const onMouseEnter = () => setIsHovered(true);
+  const onMouseLeave = () => setIsHovered(false);
+  return { isHovered, onMouseEnter, onMouseLeave };
+}
 
 // Panel store state
 const FloatingDataPanel = () => {
+  // Hover state for clickable
+  const refreshHover = useHover();
+  const closeHover = useHover();
+  const collectionsTabHover = useHover();
+  const assetsTabHover = useHover();
+  const toggleHover = useHover();
+  const [hoveredAssetId, setHoveredAssetId] = useState<string | null>(null);
+
   const isOpen = usePanelStore((state) => state.isOpen); //whether panel open or not
   const toggle = usePanelStore((state) => state.toggle); //to toggle panel open and close
 
@@ -42,7 +61,7 @@ const FloatingDataPanel = () => {
   >([]);
   const [collectionFilter, setCollectionFilter] = useState<string>("__all__");
   const [sourceMode, setSourceMode] = useState<"collections" | "assets">(
-    "collections",
+    "collections"
   );
 
   // Fetch starred collections and their assets
@@ -83,7 +102,7 @@ const FloatingDataPanel = () => {
           selectedCollections.map((c: { id: number; name: string }) => ({
             id: String(c.id),
             name: c.name,
-          })),
+          }))
         );
 
         const activeFilter =
@@ -95,7 +114,7 @@ const FloatingDataPanel = () => {
         const collectionsToFetch =
           activeFilter && activeFilter !== "__all__"
             ? selectedCollections.filter(
-                (c: { name: string }) => c.name === activeFilter,
+                (c: { name: string }) => c.name === activeFilter
               )
             : selectedCollections;
 
@@ -106,7 +125,7 @@ const FloatingDataPanel = () => {
               {
                 method: "GET",
                 credentials: "include",
-              },
+              }
             );
 
             if (assetsRes.ok) {
@@ -119,7 +138,7 @@ const FloatingDataPanel = () => {
           } catch (err) {
             console.error(
               `Error fetching assets for collection ${collection.name}:`,
-              err,
+              err
             );
           }
         }
@@ -132,7 +151,7 @@ const FloatingDataPanel = () => {
         setIsLoading(false);
       }
     },
-    [collectionFilter, sourceMode],
+    [collectionFilter, sourceMode]
   );
 
   useEffect(() => {
@@ -170,13 +189,23 @@ const FloatingDataPanel = () => {
               <div className="absolute inset-x-0 -top-[1px] h-1 bg-gradient-to-r from-[#5C9BB8] via-[#FC9770] to-[#FBC841]"></div>
               <button
                 onClick={() => fetchStarredCollectionAssets()}
+                onMouseEnter={refreshHover.onMouseEnter}
+                onMouseLeave={refreshHover.onMouseLeave}
                 aria-label="Refresh collections"
-                className="absolute left-0 top-1/2 -translate-y-1/2 text-[#5C9BB8] hover:text-[#4a89a6] p-1 hover:bg-[#5C9BB8]/10 rounded transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className={`absolute left-0 top-1/2 -translate-y-1/2 text-[#5C9BB8] p-1 rounded transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
+                  hover:text-[#4a89a6] hover:bg-[#5C9BB8]/10
+                  ${refreshHover.isHovered ? "text-[#4a89a6] bg-[#5C9BB8]/10" : ""}`}
                 disabled={isLoading}
                 title="Refresh starred collections"
               >
                 <svg
-                  className={`w-5 h-5 ${isLoading ? "animate-spin" : ""}`}
+                  className={`w-5 h-5 transition-transform duration-300 ${
+                    isLoading
+                      ? "animate-spin"
+                      : refreshHover.isHovered
+                        ? "rotate-180"
+                        : ""
+                  }`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -193,32 +222,66 @@ const FloatingDataPanel = () => {
 
               <button
                 onClick={toggle}
+                onMouseEnter={closeHover.onMouseEnter}
+                onMouseLeave={closeHover.onMouseLeave}
                 aria-label="Close uploads panel"
-                className="absolute right-0 top-1/2 -translate-y-1/2 text-[#4b5563] hover:text-[#111827] px-2"
+                className={`absolute right-0 top-1/2 -translate-y-1/2 text-[#4b5563] px-2
+                  hover:text-[#111827]
+                  ${closeHover.isHovered ? "text-[#111827]" : ""}`}
               >
-                ×
+                <span
+                  className={`inline-block transition-transform duration-200 ${
+                    closeHover.isHovered ? "scale-110" : ""
+                  }`}
+                >
+                  ×
+                </span>
               </button>
             </div>
             {/* Source mode + collection filter */}
             <div className="mt-3 flex items-center justify-between gap-3">
               <div className="inline-flex rounded border border-[#5C9BB8]/30 overflow-hidden">
                 <button
-                  className={`px-3 py-1.5 text-xs font-semibold ${sourceMode === "collections" ? "bg-[#5C9BB8]/15 text-[#1f2937]" : "bg-white/90"}`}
+                  className={`px-3 py-1.5 text-xs font-semibold ${
+                    sourceMode === "collections"
+                      ? "bg-[#5C9BB8]/15 text-[#1f2937]"
+                      : "bg-white/90"
+                  }`}
                   onClick={() => {
                     setSourceMode("collections");
                     fetchStarredCollectionAssets();
                   }}
+                  onMouseEnter={collectionsTabHover.onMouseEnter}
+                  onMouseLeave={collectionsTabHover.onMouseLeave}
                 >
-                  Collections
+                  <span
+                    className={`inline-block transition-transform duration-200 ${
+                      collectionsTabHover.isHovered ? "-translate-y-0.5" : ""
+                    }`}
+                  >
+                    Collections
+                  </span>
                 </button>
                 <button
-                  className={`px-3 py-1.5 text-xs font-semibold border-l border-[#5C9BB8]/30 ${sourceMode === "assets" ? "bg-[#5C9BB8]/15 text-[#1f2937]" : "bg-white/90"}`}
+                  className={`px-3 py-1.5 text-xs font-semibold border-l border-[#5C9BB8]/30 ${
+                    sourceMode === "assets"
+                      ? "bg-[#5C9BB8]/15 text-[#1f2937]"
+                      : "bg-white/90"
+                  }`}
                   onClick={() => {
                     setSourceMode("assets");
                     fetchStarredCollectionAssets();
                   }}
+                  onMouseEnter={assetsTabHover.onMouseEnter}
+                  onMouseLeave={assetsTabHover.onMouseLeave}
                 >
-                  Assets
+                  <span
+                    className={`inline-block transition-transform duration-200 ${
+                      assetsTabHover.isHovered ? "-translate-y-0.5" : ""
+                    }`}
+                  >
+                    Assets
+                  </span>
                 </button>
               </div>
 
@@ -294,25 +357,27 @@ const FloatingDataPanel = () => {
             ) : (
               <div className="flex flex-col gap-4">
                 {Object.entries(uploads).map(([assetId, uploadData], idx) => {
-                  // find visual object that corresponds to assetId
-                  const visual = visuals.find((v) => v.assetId === assetId);
                   //check if visual currently hovered for highlighting
-                  const isHovered = visual?.isHovered;
                   const isSelected = isVisualSelected(assetId);
+                  const isTileHovered = hoveredAssetId === assetId;
 
                   return (
                     <div
                       key={assetId}
                       data-asset-id={assetId}
                       onClick={() => handleClick(assetId)}
+                      onMouseEnter={() => setHoveredAssetId(assetId)}
+                      onMouseLeave={() => setHoveredAssetId(null)}
                       className={`group relative backdrop-blur-md transition-all duration-500 cursor-pointer p-4 animate-scale-in ${
                         isSelected
                           ? "bg-white/95 shadow-2xl shadow-[#5C9BB8]/40 ring-2 ring-[#5C9BB8] scale-[1.02] -translate-y-1"
                           : "bg-white/80 shadow-lg hover:shadow-2xl hover:bg-white/95 hover:-translate-y-1 hover:ring-2 hover:ring-[#FC9770]/40"
-                      } ${isHovered ? "ring-2 ring-[#5C9BB8]" : ""}`}
-                      style={{
-                        animationDelay: `${idx * 80}ms`,
-                      }}
+                      } ${
+                        !isSelected && isTileHovered
+                          ? "shadow-2xl bg-white/95 -translate-y-1 ring-2 ring-[#FC9770]/40"
+                          : ""
+                      }`}
+                      style={{ animationDelay: `${idx * 80}ms` }}
                     >
                       {/* Gradient border accent on top */}
                       <div
@@ -320,7 +385,7 @@ const FloatingDataPanel = () => {
                           isSelected
                             ? "bg-gradient-to-r from-[#5C9BB8] via-[#FC9770] to-[#FBC841] opacity-100"
                             : "bg-gradient-to-r from-[#FC9770]/40 to-[#FBC841]/40 opacity-0 group-hover:opacity-100"
-                        }`}
+                        } ${!isSelected && isTileHovered ? "opacity-100" : ""}`}
                       ></div>
 
                       <div className="flex items-center gap-4">
@@ -330,7 +395,7 @@ const FloatingDataPanel = () => {
                             isSelected
                               ? "border-[#5C9BB8] shadow-md"
                               : "border-gray-200 group-hover:border-[#FC9770]/50"
-                          }`}
+                          } ${!isSelected && isTileHovered ? "border-[#FC9770]/50" : ""}`}
                         >
                           {/* Render image if it's a PNG, otherwise render VegaLite chart */}
                           {uploadData.type === FILE_TYPE_PNG ? (
@@ -397,12 +462,21 @@ const FloatingDataPanel = () => {
       {/* toggle button */}
       <button
         onClick={toggle}
+        onMouseEnter={toggleHover.onMouseEnter}
+        onMouseLeave={toggleHover.onMouseLeave}
         aria-label={isOpen ? "Collapse uploads panel" : "Expand uploads panel"}
-        className="absolute -translate-y-1/2 z-50 w-8 h-20 bg-gradient-to-b from-[#5C9BB8] to-[#FC9770] text-white rounded-r shadow-xl hover:opacity-95 flex items-center justify-center text-base font-bold top-1/2"
+        className={`absolute -translate-y-1/2 z-50 w-14 h-28 bg-gradient-to-b from-[#5C9BB8] to-[#FC9770] text-white rounded-r shadow-xl flex items-center justify-center text-base font-bold top-1/2
+          hover:opacity-90 ${toggleHover.isHovered ? "opacity-90" : ""}`}
         style={{ left: isOpen ? "33.3333%" : "0px" }}
       >
         {/* Collapse or expand indicator */}
-        {isOpen ? "‹" : "›"}
+        <span
+          className={`inline-flex transition-transform duration-200 ${
+            toggleHover.isHovered ? "scale-110" : ""
+          }`}
+        >
+          {isOpen ? <ChevronLeft /> : <ChevronRight />}
+        </span>
       </button>
     </>
   );
