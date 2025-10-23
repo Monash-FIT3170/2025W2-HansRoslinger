@@ -92,7 +92,7 @@ export default function UserUploads({ initialUploads }: UserUploadsProps) {
           <div className="max-w-7xl mx-auto relative z-10">
             <div className="text-center mb-16 animate-slide-up">
               <h2 className="text-4xl md:text-6xl font-bold mb-5 text-[#2a2a2a]">
-                Your <span className="gradient-text-enhanced">Uploads</span>
+                Sample <span className="gradient-text-enhanced">Uploads</span>
               </h2>
               <p className="text-lg md:text-xl text-[#4a4a4a]/90 max-w-2xl mx-auto leading-relaxed">
                 Click on any file to select it for preview
@@ -112,7 +112,7 @@ export default function UserUploads({ initialUploads }: UserUploadsProps) {
                 </div>
               </div>
               <span className="text-2xl font-bold text-[#2a2a2a] mb-2">
-                Loading your uploads...
+                Loading sample uploads...
               </span>
               <span className="text-base text-[#4a4a4a]/80">
                 This won&apos;t take long
