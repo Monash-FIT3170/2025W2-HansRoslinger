@@ -17,7 +17,7 @@ export const handleResize = (
   pointerA: VisualPosition,
   pointerB: VisualPosition,
   pinchStartDistance: number,
-  pinchStartSize: { width: number; height: number }
+  pinchStartSize: { width: number; height: number },
 ) => {
   const store = useVisualStore.getState();
   const visual = store.getVisual(id);
@@ -61,7 +61,7 @@ export const handleResize = (
     const clampedHeight = Math.min(
       newHeight,
       maxHeightByContainerHeight,
-      maxHeightByContainerWidth
+      maxHeightByContainerWidth,
     );
 
     // Recompute width from clamped height to keep the ratio exact
