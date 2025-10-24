@@ -25,7 +25,7 @@ Welcome to the **HansRoslinger** repository! This project is dedicated to design
   - [Running with a Dev Container (Recommended)](#running-with-a-dev-container-recommended)
   - [Running Outside a Dev Container](#running-outside-a-dev-container)
 - [Deployment](#deployment)
-- [Branching and Versioning](#branching-and-versioning)
+- [Project Documentation](#project-documentation)
 - [Common Issues](#common-issues)
 - [Project Team](#project-team)
   - [Systems Architects](#️-systems-architects)
@@ -371,7 +371,7 @@ Example:
 
 ![Vercel options](./hansroslinger/public/readme/image.png)
 
-## 📄 Project Documentation
+## Project Documentation
 
 Additional project-related documentation and resources are available in the [`/documentation`](./documentation) folder.
 
@@ -381,7 +381,7 @@ Additional project-related documentation and resources are available in the [`/d
 | [Feature Roadmap](./documentation/project_roadmap.md)                                 | Outlines completed, ongoing, and planned features, with links to milestones and timelines. |
 | [Known Bugs](./documentation/known_bugs.md)                                           | Lists current known issues and their corresponding GitHub references.                      |
 | [Privacy and Compliance Document](./documentation/privacy_policy.pdf)                 | Details privacy considerations and data protection measures.                               |
-| [Maintenance Guide](./documentation/maintenance_guide.pdf)                            | Provides instructions for maintaining and updating the system post-deployment.             |
+| [Maintenance Plan](./documentation/maintenance_plan.pdf)                              | Provides instructions for maintaining and updating the system post-deployment.             |
 | [User Guide](./documentation/user_guide.pdf)                                          | Step-by-step guide for end users to navigate and use the Yubi app.                         |
 
 ## Common Issues
