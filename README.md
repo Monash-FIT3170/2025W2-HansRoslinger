@@ -1,9 +1,10 @@
 # 2025W2-HansRoslinger 🚀
 
+_Last Updated: 24 October 2025_
+
 Welcome to the **HansRoslinger** repository! This project is dedicated to designing and implementing a gesture-based presentation tool called **Yubi**, which integrates the presenter into the experience. **Yubi** uses natural hand movements to control slides and highlight content, making online presentations more expressive, engaging, and human-centered.
 
 **Yubi** is currently hosted at: https://hans-roslinger.vercel.app/
-
 
 ## Table of Content
 
@@ -23,6 +24,7 @@ Welcome to the **HansRoslinger** repository! This project is dedicated to design
   - [Running with a Dev Container (Recommended)](#running-with-a-dev-container-recommended)
   - [Running Outside a Dev Container](#running-outside-a-dev-container)
 - [Deployment](#deployment)
+- [Branching and Versioning](#branching-and-versioning)
 - [Common Issues](#common-issues)
 - [Project Team](#project-team)
   - [Systems Architects](#️-systems-architects)
@@ -30,11 +32,13 @@ Welcome to the **HansRoslinger** repository! This project is dedicated to design
   - [Release Train Engineers](#-release-train-engineers)
 
 ## Overview of repository
+
 This repository follows a mono-repo structure that includes both frontend and backend components for the **HansRoslinger (Yubi)** application.  
 It uses **Next.js** and **TypeScript** for the frontend, with **Prisma** for database management and **Vercel** for deployment.  
 The setup supports development inside a **Dev Container** for consistent environment management.
 
 ### Repository Layout
+
 ```
 2025W2-HansRoslinger/
 ├── .devcontainer/ # VS Code Dev Container configuration (Next.js + TypeScript)
@@ -88,8 +92,6 @@ To help contributors and new developers become familiar with the technologies us
 - [AWS S3 Documentation:](https://docs.aws.amazon.com/s3/) AWS S3 configuration and permissions.
 - [Docker Getting Started:](https://docs.docker.com/get-started/) Basics of Docker and containerized development.
 - [Dev Containers in VS Code:](https://code.visualstudio.com/docs/devcontainers/containers) Guide to setting up and using Dev Containers.
-
-
 
 ## Project Setup
 
@@ -338,6 +340,21 @@ Want to use the default Deployment Protection settings? yes
 Example:
 
 ![Vercel options](./hansroslinger/public/readme/image.png)
+
+## 📄 Project Documentation
+
+Additional project-related documentation and resources are available in the [`/documentation`](./documentation) folder.
+
+| Document | Description |
+|-----------|--------------|
+| [Branching and Versioning Strategy](./documentation/branching_versioning_strategy.md) | Explains our Git workflow, commit conventions, and release versioning process. |
+| [Feature Roadmap](./documentation/project_roadmap.md) | Outlines completed, ongoing, and planned features, with links to milestones and timelines. |
+| [Known Bugs](./documentation/known_bugs.md) | Lists current known issues and their corresponding GitHub references. |
+| [Privacy and Compliance Document](./documentation/privacy_policy.pdf) | Details privacy considerations and data protection measures. |
+| [Maintenance Guide](./documentation/maintenance_guide.pdf) | Provides instructions for maintaining and updating the system post-deployment. |
+| [User Guide](./documentation/user_guide.pdf) | Step-by-step guide for end users to navigate and use the Yubi app. |
+
+
 
 ## Common Issues
 
