@@ -13,6 +13,7 @@ Welcome to the **HansRoslinger** repository! This project is dedicated to design
 - [Project Requirements](#project-requirements)
   - [Hardware](#hardware)
   - [Software](#software)
+- [Suggested Tutorials](#suggested-tutorials)
 - [Project Setup](#project-setup)
   - [Clone Git Repository](#clone-git-repository)
   - [Docker Desktop (If using Dev Container)](#docker-desktop-if-using-dev-container)
@@ -81,17 +82,45 @@ The project is a client-side heavy application, so most hardware requirements ap
 - Prisma for database management
 - AWS S3 for storing user files
 
-## Suggested Tutorials
+## Suggested Tutorials and Documentation
 
-To help contributors and new developers become familiar with the technologies used in this project, we recommend exploring the following resources:
+To help contributors and new developers become familiar with the technologies used in this project, we’ve compiled the following official documentation and tutorial resources.
 
-- [Next.js Documentation:](https://nextjs.org/docs) Official guide to the Next.js framework.
-- [TypeScript Handbook:](https://www.typescriptlang.org/docs/handbook/intro.html) The fundamentals of TypeScript.
-- [Prisma Docs:](https://www.prisma.io/docs) ORM setup, schema, and database interaction guide.
+### Documentation
+
+#### Core Frameworks and Tools
+
+- [Next.js Documentation:](https://nextjs.org/docs)Official guide to the Next.js framework.
+- [TypeScript Handbook:](https://www.typescriptlang.org/docs/handbook/intro.html) Learn the fundamentals of TypeScript.
+- [Prisma Docs:](https://www.prisma.io/docs) ORM setup, schema design, and database interaction guide.
 - [Vercel Deployment Guide:](https://vercel.com/docs) Steps for deploying and managing projects on Vercel.
-- [AWS S3 Documentation:](https://docs.aws.amazon.com/s3/) AWS S3 configuration and permissions.
 - [Docker Getting Started:](https://docs.docker.com/get-started/) Basics of Docker and containerized development.
-- [Dev Containers in VS Code:](https://code.visualstudio.com/docs/devcontainers/containers) Guide to setting up and using Dev Containers.
+- [Dev Containers in VS Code:](https://code.visualstudio.com/docs/devcontainers/containers) Guide to setting up and using Dev Containers in VS Code.
+
+#### Gesture Recognition and MediaPipe
+
+- [MediaPipe Gesture Recognizer (Web):](https://ai.google.dev/edge/mediapipe/solutions/vision/gesture_recognizer/web_js) Documentation for gesture recognition using MediaPipe in web apps.
+- [MediaPipe Image Segmenter (Web):](https://ai.google.dev/edge/mediapipe/solutions/vision/image_segmenter/web_js) Guide for background removal and image segmentation in MediaPipe.
+
+#### AWS and Monitoring
+
+- [AWS S3 Documentation:](https://docs.aws.amazon.com/s3/) Overview of AWS S3 configuration and permissions.
+- [AWS S3 Access Policy Language Overview:](https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-policy-language-overview.html) Reference for creating custom access policies.
+- [AWS CloudWatch Monitoring Guide:](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/monitor_estimated_charges_with_cloudwatch.html) Monitoring estimated usage and performance metrics.
+
+### Tutorials
+
+#### Core Frameworks
+
+- [Next.js Crash Course – All 12 Concepts You Need to Know](https://youtu.be/vwSlYG7hFk0?si=SOpIn0iBfEeTLw9W)
+- [Learn React with One Project](https://youtu.be/Rh3tobg7hEo?si=YfYh-Q1Qu2jEv6h6)
+
+#### Gesture Recognition and MediaPipe
+
+- [Gesture Control Tutorial (Part 1)](https://youtu.be/RebA5J-rlwg?si=m5C22pF2drSUF2lL)
+- [Gesture Control Tutorial (Part 2)](https://youtu.be/mDRoyPFJvlU?si=OWLgdZ9ziYbUPssf)
+- [Gesture Recognition with MediaPipe Hands](https://youtu.be/gpquYmcpZpo?si=AyROys-psdDxXWnL)
+- [Advanced Gesture Interactions](https://youtu.be/_KhrGFV_Npw?si=UxmEyHq6fh7dP4e2)
 
 ## Project Setup
 
@@ -102,9 +131,9 @@ Using Visual Studio Code (VS Code) with the Dev Containers extension is recommen
 - Open a terminal in your desired directory.
 - Clone the repository.
 
-```bash
-git clone https://github.com/Monash-FIT3170/2025W2-HansRoslinger.git
-```
+  ```bash
+  git clone https://github.com/Monash-FIT3170/2025W2-HansRoslinger.git
+  ```
 
 ### Docker Desktop (if using Dev Container)
 
@@ -113,9 +142,9 @@ git clone https://github.com/Monash-FIT3170/2025W2-HansRoslinger.git
 - Start docker desktop.
 - Verify the installation.
 
-```bash
-docker --version
-```
+  ```bash
+  docker --version
+  ```
 
 ### Dev Container (VS Code)
 
@@ -134,23 +163,24 @@ Vercel is used to deploy the project as a web application. If you wish to deploy
 - Create an account or login to Vercel [here](https://vercel.com/signup)
 - Install Vercel CLI if not already installed
 
-```bash
-npm install -g vercel
-```
+  ```bash
+  npm install -g vercel
+  ```
 
 - Authenticate with Vercel
 
-```bash
-vercel login
-```
+  ```bash
+  vercel login
+  ```
 
 - Set Vercel Token
+
   - Get your token [here](https://vercel.com/account/settings/tokens?utm_source=chatgpt.com)
   - Add it to your .env file
 
-```bash
-VERCEL_TOKEN=your_token_here
-```
+  ```bash
+  VERCEL_TOKEN=your_token_here
+  ```
 
 - To deploy the project, follow the steps in the [Deployment](https://vercel.com/account/settings/tokens?utm_source=chatgpt.com) section.
 
@@ -166,21 +196,21 @@ If you plan to replicate this project, you may need to set up a database. The ex
 - Once finished, connect to your new database. Once connected, your Prisma Postgres database will be ready for use.
 - Link your project to Vercel. This associates your local project with the corresponding project in your Vercel team.
 
-```bash
-vercel link
-```
+  ```bash
+  vercel link
+  ```
 
 - Pull environment variables from Vercel. This will download the environment variables (including your Prisma Postgres connection string) and save them into a local `.env` file.
 
-```bash
-vercel env pull .env
-```
+  ```bash
+  vercel env pull .env
+  ```
 
 - Run your initial Prisma migration.This creates the database schema in your Prisma Postgres instance and gets your database ready for use.
 
-```bash
-npx prisma migrate dev --name init
-```
+  ```bash
+  npx prisma migrate dev --name init
+  ```
 
 ### AWS S3
 
@@ -262,16 +292,16 @@ The project can either be run inside a Dev Container (using the VS Code extensio
 - Once built, open a terminal inside the Dev Container.
 - Navigate to the project directory.
 
-```bash
-cd hansroslinger
-```
+  ```bash
+  cd hansroslinger
+  ```
 
 - Install the dependencies and start the app:
 
-```bash
-npm install
-npm run dev
-```
+  ```bash
+  npm install
+  npm run dev
+  ```
 
 - Access the app in your browser at: http://localhost:3000
 
@@ -294,16 +324,16 @@ npm --version
 
 - From the root directory, navigate inside the project directory and install packages.
 
-```bash
-cd hansroslinger
-npm install
-```
+  ```bash
+  cd hansroslinger
+  npm install
+  ```
 
 - Start the Next.js dev server.
 
-```bash
-npm run dev
-```
+  ```bash
+  npm run dev
+  ```
 
 - Access the app in your browser at: http://localhost:3000
 
@@ -315,27 +345,27 @@ These steps assume that this is the first time you are using vercel to deploy.
 - Open the project in a code editor.
 - Navigate to the project directory
 
-```bash
-cd hansroslinger
-```
+  ```bash
+  cd hansroslinger
+  ```
 
 - Run deployment command in the terminal.
 
-```bash
-vercel
-```
+  ```bash
+  vercel
+  ```
 
 - Select the following option to successfully deploy the project on Vercel:
 
-```txt
-Set up and deploy “/workspaces/2025W2-HansRoslinger/hansroslinger” yes
-Which scope should contain your project? [Select your Vercel team or personal account]
-Link to existing project? no
-What’s your project’s name? hansroslinger
-In which directory is your code located? ./
-Want to modify these settings? no
-Want to use the default Deployment Protection settings? yes
-```
+  ```txt
+  Set up and deploy “/workspaces/2025W2-HansRoslinger/hansroslinger” yes
+  Which scope should contain your project? [Select your Vercel team or personal account]
+  Link to existing project? no
+  What’s your project’s name? hansroslinger
+  In which directory is your code located? ./
+  Want to modify these settings? no
+  Want to use the default Deployment Protection settings? yes
+  ```
 
 Example:
 
@@ -345,16 +375,14 @@ Example:
 
 Additional project-related documentation and resources are available in the [`/documentation`](./documentation) folder.
 
-| Document | Description |
-|-----------|--------------|
-| [Branching and Versioning Strategy](./documentation/branching_versioning_strategy.md) | Explains our Git workflow, commit conventions, and release versioning process. |
-| [Feature Roadmap](./documentation/project_roadmap.md) | Outlines completed, ongoing, and planned features, with links to milestones and timelines. |
-| [Known Bugs](./documentation/known_bugs.md) | Lists current known issues and their corresponding GitHub references. |
-| [Privacy and Compliance Document](./documentation/privacy_policy.pdf) | Details privacy considerations and data protection measures. |
-| [Maintenance Guide](./documentation/maintenance_guide.pdf) | Provides instructions for maintaining and updating the system post-deployment. |
-| [User Guide](./documentation/user_guide.pdf) | Step-by-step guide for end users to navigate and use the Yubi app. |
-
-
+| Document                                                                              | Description                                                                                |
+| ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| [Branching and Versioning Strategy](./documentation/branching_versioning_strategy.md) | Explains our Git workflow, commit conventions, and release versioning process.             |
+| [Feature Roadmap](./documentation/project_roadmap.md)                                 | Outlines completed, ongoing, and planned features, with links to milestones and timelines. |
+| [Known Bugs](./documentation/known_bugs.md)                                           | Lists current known issues and their corresponding GitHub references.                      |
+| [Privacy and Compliance Document](./documentation/privacy_policy.pdf)                 | Details privacy considerations and data protection measures.                               |
+| [Maintenance Guide](./documentation/maintenance_guide.pdf)                            | Provides instructions for maintaining and updating the system post-deployment.             |
+| [User Guide](./documentation/user_guide.pdf)                                          | Step-by-step guide for end users to navigate and use the Yubi app.                         |
 
 ## Common Issues
 
@@ -372,9 +400,9 @@ To resolve this issue, clone the project in a container volume:
 - Wait until dev container is built
 - Once built, navigate into the project directory:
 
-```bash
-cd hansroslinger
-```
+  ```bash
+  cd hansroslinger
+  ```
 
 ## Project Team
 
